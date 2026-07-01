@@ -24,7 +24,6 @@
 }
 
 .albora-header svg {
-  fill: currentColor;
   display: block;
 }
 
@@ -61,59 +60,9 @@
   max-width: 180px;
 }
 
-/* Search */
-.albora-header__search {
-  flex: 1 1 auto;
-  max-width: 762px;
-  margin: 0 auto;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.albora-header__search-input {
-  width: 100%;
-  min-width: 0;
-  height: 51px;
-  padding: 16px 47px 16px 24px;
-  border: 1px solid var(--albora-border);
-  border-radius: 35px;
-  background: #fff;
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--albora-primary);
-  box-shadow: none;
-  outline: none;
-  transition: border-color 0.15s ease;
-}
-
-.albora-header__search-input::placeholder {
-  color: var(--albora-placeholder);
-  opacity: 1;
-}
-
-.albora-header__search-input:focus {
-  border-color: var(--albora-secondary);
-}
-
-.albora-header__search-btn {
-  position: absolute;
-  right: 24px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  color: var(--albora-secondary);
-}
-
-.albora-header__search-btn svg {
-  width: 18px;
-  height: 18px;
-  margin: 0 auto;
+/* Spacer — pushes the icon cluster to the right on desktop */
+.albora-header__logo {
+  margin-right: auto;
 }
 
 /* Icons cluster */
@@ -122,6 +71,61 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+/* ---------- Shopify default search modal, styled as an albora icon ---------- */
+.albora-header__icons .header__search {
+  position: static;
+  display: inline-flex;
+}
+
+.albora-header__icons .header__icon--search {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 42px;
+  color: var(--albora-primary);
+  cursor: pointer;
+  list-style: none;
+  transition: background-color 0.15s ease;
+}
+
+.albora-header__icons .header__icon--search::-webkit-details-marker {
+  display: none;
+}
+
+.albora-header__icons .header__icon--search:hover {
+  background: rgba(6, 38, 45, 0.06);
+}
+
+.albora-header__icons .header__icon--search .svg-wrapper,
+.albora-header__icons .header__icon--search svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* summary carries both a search and a close icon; keep only the loupe */
+.albora-header__icons .header__icon--search .header__icon-close {
+  display: none;
+}
+
+/* the search modal overlays the top bar (Dawn's header CSS isn't loaded here) */
+.albora-header__top-inner {
+  position: relative;
+}
+
+.albora-header .search-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background: #fff;
 }
 
 .albora-header__icon {
@@ -227,24 +231,23 @@
 }
 
 /* Mobile-only controls — hidden on desktop */
-.albora-header__menu-toggle,
-.albora-header__search-toggle {
+.albora-header__menu-toggle {
   display: none;
 }
 
 /* ---------- Responsive ---------- */
 @media screen and (max-width: 989px) {
   .albora-header__top-inner {
-    flex-wrap: wrap;
-    min-height: 100px;
-    padding: 12px 16px;
-    row-gap: 12px;
+    min-height: 72px;
+    padding: 10px 16px;
+    gap: 8px;
   }
 
   .albora-header__menu-toggle {
     display: inline-flex;
     align-items: center;
     order: 1;
+    flex: 0 0 auto;
   }
 
   .albora-header__logo {
@@ -253,13 +256,14 @@
   }
 
   .albora-header__logo img {
-    height: 44px;
+    height: 40px;
   }
 
   .albora-header__icons {
     order: 3;
-    margin-left: auto;
-    gap: 6px;
+    flex: 0 0 auto;
+    margin-left: 0;
+    gap: 4px;
   }
 
   /* only search + cart on the top row (per mobile design) */
@@ -272,22 +276,15 @@
     display: none;
   }
 
-  /* search collapses into a loupe icon */
-  .albora-header__search-toggle {
-    display: inline-flex;
-    color: var(--albora-secondary);
+  .albora-header__icons .header__icon--search,
+  .albora-header__icon {
+    width: 40px;
+    height: 40px;
   }
 
-  .albora-header__search {
-    order: 4;
-    display: none;
-    flex: 1 1 100%;
-    max-width: 100%;
-    margin: 0;
-  }
-
-  .albora-header--search-open .albora-header__search {
-    display: flex;
+  .albora-header__cart-bubble {
+    width: 40px;
+    height: 40px;
   }
 
   .albora-header__nav {

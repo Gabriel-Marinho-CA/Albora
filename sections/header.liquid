@@ -168,22 +168,6 @@
           </h1>
         {%- endif -%}
 
-        <form action="{{ routes.search_url }}" method="get" role="search" class="albora-header__search">
-          <input
-            type="search"
-            name="q"
-            value="{{ search.terms | escape }}"
-            placeholder="O que você procura?"
-            class="albora-header__search-input"
-            aria-label="{{ 'general.search.search' | t }}"
-            autocomplete="off"
-          >
-          <input type="hidden" name="options[prefix]" value="last">
-          <button type="submit" class="albora-header__search-btn" aria-label="{{ 'general.search.search' | t }}">
-            {{ 'icon-search.svg' | inline_asset_content }}
-          </button>
-        </form>
-
         <div class="albora-header__icons">
           {%- if shop.customer_accounts_enabled -%}
             <a
@@ -205,14 +189,7 @@
             {{ 'icon-heart.svg' | inline_asset_content }}
           </a>
 
-          <button
-            type="button"
-            class="albora-header__icon albora-header__search-toggle"
-            aria-label="{{ 'general.search.search' | t }}"
-            aria-expanded="false"
-          >
-            {{ 'icon-search.svg' | inline_asset_content }}
-          </button>
+          {%- render 'header-search', input_id: 'Search-In-Modal' -%}
 
           {%- for block in section.blocks -%}
             {%- case block.type -%}
@@ -245,21 +222,6 @@
     {%- endif -%}
   </header>
 </{{ header_tag }}>
-
-<script>
-  document.addEventListener('click', function (event) {
-    var toggle = event.target.closest('.albora-header__search-toggle');
-    if (!toggle) return;
-    var header = toggle.closest('.albora-header');
-    if (!header) return;
-    var isOpen = header.classList.toggle('albora-header--search-open');
-    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    if (isOpen) {
-      var input = header.querySelector('.albora-header__search-input');
-      if (input) input.focus();
-    }
-  });
-</script>
 
 {%- if settings.cart_type == 'notification' -%}
   {%- render 'cart-notification',
