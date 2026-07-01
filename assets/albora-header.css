@@ -60,9 +60,93 @@
   max-width: 180px;
 }
 
-/* Spacer — pushes the icon cluster to the right on desktop */
-.albora-header__logo {
-  margin-right: auto;
+/* ---------- Desktop inline search (Shopify predictive search) ---------- */
+.albora-header__search {
+  flex: 1 1 auto;
+  max-width: 762px;
+  margin: 0 auto;
+  min-width: 0;
+}
+
+.albora-header__search-form {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.albora-header__search-input {
+  width: 100%;
+  min-width: 0;
+  height: 51px;
+  padding: 16px 80px 16px 24px;
+  border: 1px solid var(--albora-border);
+  border-radius: 35px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--albora-primary);
+  box-shadow: none;
+  outline: none;
+  transition: border-color 0.15s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.albora-header__search-input::placeholder {
+  color: var(--albora-placeholder);
+  opacity: 1;
+}
+
+.albora-header__search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.albora-header__search-input:focus {
+  border-color: var(--albora-secondary);
+}
+
+.albora-header__search-btn,
+.albora-header__search-reset {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--albora-secondary);
+}
+
+.albora-header__search-btn {
+  right: 24px;
+}
+
+.albora-header__search-reset {
+  right: 54px;
+  color: var(--albora-placeholder);
+}
+
+.albora-header__search-btn svg,
+.albora-header__search-reset svg {
+  width: 18px;
+  height: 18px;
+  margin: 0 auto;
+}
+
+.albora-header__search-reset.hidden {
+  display: none;
+}
+
+/* predictive-search results dropdown */
+.albora-header__search .predictive-search {
+  top: calc(100% + 6px);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--albora-border);
 }
 
 /* Icons cluster */
@@ -73,10 +157,10 @@
   gap: 10px;
 }
 
-/* ---------- Shopify default search modal, styled as an albora icon ---------- */
+/* ---------- Shopify search modal (mobile only), styled as an albora icon ---------- */
 .albora-header__icons .header__search {
   position: static;
-  display: inline-flex;
+  display: none; /* desktop uses the inline bar */
 }
 
 .albora-header__icons .header__icon--search {
@@ -259,11 +343,25 @@
     height: 40px;
   }
 
+  /* mobile: hide the inline bar, use the modal loupe icon instead */
+  .albora-header__search {
+    display: none;
+  }
+
   .albora-header__icons {
     order: 3;
     flex: 0 0 auto;
     margin-left: 0;
     gap: 4px;
+  }
+
+  .albora-header__icons .header__search {
+    display: inline-flex;
+    order: -1; /* loupe sits before the cart */
+  }
+
+  .albora-header__icons .header__icon--search {
+    color: var(--albora-secondary);
   }
 
   /* only search + cart on the top row (per mobile design) */

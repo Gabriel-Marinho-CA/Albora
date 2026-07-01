@@ -168,6 +168,58 @@
           </h1>
         {%- endif -%}
 
+        {%- comment -%} Desktop inline search — Shopify predictive search {%- endcomment -%}
+        {%- if settings.predictive_search_enabled -%}
+          <predictive-search class="albora-header__search" data-loading-text="{{ 'accessibility.loading' | t }}">
+        {%- else -%}
+          <search-form class="albora-header__search">
+        {%- endif -%}
+          <form action="{{ routes.search_url }}" method="get" role="search" class="albora-header__search-form">
+            <input
+              type="search"
+              name="q"
+              value="{{ search.terms | escape }}"
+              placeholder="O que você procura?"
+              class="albora-header__search-input"
+              aria-label="{{ 'general.search.search' | t }}"
+              {%- if settings.predictive_search_enabled -%}
+                role="combobox"
+                aria-expanded="false"
+                aria-owns="predictive-search-results"
+                aria-controls="predictive-search-results"
+                aria-haspopup="listbox"
+                aria-autocomplete="list"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+              {%- endif -%}
+              autocomplete="off"
+            >
+            <input type="hidden" name="options[prefix]" value="last">
+            <button
+              type="reset"
+              class="albora-header__search-reset{% if search.terms == blank %} hidden{% endif %}"
+              aria-label="{{ 'general.search.reset' | t }}"
+            >
+              {{ 'icon-reset.svg' | inline_asset_content }}
+            </button>
+            <button type="submit" class="albora-header__search-btn" aria-label="{{ 'general.search.search' | t }}">
+              {{ 'icon-search.svg' | inline_asset_content }}
+            </button>
+
+            {%- if settings.predictive_search_enabled -%}
+              <div class="predictive-search predictive-search--header" tabindex="-1" data-predictive-search>
+                {%- render 'loading-spinner', class: 'predictive-search__loading-state' -%}
+              </div>
+              <span class="predictive-search-status visually-hidden" role="status" aria-hidden="true"></span>
+            {%- endif -%}
+          </form>
+        {%- if settings.predictive_search_enabled -%}
+          </predictive-search>
+        {%- else -%}
+          </search-form>
+        {%- endif -%}
+
         <div class="albora-header__icons">
           {%- if shop.customer_accounts_enabled -%}
             <a
