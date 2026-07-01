@@ -1,0 +1,283 @@
+/*
+  Albora custom header styling — implements the Figma header design.
+  https://www.figma.com/design/zG2CDbVeoYsKumZnFm4yOc/Albora--Copy-?node-id=43-118
+  Loaded from sections/header.liquid. Safe to edit/override here.
+*/
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+.albora-header {
+  --albora-primary: #06262d;
+  --albora-secondary: #e74f3d;
+  --albora-border: rgba(6, 38, 45, 0.1);
+  --albora-placeholder: rgba(6, 38, 45, 0.5);
+  --albora-max-width: 1370px;
+
+  font-family: 'Montserrat', var(--font-body-family, sans-serif);
+  display: block;
+  width: 100%;
+  padding: 0;
+}
+
+.albora-header a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.albora-header svg {
+  fill: currentColor;
+  display: block;
+}
+
+/* ---------- Top bar (logo / search / icons) ---------- */
+.albora-header__top {
+  background: #fff;
+  box-shadow:
+    0 2px 2px rgba(0, 0, 0, 0.14),
+    0 3px 1px rgba(0, 0, 0, 0.12),
+    0 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.albora-header__top-inner {
+  max-width: var(--albora-max-width);
+  margin: 0 auto;
+  min-height: 100px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Logo */
+.albora-header__logo {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+}
+
+.albora-header__logo img {
+  display: block;
+  width: auto;
+  height: 56px;
+  max-width: 180px;
+}
+
+/* Search */
+.albora-header__search {
+  flex: 1 1 auto;
+  max-width: 762px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.albora-header__search-input {
+  width: 100%;
+  min-width: 0;
+  height: 51px;
+  padding: 16px 47px 16px 24px;
+  border: 1px solid var(--albora-border);
+  border-radius: 35px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--albora-primary);
+  box-shadow: none;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.albora-header__search-input::placeholder {
+  color: var(--albora-placeholder);
+  opacity: 1;
+}
+
+.albora-header__search-input:focus {
+  border-color: var(--albora-secondary);
+}
+
+.albora-header__search-btn {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--albora-secondary);
+}
+
+.albora-header__search-btn svg {
+  width: 18px;
+  height: 18px;
+  margin: 0 auto;
+}
+
+/* Icons cluster */
+.albora-header__icons {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.albora-header__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 42px;
+  color: var(--albora-primary);
+  transition: background-color 0.15s ease;
+}
+
+.albora-header__icon:hover {
+  background: rgba(6, 38, 45, 0.06);
+}
+
+.albora-header__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Cart */
+.albora-header__cart {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 4px;
+}
+
+.albora-header__cart-bubble {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 42px;
+  background: var(--albora-secondary);
+  color: #fff;
+}
+
+.albora-header__cart-bubble svg {
+  width: 24px;
+  height: 24px;
+}
+
+.albora-header__cart-count {
+  position: absolute;
+  top: -3px;
+  right: -7px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--albora-primary);
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.17);
+}
+
+.albora-header__cart-total {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--albora-primary);
+  white-space: nowrap;
+}
+
+/* ---------- Navigation row ---------- */
+.albora-header__nav {
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.albora-header__nav-inner {
+  max-width: var(--albora-max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.albora-header__nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 2px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-transform: uppercase;
+  color: var(--albora-primary);
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.albora-header__nav-link:hover {
+  color: var(--albora-secondary);
+}
+
+/* Mobile menu toggle (Dawn drawer) — hidden on desktop */
+.albora-header__menu-toggle {
+  display: none;
+}
+
+/* ---------- Responsive ---------- */
+@media screen and (max-width: 989px) {
+  .albora-header__top-inner {
+    flex-wrap: wrap;
+    min-height: auto;
+    padding: 12px 16px;
+    row-gap: 12px;
+  }
+
+  .albora-header__menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    order: 1;
+  }
+
+  .albora-header__logo {
+    order: 2;
+    margin: 0 auto;
+  }
+
+  .albora-header__logo img {
+    height: 44px;
+  }
+
+  .albora-header__icons {
+    order: 3;
+    margin-left: auto;
+  }
+
+  /* keep only the cart visible on small screens to save room */
+  .albora-header__icon--account,
+  .albora-header__icon--heart {
+    display: none;
+  }
+
+  .albora-header__cart-total {
+    display: none;
+  }
+
+  .albora-header__search {
+    order: 4;
+    flex: 1 1 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .albora-header__nav {
+    display: none;
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__figma__get_design_context",
+      "mcp__figma__get_screenshot",
+      "Bash(grep:*)",
+      "Bash(grep var\\(--:*)",
+      "mcp__shopify-dev-mcp__learn_shopify_api",
+      "mcp__shopify-dev-mcp__fetch_full_docs",
+      "mcp__shopify-dev-mcp__search_docs_chunks",
+      "Bash(python3:*)",
+      "WebFetch(domain:shopify.dev)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "WebFetch(domain:www.figma.com)",
+      "Bash(ls -1 /Users/matheusmoura/Documents/Turbo/turbo-starter/sections/tp-e-*.liquid)",
+      "Bash(xargs -I {} basename {})",
+      "Bash(ls -1 /Users/matheusmoura/Documents/Turbo/turbo-starter/assets/tp-*.css)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "mcp__plugin_playwright_playwright__browser_evaluate",
+      "mcp__plugin_playwright_playwright__browser_resize",
+      "Bash(cp /Users/matheusmoura/Documents/Turbo/noway/sections/tp-slider-bump.liquid /Users/matheusmoura/Documents/Turbo/turbo-starter/sections/tp-slider-bump.liquid)",
+      "Bash(cp /Users/matheusmoura/Documents/Turbo/noway/assets/tp-slider-bump.css /Users/matheusmoura/Documents/Turbo/turbo-starter/assets/tp-slider-bump.css)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__evaluate_script",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__emulate",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot",
+      "Bash(git merge *)",
+      "Bash(git push *)",
+      "mcp__plugin_figma_figma__get_design_context",
+      "PowerShell(Invoke-WebRequest -Uri \"https://www.figma.com/api/mcp/asset/208e6388-829d-4b49-bfdb-7df08ab51c06\" -OutFile \"D:\\\\Result\\\\albora\\\\assets\\\\albora-logo.svg\"; \"svg \" + \\(Get-Item \"D:\\\\Result\\\\albora\\\\assets\\\\albora-logo.svg\"\\).Length + \" bytes\")",
+      "mcp__plugin_figma_figma__download_assets",
+      "PowerShell(Invoke-WebRequest -Uri \"https://www.figma.com/api/mcp/asset/6a781a4a-59f2-4ce5-9a8b-8cd3e40b6946\" -OutFile \"D:\\\\Result\\\\albora\\\\assets\\\\albora-logo.png\"; \"png \" + \\(Get-Item \"D:\\\\Result\\\\albora\\\\assets\\\\albora-logo.png\"\\).Length + \" bytes\")"
+    ]
+  }
+}
