@@ -33,7 +33,9 @@
       "mcp__plugin_figma_figma__get_design_context",
       "PowerShell(Invoke-WebRequest -Uri \"https://www.figma.com/api/mcp/asset/208e6388-829d-4b49-bfdb-7df08ab51c06\" -OutFile \"D:\\\\Result\\\\albora\\\\assets\\\\albora-logo.svg\"; \"svg \" + \\(Get-Item \"D:\\\\Result\\\\albora\\\\assets\\\\albora-logo.svg\"\\).Length + \" bytes\")",
       "mcp__plugin_figma_figma__download_assets",
-      "PowerShell(Invoke-WebRequest -Uri \"https://www.figma.com/api/mcp/asset/6a781a4a-59f2-4ce5-9a8b-8cd3e40b6946\" -OutFile \"D:\\\\Result\\\\albora\\\\assets\\\\albora-logo.png\"; \"png \" + \\(Get-Item \"D:\\\\Result\\\\albora\\\\assets\\\\albora-logo.png\"\\).Length + \" bytes\")"
+      "PowerShell(Invoke-WebRequest -Uri \"https://www.figma.com/api/mcp/asset/6a781a4a-59f2-4ce5-9a8b-8cd3e40b6946\" -OutFile \"D:\\\\Result\\\\albora\\\\assets\\\\albora-logo.png\"; \"png \" + \\(Get-Item \"D:\\\\Result\\\\albora\\\\assets\\\\albora-logo.png\"\\).Length + \" bytes\")",
+      "mcp__plugin_figma_figma__get_metadata",
+      "mcp__plugin_figma_figma__get_screenshot"
     ]
   }
 }

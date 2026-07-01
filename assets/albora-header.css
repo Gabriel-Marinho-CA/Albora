@@ -226,8 +226,9 @@
   color: var(--albora-secondary);
 }
 
-/* Mobile menu toggle (Dawn drawer) — hidden on desktop */
-.albora-header__menu-toggle {
+/* Mobile-only controls — hidden on desktop */
+.albora-header__menu-toggle,
+.albora-header__search-toggle {
   display: none;
 }
 
@@ -235,7 +236,7 @@
 @media screen and (max-width: 989px) {
   .albora-header__top-inner {
     flex-wrap: wrap;
-    min-height: auto;
+    min-height: 100px;
     padding: 12px 16px;
     row-gap: 12px;
   }
@@ -258,9 +259,10 @@
   .albora-header__icons {
     order: 3;
     margin-left: auto;
+    gap: 6px;
   }
 
-  /* keep only the cart visible on small screens to save room */
+  /* only search + cart on the top row (per mobile design) */
   .albora-header__icon--account,
   .albora-header__icon--heart {
     display: none;
@@ -270,11 +272,22 @@
     display: none;
   }
 
+  /* search collapses into a loupe icon */
+  .albora-header__search-toggle {
+    display: inline-flex;
+    color: var(--albora-secondary);
+  }
+
   .albora-header__search {
     order: 4;
+    display: none;
     flex: 1 1 100%;
     max-width: 100%;
     margin: 0;
+  }
+
+  .albora-header--search-open .albora-header__search {
+    display: flex;
   }
 
   .albora-header__nav {
