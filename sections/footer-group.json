@@ -36,16 +36,31 @@
             "whatsapp_link": "",
             "email": "contato@albora.com.br"
           }
+        },
+        "social_instagram": {
+          "type": "social",
+          "settings": {
+            "icon": "instagram",
+            "link": ""
+          }
+        },
+        "social_facebook": {
+          "type": "social",
+          "settings": {
+            "icon": "facebook",
+            "link": ""
+          }
         }
       },
       "block_order": [
         "column_h7mrpd",
         "column_UR4pyi",
-        "contact_FEcz4L"
+        "contact_FEcz4L",
+        "social_instagram",
+        "social_facebook"
       ],
       "name": "Res Footer",
       "settings": {
-        "container_width": 1440,
         "background": "#06262D",
         "divider_color": "#FFFFFF",
         "logo": "shopify://shop_images/Text.png",
@@ -82,7 +97,7 @@
         "column_link_font_size_mobile": 13,
         "column_link_font_weight": "400",
         "column_link_color": "#FFFFFF",
-        "payment_enable": false,
+        "payment_enable": true,
         "payment_title": "Formas de pagamento",
         "payment_title_font_size_desktop": 14,
         "payment_title_font_size_mobile": 14,
