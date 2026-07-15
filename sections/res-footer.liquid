@@ -2,14 +2,19 @@
   Res — Footer.
   Faixa de newsletter + colunas de links + formas de pagamento + barra inferior.
 
+  Containers usam a classe `page-width` do tema (largura vem de Configurações
+  do tema → Layout) e o reveal `scroll-trigger animate--slide-in` quando
+  `settings.animations_reveal_on_scroll` está ligado.
+
   As colunas são blocos `column`: o lojista edita o título e escolhe um menu
   (linked_list) de onde vêm os links. O bloco `contact` monta a coluna
-  "Fale conosco" (WhatsApp/e-mail).
+  "Fale conosco" (WhatsApp/e-mail). O bloco `social` é um ícone de rede social
+  com link próprio, renderizado na faixa da newsletter.
 
   Newsletter: form 'customer' com `contact[tags] = newsletter`,
   mesmo contrato de `sections/newsletter.liquid`.
-  Ícones de pagamento: `shop.enabled_payment_types` (configurados no admin).
-  Redes sociais: snippet `social-icons` (links em Configurações do tema).
+  Formas de pagamento: imagens do lojista (desktop/mobile); sem imagem, cai
+  para `shop.enabled_payment_types`.
 
   Ver CLAUDE.md → "Regra de personalização de textos e botões".
 {%- endcomment -%}
@@ -19,6 +24,11 @@
 {%- liquid
   assign s = section.settings
   assign uid = section.id
+
+  assign reveal = ''
+  if settings.animations_reveal_on_scroll
+    assign reveal = ' scroll-trigger animate--slide-in'
+  endif
 -%}
 
 <style>
@@ -58,12 +68,19 @@
     --footer-bottom-size: {{ s.bottom_font_size_desktop }}px;
     --footer-bottom-weight: {{ s.bottom_font_weight }};
 
-    --footer-container: {{ s.container_width }}px;
+    --footer-logo-width: {{ s.logo_width_desktop }}px;
+
     --footer-social-color: {{ s.social_color }};
+    --footer-social-size: {{ s.social_icon_size_desktop }}px;
+
+    --footer-payment-width: {{ s.payment_image_width_desktop }}px;
   }
 
   @media screen and (max-width: 749px) {
     #Res-Footer-{{ uid }} {
+      --footer-logo-width: {{ s.logo_width_mobile }}px;
+      --footer-social-size: {{ s.social_icon_size_mobile }}px;
+      --footer-payment-width: {{ s.payment_image_width_mobile }}px;
       --footer-news-title-size: {{ s.newsletter_title_font_size_mobile }}px;
       --footer-news-content-size: {{ s.newsletter_content_font_size_mobile }}px;
       --footer-input-size: {{ s.input_font_size_mobile }}px;
@@ -81,7 +98,7 @@
 <div id="Res-Footer-{{ uid }}" class="res-footer">
   {%- if s.newsletter_enable -%}
     <div class="res-footer__newsletter">
-      <div class="res-footer__inner res-footer__newsletter-inner">
+      <div class="page-width res-footer__newsletter-inner{{ reveal }}">
         <div class="res-footer__newsletter-main">
           {%- if s.newsletter_content != blank or s.newsletter_title != blank -%}
             <div class="res-footer__newsletter-text">
@@ -147,29 +164,72 @@
         </div>
 
         {%- if s.show_social -%}
-          {%- render 'social-icons', class: 'res-footer__social' -%}
+          {%- assign social_blocks = section.blocks | where: 'type', 'social' -%}
+          {%- if social_blocks.size > 0 -%}
+            <ul class="res-footer__social list-unstyled" role="list">
+              {%- for block in social_blocks -%}
+                {%- assign b = block.settings -%}
+                <li class="res-footer__social-item" {{ block.shopify_attributes }}>
+                  <a
+                    href="{{ b.link | default: '#' }}"
+                    class="res-footer__social-link"
+                    {% if b.link != blank %}
+                      target="_blank"
+                      rel="noopener"
+                    {% endif %}
+                  >
+                    <span class="res-footer__social-icon svg-wrapper">
+                      {%- if b.custom_icon != blank -%}
+                        {{
+                          b.custom_icon
+                          | image_url: width: 96
+                          | image_tag: loading: 'lazy', alt: b.custom_icon.alt | default: b.icon
+                        }}
+                      {%- else -%}
+                        {%- assign icon_file = 'icon-' | append: b.icon | append: '.svg' -%}
+                        {{- icon_file | inline_asset_content -}}
+                      {%- endif -%}
+                    </span>
+                    <span class="visually-hidden">{{ b.icon | capitalize }}</span>
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
         {%- endif -%}
       </div>
     </div>
 
-    <div class="res-footer__divider" role="presentation"></div>
+    <div class="page-width">
+      <div class="res-footer__divider" role="presentation"></div>
+    </div>
   {%- endif -%}
 
   <footer class="res-footer__main">
-    <div class="res-footer__inner">
-      <div class="res-footer__columns">
+    <div class="page-width">
+      <div class="res-footer__columns{{ reveal }}">
         <div class="res-footer__brand">
           {%- if s.logo != blank -%}
             <a href="{{ routes.root_url }}" class="res-footer__logo-link">
-              {%- assign logo_alt = s.logo.alt | default: shop.name -%}
+              {%- liquid
+                assign logo_alt = s.logo.alt | default: shop.name
+                assign logo_width_2x = s.logo_width_desktop | times: 2
+                capture logo_sizes
+                  echo '(min-width: 750px) '
+                  echo s.logo_width_desktop
+                  echo 'px, '
+                  echo s.logo_width_mobile
+                  echo 'px'
+                endcapture
+              -%}
               {{
                 s.logo
-                | image_url: width: 500
+                | image_url: width: logo_width_2x
                 | image_tag:
                   loading: 'lazy',
                   class: 'res-footer__logo',
                   widths: '150, 250, 350, 500',
-                  sizes: '200px',
+                  sizes: logo_sizes,
                   alt: logo_alt
               }}
             </a>
@@ -234,27 +294,68 @@
         {%- endfor -%}
       </div>
 
-      {%- if s.payment_enable and shop.enabled_payment_types.size > 0 -%}
-        <div class="res-footer__payment">
+      {%- liquid
+        assign has_payment_image = false
+        if s.payment_image_desktop != blank or s.payment_image_mobile != blank
+          assign has_payment_image = true
+        endif
+
+        assign show_payment = false
+        if s.payment_enable
+          if has_payment_image or shop.enabled_payment_types.size > 0
+            assign show_payment = true
+          endif
+        endif
+      -%}
+
+      {%- if show_payment -%}
+        <div class="res-footer__payment{{ reveal }}">
           {%- if s.payment_title != blank -%}
             <p class="res-footer__payment-title">{{ s.payment_title }}</p>
           {%- endif -%}
-          <ul class="res-footer__payment-list list-unstyled" role="list">
-            {%- for type in shop.enabled_payment_types -%}
-              <li class="res-footer__payment-item">
-                {{ type | payment_type_svg_tag: class: 'res-footer__payment-icon' }}
-              </li>
-            {%- endfor -%}
-          </ul>
+
+          {%- if has_payment_image -%}
+            {%- assign img_desktop = s.payment_image_desktop | default: s.payment_image_mobile -%}
+            {%- assign img_mobile = s.payment_image_mobile | default: s.payment_image_desktop -%}
+
+            {{
+              img_desktop
+              | image_url: width: 1200
+              | image_tag:
+                loading: 'lazy',
+                class: 'res-footer__payment-image res-footer__payment-image--desktop',
+                widths: '300, 600, 900, 1200',
+                alt: img_desktop.alt | default: s.payment_title
+            }}
+            {{
+              img_mobile
+              | image_url: width: 900
+              | image_tag:
+                loading: 'lazy',
+                class: 'res-footer__payment-image res-footer__payment-image--mobile',
+                widths: '300, 600, 900',
+                alt: img_mobile.alt | default: s.payment_title
+            }}
+          {%- else -%}
+            <ul class="res-footer__payment-list list-unstyled" role="list">
+              {%- for type in shop.enabled_payment_types -%}
+                <li class="res-footer__payment-item">
+                  {{ type | payment_type_svg_tag: class: 'res-footer__payment-icon' }}
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
         </div>
       {%- endif -%}
     </div>
   </footer>
 
-  <div class="res-footer__divider" role="presentation"></div>
+  <div class="page-width">
+    <div class="res-footer__divider" role="presentation"></div>
+  </div>
 
   <div class="res-footer__bottom">
-    <div class="res-footer__inner res-footer__bottom-inner">
+    <div class="page-width res-footer__bottom-inner">
       {%- if s.copyright != blank -%}
         <p class="res-footer__copyright">{{ s.copyright }}</p>
       {%- else -%}
@@ -301,18 +402,32 @@
   "settings": [
     { "type": "header", "content": "Layout" },
     {
-      "type": "range",
-      "id": "container_width",
-      "min": 1000,
-      "max": 1800,
-      "step": 10,
-      "unit": "px",
-      "label": "Largura máxima do container",
-      "default": 1370
+      "type": "paragraph",
+      "content": "A largura do conteúdo segue a largura da página do tema (Configurações do tema → Layout)."
     },
     { "type": "color", "id": "background", "label": "Fundo", "default": "#06262D" },
     { "type": "color", "id": "divider_color", "label": "Cor das divisórias", "default": "#FFFFFF" },
     { "type": "image_picker", "id": "logo", "label": "Logo" },
+    {
+      "type": "range",
+      "id": "logo_width_desktop",
+      "min": 60,
+      "max": 400,
+      "step": 5,
+      "unit": "px",
+      "label": "Largura da logo (desktop)",
+      "default": 200
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "min": 60,
+      "max": 320,
+      "step": 5,
+      "unit": "px",
+      "label": "Largura da logo (mobile)",
+      "default": 160
+    },
 
     { "type": "header", "content": "Newsletter" },
     { "type": "checkbox", "id": "newsletter_enable", "label": "Mostrar newsletter", "default": true },
@@ -333,9 +448,29 @@
     { "type": "checkbox", "id": "show_social", "label": "Mostrar redes sociais", "default": true },
     {
       "type": "paragraph",
-      "content": "Os links das redes sociais são definidos em Configurações do tema → Redes sociais."
+      "content": "Adicione um bloco \"Rede social\" para cada ícone, com o link correspondente."
     },
     { "type": "color", "id": "social_color", "label": "Cor dos ícones sociais", "default": "#FFFFFF" },
+    {
+      "type": "range",
+      "id": "social_icon_size_desktop",
+      "min": 16,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho do ícone (desktop)",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "social_icon_size_mobile",
+      "min": 14,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho do ícone (mobile)",
+      "default": 24
+    },
 
     { "type": "header", "content": "Newsletter — título (linha 2)" },
     {
@@ -560,7 +695,29 @@
     { "type": "checkbox", "id": "payment_enable", "label": "Mostrar formas de pagamento", "default": true },
     {
       "type": "paragraph",
-      "content": "Os ícones vêm dos meios de pagamento ativos da loja (Admin → Configurações → Pagamentos)."
+      "content": "Envie a imagem com as bandeiras. Sem imagem, são usados os meios de pagamento ativos da loja (Admin → Configurações → Pagamentos)."
+    },
+    { "type": "image_picker", "id": "payment_image_desktop", "label": "Imagem (desktop)" },
+    { "type": "image_picker", "id": "payment_image_mobile", "label": "Imagem (mobile)" },
+    {
+      "type": "range",
+      "id": "payment_image_width_desktop",
+      "min": 100,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Largura da imagem (desktop)",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "payment_image_width_mobile",
+      "min": 100,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Largura da imagem (mobile)",
+      "default": 300
     },
     { "type": "text", "id": "payment_title", "label": "Título", "default": "Formas de pagamento" },
     {
@@ -665,6 +822,37 @@
         },
         { "type": "text", "id": "email", "label": "E-mail", "default": "contato@albora.com.br" }
       ]
+    },
+    {
+      "type": "social",
+      "name": "Rede social",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Ícone",
+          "options": [
+            { "value": "instagram", "label": "Instagram" },
+            { "value": "facebook", "label": "Facebook" },
+            { "value": "tiktok", "label": "TikTok" },
+            { "value": "youtube", "label": "YouTube" },
+            { "value": "twitter", "label": "X (Twitter)" },
+            { "value": "pinterest", "label": "Pinterest" },
+            { "value": "whatsapp", "label": "WhatsApp" },
+            { "value": "snapchat", "label": "Snapchat" },
+            { "value": "tumblr", "label": "Tumblr" },
+            { "value": "vimeo", "label": "Vimeo" }
+          ],
+          "default": "instagram"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Ícone personalizado",
+          "info": "Opcional. Se enviado, substitui o ícone acima."
+        },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
     }
   ],
   "presets": [
@@ -673,7 +861,9 @@
       "blocks": [
         { "type": "column", "settings": { "title": "Categorias" } },
         { "type": "column", "settings": { "title": "Institucional" } },
-        { "type": "contact" }
+        { "type": "contact" },
+        { "type": "social", "settings": { "icon": "instagram" } },
+        { "type": "social", "settings": { "icon": "facebook" } }
       ]
     }
   ]
