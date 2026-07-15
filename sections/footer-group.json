@@ -18,14 +18,14 @@
           "type": "column",
           "settings": {
             "title": "Categorias",
-            "menu": ""
+            "menu": "categorias"
           }
         },
         "column_UR4pyi": {
           "type": "column",
           "settings": {
             "title": "Institucional",
-            "menu": ""
+            "menu": "institucional"
           }
         },
         "contact_FEcz4L": {
@@ -45,9 +45,10 @@
       ],
       "name": "Res Footer",
       "settings": {
-        "container_width": 1370,
+        "container_width": 1440,
         "background": "#06262D",
         "divider_color": "#FFFFFF",
+        "logo": "shopify://shop_images/Text.png",
         "newsletter_enable": true,
         "newsletter_content": "Fique por dentro das nossas",
         "newsletter_title": "Novidades e promoções",
@@ -81,15 +82,16 @@
         "column_link_font_size_mobile": 13,
         "column_link_font_weight": "400",
         "column_link_color": "#FFFFFF",
-        "payment_enable": true,
+        "payment_enable": false,
         "payment_title": "Formas de pagamento",
         "payment_title_font_size_desktop": 14,
         "payment_title_font_size_mobile": 14,
         "payment_title_font_weight": "400",
         "payment_title_color": "#FFFFFF",
-        "copyright": "",
+        "copyright": "© Copyright 2026 - Todos os direitos reservados",
         "credits_label": "Tecnologia:",
-        "credits_link": "",
+        "credits_logo": "shopify://shop_images/Frame_1317_1.svg",
+        "credits_link": "#",
         "bottom_font_size_desktop": 12,
         "bottom_font_size_mobile": 11,
         "bottom_font_weight": "400",
