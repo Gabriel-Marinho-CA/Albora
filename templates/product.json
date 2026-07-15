@@ -12,64 +12,99 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "vendor": {
-          "type": "text",
-          "settings": {
-            "text": "{{ product.vendor }}",
-            "text_style": "uppercase"
-          }
-        },
         "title": {
           "type": "title",
           "settings": {}
         },
         "price": {
           "type": "price",
-          "settings": {}
+          "settings": {
+            "price_font_size_desktop": 32,
+            "price_font_size_mobile": 26,
+            "price_font_weight": "700",
+            "price_color": "#06262d",
+            "compare_font_size_desktop": 16,
+            "compare_font_size_mobile": 14,
+            "compare_font_weight": "400",
+            "compare_color": "#3a575e",
+            "show_discount_badge": false,
+            "show_terms": true,
+            "show_installments": true,
+            "installments_count": 6,
+            "pix_discount_percent": 5,
+            "terms_font_size_desktop": 11,
+            "terms_font_size_mobile": 11,
+            "terms_font_weight": "400",
+            "terms_color": "#3a575e"
+          }
         },
-        "variant_picker": {
+        "variant_picker_8cEMmy": {
           "type": "variant_picker",
           "settings": {
             "swatch_option_name": "Sabor",
-            "swatch_as_links": false
+            "swatch_as_links": false,
+            "label_font_size_desktop": 14,
+            "label_font_size_mobile": 14,
+            "label_font_weight": "700",
+            "label_color": "#06262d",
+            "value_font_size_desktop": 14,
+            "value_font_size_mobile": 14,
+            "value_font_weight": "500",
+            "value_color": "#06262d",
+            "pill_color": "#06262d",
+            "pill_active_text_color": "#ffffff"
           }
         },
-        "albora_buy_row": {
+        "albora_buy_row_e9AtLg": {
           "type": "albora_buy_row",
           "settings": {
             "button_label": "Comprar Agora",
-            "show_dynamic_checkout": false
+            "show_dynamic_checkout": false,
+            "button_font_size_desktop": 18,
+            "button_font_size_mobile": 16,
+            "button_font_weight": "500",
+            "button_color": "#ffffff",
+            "button_background": "#34c759",
+            "button_height_desktop": 55,
+            "button_height_mobile": 48
           }
         },
-        "albora_shipping": {
+        "albora_shipping_MBwgQa": {
           "type": "albora_shipping",
           "settings": {
             "title": "Frete e Prazo",
+            "title_font_size_desktop": 14,
+            "title_font_size_mobile": 14,
+            "title_font_weight": "700",
+            "title_color": "#06262d",
             "input_placeholder": "Insira o CEP",
+            "content_font_size_desktop": 14,
+            "content_font_size_mobile": 14,
+            "content_font_weight": "400",
+            "content_color": "#06262d",
             "button_label": "Calcular",
-            "help_label": "Não sei meu CEP"
-          }
-        },
-        "description": {
-          "type": "description",
-          "settings": {}
-        },
-        "share": {
-          "type": "share",
-          "settings": {
-            "share_label": "Share"
+            "button_font_size_desktop": 14,
+            "button_font_size_mobile": 14,
+            "button_font_weight": "500",
+            "button_color": "#ffffff",
+            "button_background": "#06262d",
+            "button_height_desktop": 44,
+            "button_height_mobile": 44,
+            "help_label": "Não sei meu CEP",
+            "help_link": "",
+            "help_font_size_desktop": 14,
+            "help_font_size_mobile": 14,
+            "help_font_weight": "500",
+            "help_color": "#06262d"
           }
         }
       },
       "block_order": [
-        "vendor",
         "title",
         "price",
-        "variant_picker",
-        "albora_buy_row",
-        "albora_shipping",
-        "description",
-        "share"
+        "variant_picker_8cEMmy",
+        "albora_buy_row_e9AtLg",
+        "albora_shipping_MBwgQa"
       ],
       "settings": {
         "enable_sticky_info": true,
