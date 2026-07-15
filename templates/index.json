@@ -189,12 +189,23 @@
         "padding_bottom_mobile": 24,
         "side_padding_mobile": 16
       }
+    },
+    "albora_image_link_CF8JWm": {
+      "type": "albora-image-link",
+      "name": "Albora Imagem + Link",
+      "settings": {
+        "image_desktop": "shopify://shop_images/Section.png",
+        "image_mobile": "shopify://shop_images/Section_1.png",
+        "link": "",
+        "max_width": 2000
+      }
     }
   },
   "order": [
     "featured_collection",
     "albora_nutrition_hero_GcktMf",
     "albora_featured_products_nGftWF",
-    "albora_product_banners_YPeKf3"
+    "albora_product_banners_YPeKf3",
+    "albora_image_link_CF8JWm"
   ]
 }
