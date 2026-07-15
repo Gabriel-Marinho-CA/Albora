@@ -90,6 +90,9 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+        &:not(:has(.albora-hero__title, .albora-hero__content, .albora-hero__button)) {
+      display: none;
+    }
   }
   /* Quando o slide inteiro é um link, os cliques atravessam o card;
      só o botão (e o próprio link do slide) permanecem clicáveis. */
