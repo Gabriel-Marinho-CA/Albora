@@ -135,11 +135,66 @@
         "card_price_compare_font_weight": "400",
         "card_price_compare_color": "#3A575E"
       }
+    },
+    "albora_product_banners_YPeKf3": {
+      "type": "albora-product-banners",
+      "blocks": {
+        "banner_mgBCfH": {
+          "type": "banner",
+          "settings": {
+            "image_desktop": "shopify://shop_images/Card_1.png",
+            "image_mobile": "shopify://shop_images/Card_1_1.png",
+            "link": "",
+            "image_alt": "",
+            "desktop_full_height": false
+          }
+        },
+        "banner_7tWJ9e": {
+          "type": "banner",
+          "settings": {
+            "image_desktop": "shopify://shop_images/Card_2.png",
+            "image_mobile": "shopify://shop_images/Card_2_1.png",
+            "link": "",
+            "image_alt": "",
+            "desktop_full_height": false
+          }
+        },
+        "banner_9TpU6m": {
+          "type": "banner",
+          "settings": {
+            "image_desktop": "shopify://shop_images/Card_3.png",
+            "image_mobile": "shopify://shop_images/Card_3_1.png",
+            "link": "",
+            "image_alt": "",
+            "desktop_full_height": true
+          }
+        }
+      },
+      "block_order": [
+        "banner_mgBCfH",
+        "banner_7tWJ9e",
+        "banner_9TpU6m"
+      ],
+      "name": "Albora Banners",
+      "settings": {
+        "max_width": 1370,
+        "radius": 16,
+        "card_aspect": "2.05 / 1",
+        "gap": 20,
+        "gap_mobile": 16,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "side_padding": 20,
+        "padding_top_mobile": 24,
+        "padding_bottom_mobile": 24,
+        "side_padding_mobile": 16
+      }
     }
   },
   "order": [
     "featured_collection",
     "albora_nutrition_hero_GcktMf",
-    "albora_featured_products_nGftWF"
+    "albora_featured_products_nGftWF",
+    "albora_product_banners_YPeKf3"
   ]
 }
