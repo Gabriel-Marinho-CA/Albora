@@ -1,8 +1,8 @@
 {%- comment -%}
-  Albora — Hero de nutrição.
-  Imagem em `position: relative`; container de conteúdo em `position: absolute` por cima.
-  Imagens desktop/mobile separadas. Título, conteúdo e botão totalmente personalizáveis
-  (fontsize desktop/mobile, font-weight, cor; botão também com cor de fundo e altura).
+  Albora — Hero de nutrição (carrossel Swiper).
+  Cada slide é um bloco. Imagem em `position: relative`; container de conteúdo `absolute` por cima.
+  Imagens desktop/mobile separadas. Título, conteúdo e botão totalmente personalizáveis por bloco.
+  Swiper carregado globalmente via snippet `swiper-cdn` no theme.liquid.
   Ver CLAUDE.md → "Regra de personalização de textos e botões".
 {%- endcomment -%}
 
@@ -12,73 +12,86 @@
 -%}
 
 <style>
+  {%- for block in section.blocks -%}
+    {%- assign b = block.settings -%}
+    #Slide-{{ block.id }} {
+      --hero-title-color: {{ b.title_color }};
+      --hero-content-color: {{ b.content_color }};
+      --hero-btn-color: {{ b.button_color }};
+      --hero-btn-bg: {{ b.button_background }};
+    }
+    #Slide-{{ block.id }} .albora-hero__title {
+      font-size: {{ b.title_font_size_desktop }}px;
+      font-weight: {{ b.title_font_weight }};
+    }
+    #Slide-{{ block.id }} .albora-hero__content {
+      font-size: {{ b.content_font_size_desktop }}px;
+      font-weight: {{ b.content_font_weight }};
+    }
+    #Slide-{{ block.id }} .albora-hero__button {
+      height: {{ b.button_height_desktop }}px;
+      font-size: {{ b.button_font_size_desktop }}px;
+      font-weight: {{ b.button_font_weight }};
+    }
+    #Slide-{{ block.id }} .albora-hero__container {
+      {% if b.content_position == 'right' %}right: 4%; left: auto; transform: translateY(-50%);
+      {% elsif b.content_position == 'center' %}left: 50%; right: auto; transform: translate(-50%, -50%);
+      {% else %}left: 4%; right: auto; transform: translateY(-50%);{% endif %}
+      width: min(90%, {{ b.container_width }}px);
+      padding: {{ b.container_padding }}px;
+      background: {{ b.container_background }};
+      border-radius: {{ b.container_radius }}px;
+      gap: {{ b.container_gap }}px;
+    }
+    @media screen and (max-width: 749px) {
+      #Slide-{{ block.id }} .albora-hero__title { font-size: {{ b.title_font_size_mobile }}px; }
+      #Slide-{{ block.id }} .albora-hero__content { font-size: {{ b.content_font_size_mobile }}px; }
+      #Slide-{{ block.id }} .albora-hero__button {
+        height: {{ b.button_height_mobile }}px;
+        font-size: {{ b.button_font_size_mobile }}px;
+      }
+      #Slide-{{ block.id }} .albora-hero__container {
+        width: min(92%, {{ b.container_width_mobile }}px);
+        padding: {{ b.container_padding_mobile }}px;
+      }
+    }
+  {%- endfor -%}
+
   #Albora-Hero-{{ uid }} {
-    --hero-title-color: {{ s.title_color }};
-    --hero-content-color: {{ s.content_color }};
-    --hero-btn-color: {{ s.button_color }};
-    --hero-btn-bg: {{ s.button_background }};
     position: relative;
     width: 100%;
     font-family: 'Montserrat', var(--font-body-family, sans-serif);
   }
-
+  #Albora-Hero-{{ uid }} .swiper { width: 100%; }
   #Albora-Hero-{{ uid }} .albora-hero__media {
     position: relative;
     display: block;
     width: 100%;
     line-height: 0;
   }
-
   #Albora-Hero-{{ uid }} .albora-hero__img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-
   #Albora-Hero-{{ uid }} .albora-hero__img--mobile { display: none; }
-
   #Albora-Hero-{{ uid }} .albora-hero__container {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
-    {% if s.content_position == 'right' %}right: 4%; left: auto;
-    {% elsif s.content_position == 'center' %}left: 50%; transform: translate(-50%, -50%);
-    {% else %}left: 4%; right: auto;{% endif %}
     box-sizing: border-box;
-    width: min(90%, {{ s.container_width }}px);
-    padding: {{ s.container_padding }}px;
-    background: {{ s.container_background }};
-    border-radius: {{ s.container_radius }}px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: {{ s.container_gap }}px;
   }
-
-  #Albora-Hero-{{ uid }} .albora-hero__title {
-    margin: 0;
-    color: var(--hero-title-color);
-    font-size: {{ s.title_font_size_desktop }}px;
-    font-weight: {{ s.title_font_weight }};
-    line-height: 1.05;
-  }
-
-  #Albora-Hero-{{ uid }} .albora-hero__content {
-    margin: 0;
-    color: var(--hero-content-color);
-    font-size: {{ s.content_font_size_desktop }}px;
-    font-weight: {{ s.content_font_weight }};
-    line-height: 1.4;
-  }
+  #Albora-Hero-{{ uid }} .albora-hero__title { margin: 0; color: var(--hero-title-color); line-height: 1.05; }
+  #Albora-Hero-{{ uid }} .albora-hero__content { margin: 0; color: var(--hero-content-color); line-height: 1.4; }
   #Albora-Hero-{{ uid }} .albora-hero__content p { margin: 0; }
-
   #Albora-Hero-{{ uid }} .albora-hero__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    height: {{ s.button_height_desktop }}px;
     padding: 0 32px;
     border: none;
     border-radius: 999px;
@@ -87,169 +100,270 @@
     background: var(--hero-btn-bg);
     color: var(--hero-btn-color);
     font-family: inherit;
-    font-size: {{ s.button_font_size_desktop }}px;
-    font-weight: {{ s.button_font_weight }};
     transition: opacity 0.2s ease;
   }
   #Albora-Hero-{{ uid }} .albora-hero__button:hover { opacity: 0.9; }
+  #Albora-Hero-{{ uid }} .swiper-button-next,
+  #Albora-Hero-{{ uid }} .swiper-button-prev { color: {{ s.controls_color }}; }
+  #Albora-Hero-{{ uid }} .swiper-pagination-bullet-active { background: {{ s.controls_color }}; }
 
   @media screen and (max-width: 749px) {
     #Albora-Hero-{{ uid }} .albora-hero__img--desktop { display: none; }
     #Albora-Hero-{{ uid }} .albora-hero__img--mobile { display: block; }
-
-    #Albora-Hero-{{ uid }} .albora-hero__container {
-      width: min(92%, {{ s.container_width_mobile }}px);
-      padding: {{ s.container_padding_mobile }}px;
-    }
-    #Albora-Hero-{{ uid }} .albora-hero__title { font-size: {{ s.title_font_size_mobile }}px; }
-    #Albora-Hero-{{ uid }} .albora-hero__content { font-size: {{ s.content_font_size_mobile }}px; }
-    #Albora-Hero-{{ uid }} .albora-hero__button {
-      height: {{ s.button_height_mobile }}px;
-      font-size: {{ s.button_font_size_mobile }}px;
-    }
   }
 </style>
 
 <section id="Albora-Hero-{{ uid }}" class="albora-hero">
-  <div class="albora-hero__media">
-    {%- if s.image_desktop != blank -%}
-      {{
-        s.image_desktop
-        | image_url: width: 2000
-        | image_tag:
-          loading: 'eager',
-          fetchpriority: 'high',
-          class: 'albora-hero__img albora-hero__img--desktop',
-          sizes: '100vw',
-          widths: '600, 900, 1200, 1600, 2000'
-      }}
-    {%- else -%}
-      <div class="albora-hero__img albora-hero__img--desktop" style="background:#e5e5e5;aspect-ratio:16/7;">
-        {{ 'hero-apparel-1' | placeholder_svg_tag: 'albora-hero__img' }}
-      </div>
-    {%- endif -%}
+  <div
+    class="swiper albora-hero__swiper"
+    data-albora-hero
+    data-autoplay="{{ s.autoplay }}"
+    data-autoplay-delay="{{ s.autoplay_delay | times: 1000 }}"
+    data-navigation="{{ s.show_navigation }}"
+    data-pagination="{{ s.show_pagination }}"
+    data-loop="{% if section.blocks.size > 1 %}true{% else %}false{% endif %}"
+  >
+    <div class="swiper-wrapper">
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <div class="swiper-slide" id="Slide-{{ block.id }}" {{ block.shopify_attributes }}>
+          <div class="albora-hero__media">
+            {%- if b.image_desktop != blank -%}
+              {{
+                b.image_desktop
+                | image_url: width: 2000
+                | image_tag:
+                  loading: 'lazy',
+                  class: 'albora-hero__img albora-hero__img--desktop',
+                  sizes: '100vw',
+                  widths: '600, 900, 1200, 1600, 2000'
+              }}
+            {%- else -%}
+              <div class="albora-hero__img albora-hero__img--desktop" style="background:#e5e5e5;aspect-ratio:16/7;">
+                {{ 'hero-apparel-1' | placeholder_svg_tag: 'albora-hero__img' }}
+              </div>
+            {%- endif -%}
 
-    {%- if s.image_mobile != blank -%}
-      {{
-        s.image_mobile
-        | image_url: width: 1200
-        | image_tag:
-          loading: 'eager',
-          fetchpriority: 'high',
-          class: 'albora-hero__img albora-hero__img--mobile',
-          sizes: '100vw',
-          widths: '400, 600, 800, 1000, 1200'
-      }}
-    {%- endif -%}
+            {%- if b.image_mobile != blank -%}
+              {{
+                b.image_mobile
+                | image_url: width: 1200
+                | image_tag:
+                  loading: 'lazy',
+                  class: 'albora-hero__img albora-hero__img--mobile',
+                  sizes: '100vw',
+                  widths: '400, 600, 800, 1000, 1200'
+              }}
+            {%- endif -%}
 
-    <div class="albora-hero__container">
-      {%- if s.title != blank -%}
-        <h2 class="albora-hero__title">{{ s.title }}</h2>
-      {%- endif -%}
-
-      {%- if s.content != blank -%}
-        <div class="albora-hero__content">{{ s.content }}</div>
-      {%- endif -%}
-
-      {%- if s.button_label != blank -%}
-        <a
-          href="{{ s.button_link | default: '#' }}"
-          class="albora-hero__button"
-          {% if s.button_link == blank %}role="link" aria-disabled="true"{% endif %}
-        >
-          {{ s.button_label }}
-        </a>
-      {%- endif -%}
+            <div class="albora-hero__container">
+              {%- if b.title != blank -%}
+                <h2 class="albora-hero__title">{{ b.title }}</h2>
+              {%- endif -%}
+              {%- if b.content != blank -%}
+                <div class="albora-hero__content">{{ b.content }}</div>
+              {%- endif -%}
+              {%- if b.button_label != blank -%}
+                <a
+                  href="{{ b.button_link | default: '#' }}"
+                  class="albora-hero__button"
+                  {% if b.button_link == blank %}role="link" aria-disabled="true"{% endif %}
+                >
+                  {{ b.button_label }}
+                </a>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
     </div>
+
+    {%- if s.show_pagination -%}
+      <div class="swiper-pagination"></div>
+    {%- endif -%}
+    {%- if s.show_navigation -%}
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    {%- endif -%}
   </div>
 </section>
+
+<script>
+  (function () {
+    function initHero(el) {
+      if (!el || el.dataset.inited === 'true') return true;
+      if (typeof Swiper === 'undefined') return false;
+      el.dataset.inited = 'true';
+
+      var config = {
+        loop: el.dataset.loop === 'true',
+        slidesPerView: 1,
+      };
+
+      if (el.dataset.autoplay === 'true') {
+        config.autoplay = {
+          delay: parseInt(el.dataset.autoplayDelay, 10) || 5000,
+          disableOnInteraction: false,
+        };
+      }
+      if (el.dataset.navigation === 'true') {
+        config.navigation = {
+          nextEl: el.querySelector('.swiper-button-next'),
+          prevEl: el.querySelector('.swiper-button-prev'),
+        };
+      }
+      if (el.dataset.pagination === 'true') {
+        config.pagination = {
+          el: el.querySelector('.swiper-pagination'),
+          clickable: true,
+        };
+      }
+
+      new Swiper(el, config);
+      return true;
+    }
+
+    function initAll() {
+      document.querySelectorAll('[data-albora-hero]').forEach(initHero);
+    }
+
+    if (typeof Swiper === 'undefined') {
+      // Swiper é carregado com `defer`; espera o load.
+      window.addEventListener('load', initAll);
+    } else {
+      initAll();
+    }
+
+    // Reinicializa no editor de temas ao adicionar/mover slides.
+    document.addEventListener('shopify:section:load', function (e) {
+      e.target.querySelectorAll('[data-albora-hero]').forEach(function (el) {
+        el.dataset.inited = 'false';
+        initHero(el);
+      });
+    });
+  })();
+</script>
 
 {% schema %}
 {
   "name": "Albora Hero",
   "tag": "section",
   "class": "albora-hero-section",
+  "max_blocks": 10,
   "settings": [
-    { "type": "header", "content": "Imagens" },
-    { "type": "image_picker", "id": "image_desktop", "label": "Imagem desktop" },
-    { "type": "image_picker", "id": "image_mobile", "label": "Imagem mobile" },
-
-    { "type": "header", "content": "Conteúdo" },
-    { "type": "text", "id": "title", "label": "Título", "default": "NUTRIÇÃO À PRIMEIRA LUZ DO DIA" },
-    { "type": "richtext", "id": "content", "label": "Texto", "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>" },
-    { "type": "text", "id": "button_label", "label": "Texto do botão", "default": "Saiba mais" },
-    { "type": "url", "id": "button_link", "label": "Link do botão" },
-
-    { "type": "header", "content": "Container" },
+    { "type": "header", "content": "Carrossel" },
+    { "type": "checkbox", "id": "autoplay", "label": "Passar slides automaticamente", "default": false },
     {
-      "type": "select",
-      "id": "content_position",
-      "label": "Posição do container",
-      "options": [
-        { "value": "left", "label": "Esquerda" },
-        { "value": "center", "label": "Centro" },
-        { "value": "right", "label": "Direita" }
-      ],
-      "default": "left"
+      "type": "range",
+      "id": "autoplay_delay",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Tempo por slide",
+      "default": 5,
+      "visible_if": "{{ section.settings.autoplay }}"
     },
-    { "type": "color", "id": "container_background", "label": "Fundo do container", "default": "#FFFFFFF2" },
-    { "type": "range", "id": "container_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Raio da borda", "default": 16 },
-    { "type": "range", "id": "container_gap", "min": 0, "max": 48, "step": 2, "unit": "px", "label": "Espaço entre elementos", "default": 20 },
-    { "type": "range", "id": "container_width", "min": 240, "max": 700, "step": 10, "unit": "px", "label": "Largura (desktop)", "default": 440 },
-    { "type": "range", "id": "container_padding", "min": 0, "max": 80, "step": 2, "unit": "px", "label": "Padding (desktop)", "default": 40 },
-    { "type": "range", "id": "container_width_mobile", "min": 200, "max": 600, "step": 10, "unit": "px", "label": "Largura (mobile)", "default": 340 },
-    { "type": "range", "id": "container_padding_mobile", "min": 0, "max": 60, "step": 2, "unit": "px", "label": "Padding (mobile)", "default": 24 },
-
-    { "type": "header", "content": "Título — tipografia" },
-    { "type": "range", "id": "title_font_size_desktop", "min": 20, "max": 96, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 52 },
-    { "type": "range", "id": "title_font_size_mobile", "min": 16, "max": 72, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 38 },
+    { "type": "checkbox", "id": "show_navigation", "label": "Mostrar navegação (setas)", "default": true },
+    { "type": "checkbox", "id": "show_pagination", "label": "Mostrar paginação (bolinhas)", "default": true },
+    { "type": "color", "id": "controls_color", "label": "Cor dos controles", "default": "#06262D" }
+  ],
+  "blocks": [
     {
-      "type": "select", "id": "title_font_weight", "label": "Peso da fonte",
-      "options": [
-        { "value": "400", "label": "Regular (400)" },
-        { "value": "500", "label": "Medium (500)" },
-        { "value": "600", "label": "Semibold (600)" },
-        { "value": "700", "label": "Bold (700)" }
-      ],
-      "default": "700"
-    },
-    { "type": "color", "id": "title_color", "label": "Cor", "default": "#06262D" },
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "header", "content": "Imagens" },
+        { "type": "image_picker", "id": "image_desktop", "label": "Imagem desktop" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Imagem mobile" },
 
-    { "type": "header", "content": "Texto — tipografia" },
-    { "type": "range", "id": "content_font_size_desktop", "min": 12, "max": 40, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 20 },
-    { "type": "range", "id": "content_font_size_mobile", "min": 10, "max": 32, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 16 },
-    {
-      "type": "select", "id": "content_font_weight", "label": "Peso da fonte",
-      "options": [
-        { "value": "400", "label": "Regular (400)" },
-        { "value": "500", "label": "Medium (500)" },
-        { "value": "600", "label": "Semibold (600)" },
-        { "value": "700", "label": "Bold (700)" }
-      ],
-      "default": "400"
-    },
-    { "type": "color", "id": "content_color", "label": "Cor", "default": "#5A6B6E" },
+        { "type": "header", "content": "Conteúdo" },
+        { "type": "text", "id": "title", "label": "Título", "default": "NUTRIÇÃO À PRIMEIRA LUZ DO DIA" },
+        { "type": "richtext", "id": "content", "label": "Texto", "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>" },
+        { "type": "text", "id": "button_label", "label": "Texto do botão", "default": "Saiba mais" },
+        { "type": "url", "id": "button_link", "label": "Link do botão" },
 
-    { "type": "header", "content": "Botão (CTA)" },
-    { "type": "range", "id": "button_font_size_desktop", "min": 12, "max": 32, "step": 1, "unit": "px", "label": "Tamanho da fonte (desktop)", "default": 18 },
-    { "type": "range", "id": "button_font_size_mobile", "min": 10, "max": 28, "step": 1, "unit": "px", "label": "Tamanho da fonte (mobile)", "default": 16 },
-    {
-      "type": "select", "id": "button_font_weight", "label": "Peso da fonte",
-      "options": [
-        { "value": "400", "label": "Regular (400)" },
-        { "value": "500", "label": "Medium (500)" },
-        { "value": "600", "label": "Semibold (600)" },
-        { "value": "700", "label": "Bold (700)" }
-      ],
-      "default": "500"
-    },
-    { "type": "color", "id": "button_color", "label": "Cor do texto", "default": "#FFFFFF" },
-    { "type": "color", "id": "button_background", "label": "Cor de fundo", "default": "#06262D" },
-    { "type": "range", "id": "button_height_desktop", "min": 32, "max": 96, "step": 2, "unit": "px", "label": "Altura (desktop)", "default": 60 },
-    { "type": "range", "id": "button_height_mobile", "min": 28, "max": 80, "step": 2, "unit": "px", "label": "Altura (mobile)", "default": 52 }
+        { "type": "header", "content": "Container" },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "Posição do container",
+          "options": [
+            { "value": "left", "label": "Esquerda" },
+            { "value": "center", "label": "Centro" },
+            { "value": "right", "label": "Direita" }
+          ],
+          "default": "left"
+        },
+        { "type": "color", "id": "container_background", "label": "Fundo do container", "default": "#FFFFFFF2" },
+        { "type": "range", "id": "container_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Raio da borda", "default": 16 },
+        { "type": "range", "id": "container_gap", "min": 0, "max": 48, "step": 2, "unit": "px", "label": "Espaço entre elementos", "default": 20 },
+        { "type": "range", "id": "container_width", "min": 240, "max": 700, "step": 10, "unit": "px", "label": "Largura (desktop)", "default": 440 },
+        { "type": "range", "id": "container_padding", "min": 0, "max": 80, "step": 2, "unit": "px", "label": "Padding (desktop)", "default": 40 },
+        { "type": "range", "id": "container_width_mobile", "min": 200, "max": 600, "step": 10, "unit": "px", "label": "Largura (mobile)", "default": 340 },
+        { "type": "range", "id": "container_padding_mobile", "min": 0, "max": 60, "step": 2, "unit": "px", "label": "Padding (mobile)", "default": 24 },
+
+        { "type": "header", "content": "Título — tipografia" },
+        { "type": "range", "id": "title_font_size_desktop", "min": 20, "max": 96, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 52 },
+        { "type": "range", "id": "title_font_size_mobile", "min": 16, "max": 72, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 38 },
+        {
+          "type": "select",
+          "id": "title_font_weight",
+          "label": "Peso da fonte",
+          "options": [
+            { "value": "400", "label": "Regular (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semibold (600)" },
+            { "value": "700", "label": "Bold (700)" }
+          ],
+          "default": "700"
+        },
+        { "type": "color", "id": "title_color", "label": "Cor", "default": "#06262D" },
+
+        { "type": "header", "content": "Texto — tipografia" },
+        { "type": "range", "id": "content_font_size_desktop", "min": 12, "max": 40, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 20 },
+        { "type": "range", "id": "content_font_size_mobile", "min": 10, "max": 32, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 16 },
+        {
+          "type": "select",
+          "id": "content_font_weight",
+          "label": "Peso da fonte",
+          "options": [
+            { "value": "400", "label": "Regular (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semibold (600)" },
+            { "value": "700", "label": "Bold (700)" }
+          ],
+          "default": "400"
+        },
+        { "type": "color", "id": "content_color", "label": "Cor", "default": "#5A6B6E" },
+
+        { "type": "header", "content": "Botão (CTA)" },
+        { "type": "range", "id": "button_font_size_desktop", "min": 12, "max": 32, "step": 1, "unit": "px", "label": "Tamanho da fonte (desktop)", "default": 18 },
+        { "type": "range", "id": "button_font_size_mobile", "min": 10, "max": 28, "step": 1, "unit": "px", "label": "Tamanho da fonte (mobile)", "default": 16 },
+        {
+          "type": "select",
+          "id": "button_font_weight",
+          "label": "Peso da fonte",
+          "options": [
+            { "value": "400", "label": "Regular (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semibold (600)" },
+            { "value": "700", "label": "Bold (700)" }
+          ],
+          "default": "500"
+        },
+        { "type": "color", "id": "button_color", "label": "Cor do texto", "default": "#FFFFFF" },
+        { "type": "color", "id": "button_background", "label": "Cor de fundo", "default": "#06262D" },
+        { "type": "range", "id": "button_height_desktop", "min": 32, "max": 96, "step": 2, "unit": "px", "label": "Altura (desktop)", "default": 60 },
+        { "type": "range", "id": "button_height_mobile", "min": 28, "max": 80, "step": 2, "unit": "px", "label": "Altura (mobile)", "default": 52 }
+      ]
+    }
   ],
   "presets": [
-    { "name": "Albora Hero" }
+    {
+      "name": "Albora Hero",
+      "blocks": [{ "type": "slide" }]
+    }
   ]
 }
 {% endschema %}

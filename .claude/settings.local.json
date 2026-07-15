@@ -35,7 +35,8 @@
       "mcp__plugin_figma_figma__download_assets",
       "PowerShell(Invoke-WebRequest -Uri \"https://www.figma.com/api/mcp/asset/6a781a4a-59f2-4ce5-9a8b-8cd3e40b6946\" -OutFile \"D:\\\\Result\\\\albora\\\\assets\\\\albora-logo.png\"; \"png \" + \\(Get-Item \"D:\\\\Result\\\\albora\\\\assets\\\\albora-logo.png\"\\).Length + \" bytes\")",
       "mcp__plugin_figma_figma__get_metadata",
-      "mcp__plugin_figma_figma__get_screenshot"
+      "mcp__plugin_figma_figma__get_screenshot",
+      "mcp__plugin_figma_figma__whoami"
     ]
   }
 }
