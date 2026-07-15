@@ -95,13 +95,18 @@
       "settings": {
         "collection": "frontpage",
         "products_to_show": 4,
-        "columns_desktop": 4,
-        "columns_mobile": "1",
         "show_description": true,
         "show_wishlist": true,
         "description_words": 10,
+        "columns_desktop": 4,
+        "slides_per_view_tablet": 2.5,
+        "slides_per_view_mobile": 1.7,
+        "loop": false,
+        "show_navigation": false,
+        "show_pagination": false,
+        "controls_color": "#06262d",
         "container_width": 1440,
-        "section_background": "#FFFFFF",
+        "section_background": "#ffffff",
         "padding_top": 120,
         "padding_bottom": 60,
         "title": "Mais vendidos",
@@ -110,12 +115,12 @@
         "title_font_size_desktop": 24,
         "title_font_size_mobile": 20,
         "title_font_weight": "600",
-        "title_color": "#06262D",
+        "title_color": "#06262d",
         "button_font_size_desktop": 18,
         "button_font_size_mobile": 14,
         "button_font_weight": "500",
-        "button_color": "#FFFFFF",
-        "button_background": "#06262D",
+        "button_color": "#ffffff",
+        "button_background": "#06262d",
         "button_height_desktop": 39,
         "button_height_mobile": 34,
         "card_title_font_size_desktop": 24,
@@ -125,15 +130,15 @@
         "card_description_font_size_desktop": 16,
         "card_description_font_size_mobile": 14,
         "card_description_font_weight": "400",
-        "card_description_color": "#3A575E",
+        "card_description_color": "#3a575e",
         "card_price_font_size_desktop": 18,
         "card_price_font_size_mobile": 16,
         "card_price_font_weight": "600",
-        "card_price_color": "#06262D",
+        "card_price_color": "#06262d",
         "card_price_compare_font_size_desktop": 16,
         "card_price_compare_font_size_mobile": 14,
         "card_price_compare_font_weight": "400",
-        "card_price_compare_color": "#3A575E"
+        "card_price_compare_color": "#3a575e"
       }
     },
     "albora_product_banners_YPeKf3": {
@@ -199,6 +204,67 @@
         "link": "",
         "max_width": 2000
       }
+    },
+    "albora_instagram_Uf3c3N": {
+      "type": "albora-instagram",
+      "blocks": {
+        "image_6imtmr": {
+          "type": "image",
+          "settings": {
+            "link": "",
+            "image_alt": ""
+          }
+        },
+        "image_7wcHNG": {
+          "type": "image",
+          "settings": {
+            "link": "",
+            "image_alt": ""
+          }
+        },
+        "image_BxicFY": {
+          "type": "image",
+          "settings": {
+            "link": "",
+            "image_alt": ""
+          }
+        }
+      },
+      "block_order": [
+        "image_6imtmr",
+        "image_7wcHNG",
+        "image_BxicFY"
+      ],
+      "name": "Albora Instagram",
+      "settings": {
+        "show_icon": true,
+        "icon_size": 24,
+        "handle": "@alboranutrition",
+        "instagram_link": "",
+        "description": "<p>Conecte-se conosco! Siga-nos nas redes sociais e mantenha-se atualizado com as nossas atividades e novidades.</p>",
+        "handle_font_size_desktop": 20,
+        "handle_font_size_mobile": 18,
+        "handle_font_weight": "600",
+        "handle_color": "#06262D",
+        "desc_font_size_desktop": 15,
+        "desc_font_size_mobile": 14,
+        "desc_font_weight": "400",
+        "desc_color": "#5A6B6E",
+        "columns_desktop": 3,
+        "columns_mobile": 1,
+        "image_aspect": "1 / 1",
+        "radius": 0,
+        "gap": 20,
+        "gap_mobile": 12,
+        "grid_spacing": 48,
+        "max_width": 900,
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "side_padding": 20,
+        "padding_top_mobile": 32,
+        "padding_bottom_mobile": 32,
+        "side_padding_mobile": 16
+      }
     }
   },
   "order": [
@@ -206,6 +272,7 @@
     "albora_nutrition_hero_GcktMf",
     "albora_featured_products_nGftWF",
     "albora_product_banners_YPeKf3",
-    "albora_image_link_CF8JWm"
+    "albora_image_link_CF8JWm",
+    "albora_instagram_Uf3c3N"
   ]
 }
