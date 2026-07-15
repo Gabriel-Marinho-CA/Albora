@@ -152,7 +152,7 @@
   color: #b6f0c8;
 }
 
-/* Redes sociais (blocos `social`) */
+/* Redes sociais (settings `social_<n>_image` / `social_<n>_link`) */
 
 .res-footer__social {
   display: flex;
@@ -168,7 +168,6 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  color: var(--footer-social-color, #ffffff);
   transition: opacity 0.2s ease;
 }
 
@@ -182,12 +181,10 @@
   height: var(--footer-social-size, 24px);
 }
 
-.res-footer__social-icon svg,
 .res-footer__social-icon img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  fill: currentColor;
 }
 
 /* Corpo: marca + colunas */

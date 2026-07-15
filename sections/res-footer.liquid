@@ -8,11 +8,13 @@
 
   As colunas são blocos `column`: o lojista edita o título e escolhe um menu
   (linked_list) de onde vêm os links. O bloco `contact` monta a coluna
-  "Fale conosco" (WhatsApp/e-mail). O bloco `social` é um ícone de rede social
-  com link próprio, renderizado na faixa da newsletter.
+  "Fale conosco" (WhatsApp/e-mail).
 
   Newsletter: form 'customer' com `contact[tags] = newsletter`,
-  mesmo contrato de `sections/newsletter.liquid`.
+  mesmo contrato de `sections/newsletter.liquid`. Os ícones sociais ao lado
+  são 3 pares de settings próprios da seção (`social_<n>_image` /
+  `social_<n>_link`) — não usam o snippet `social-icons` nem os links das
+  configurações do tema.
   Formas de pagamento: imagens do lojista (desktop/mobile); sem imagem, cai
   para `shop.enabled_payment_types`.
 
@@ -70,7 +72,6 @@
 
     --footer-logo-width: {{ s.logo_width_desktop }}px;
 
-    --footer-social-color: {{ s.social_color }};
     --footer-social-size: {{ s.social_icon_size_desktop }}px;
 
     --footer-payment-width: {{ s.payment_image_width_desktop }}px;
@@ -164,36 +165,41 @@
         </div>
 
         {%- if s.show_social -%}
-          {%- assign social_blocks = section.blocks | where: 'type', 'social' -%}
-          {%- if social_blocks.size > 0 -%}
-            <ul class="res-footer__social list-unstyled" role="list">
-              {%- for block in social_blocks -%}
-                {%- assign b = block.settings -%}
-                <li class="res-footer__social-item" {{ block.shopify_attributes }}>
-                  <a
-                    href="{{ b.link | default: '#' }}"
-                    class="res-footer__social-link"
-                    {% if b.link != blank %}
-                      target="_blank"
-                      rel="noopener"
-                    {% endif %}
-                  >
-                    <span class="res-footer__social-icon svg-wrapper">
-                      {%- if b.custom_icon != blank -%}
-                        {{
-                          b.custom_icon
-                          | image_url: width: 96
-                          | image_tag: loading: 'lazy', alt: b.custom_icon.alt | default: b.icon
-                        }}
-                      {%- else -%}
-                        {%- assign icon_file = 'icon-' | append: b.icon | append: '.svg' -%}
-                        {{- icon_file | inline_asset_content -}}
-                      {%- endif -%}
+          {%- capture social_items -%}
+            {%- for i in (1..3) -%}
+              {%- liquid
+                assign image_key = 'social_' | append: i | append: '_image'
+                assign link_key = 'social_' | append: i | append: '_link'
+                assign social_image = s[image_key]
+                assign social_link = s[link_key]
+              -%}
+              {%- if social_image != blank -%}
+                <li class="res-footer__social-item">
+                  {%- if social_link != blank -%}
+                    <a href="{{ social_link }}" class="res-footer__social-link" target="_blank" rel="noopener">
+                  {%- else -%}
+                    <span class="res-footer__social-link">
+                  {%- endif -%}
+                  <span class="res-footer__social-icon">
+                    {{
+                      social_image
+                      | image_url: width: 96
+                      | image_tag: loading: 'lazy', widths: '24, 48, 96', alt: social_image.alt
+                    }}
+                  </span>
+                  {%- if social_link != blank -%}
+                    </a>
+                  {%- else -%}
                     </span>
-                    <span class="visually-hidden">{{ b.icon | capitalize }}</span>
-                  </a>
+                  {%- endif -%}
                 </li>
-              {%- endfor -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+
+          {%- if social_items != blank -%}
+            <ul class="res-footer__social list-unstyled" role="list">
+              {{ social_items }}
             </ul>
           {%- endif -%}
         {%- endif -%}
@@ -448,9 +454,14 @@
     { "type": "checkbox", "id": "show_social", "label": "Mostrar redes sociais", "default": true },
     {
       "type": "paragraph",
-      "content": "Adicione um bloco \"Rede social\" para cada ícone, com o link correspondente."
+      "content": "Envie o ícone e o link de cada rede. Ícones sem imagem não aparecem."
     },
-    { "type": "color", "id": "social_color", "label": "Cor dos ícones sociais", "default": "#FFFFFF" },
+    { "type": "image_picker", "id": "social_1_image", "label": "Rede 1 — ícone" },
+    { "type": "url", "id": "social_1_link", "label": "Rede 1 — link" },
+    { "type": "image_picker", "id": "social_2_image", "label": "Rede 2 — ícone" },
+    { "type": "url", "id": "social_2_link", "label": "Rede 2 — link" },
+    { "type": "image_picker", "id": "social_3_image", "label": "Rede 3 — ícone" },
+    { "type": "url", "id": "social_3_link", "label": "Rede 3 — link" },
     {
       "type": "range",
       "id": "social_icon_size_desktop",
@@ -822,37 +833,6 @@
         },
         { "type": "text", "id": "email", "label": "E-mail", "default": "contato@albora.com.br" }
       ]
-    },
-    {
-      "type": "social",
-      "name": "Rede social",
-      "settings": [
-        {
-          "type": "select",
-          "id": "icon",
-          "label": "Ícone",
-          "options": [
-            { "value": "instagram", "label": "Instagram" },
-            { "value": "facebook", "label": "Facebook" },
-            { "value": "tiktok", "label": "TikTok" },
-            { "value": "youtube", "label": "YouTube" },
-            { "value": "twitter", "label": "X (Twitter)" },
-            { "value": "pinterest", "label": "Pinterest" },
-            { "value": "whatsapp", "label": "WhatsApp" },
-            { "value": "snapchat", "label": "Snapchat" },
-            { "value": "tumblr", "label": "Tumblr" },
-            { "value": "vimeo", "label": "Vimeo" }
-          ],
-          "default": "instagram"
-        },
-        {
-          "type": "image_picker",
-          "id": "custom_icon",
-          "label": "Ícone personalizado",
-          "info": "Opcional. Se enviado, substitui o ícone acima."
-        },
-        { "type": "url", "id": "link", "label": "Link" }
-      ]
     }
   ],
   "presets": [
@@ -861,9 +841,7 @@
       "blocks": [
         { "type": "column", "settings": { "title": "Categorias" } },
         { "type": "column", "settings": { "title": "Institucional" } },
-        { "type": "contact" },
-        { "type": "social", "settings": { "icon": "instagram" } },
-        { "type": "social", "settings": { "icon": "facebook" } }
+        { "type": "contact" }
       ]
     }
   ]
