@@ -179,7 +179,7 @@
       "settings": {
         "max_width": 1370,
         "radius": 16,
-        "card_aspect": "2.05 / 1",
+        "card_aspect": "16 / 9",
         "gap": 20,
         "gap_mobile": 16,
         "padding_top": 40,
