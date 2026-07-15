@@ -83,6 +83,9 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+        &:not(:has(.albora-hero__title, .albora-hero__content, .albora-hero__button)) {
+      display: none;
+    }
   }
   #Albora-Hero-{{ uid }} .albora-hero__title { margin: 0; color: var(--hero-title-color); line-height: 1.05; }
   #Albora-Hero-{{ uid }} .albora-hero__content { margin: 0; color: var(--hero-content-color); line-height: 1.4; }
