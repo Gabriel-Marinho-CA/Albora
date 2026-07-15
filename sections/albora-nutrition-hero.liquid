@@ -1,0 +1,255 @@
+{%- comment -%}
+  Albora — Hero de nutrição.
+  Imagem em `position: relative`; container de conteúdo em `position: absolute` por cima.
+  Imagens desktop/mobile separadas. Título, conteúdo e botão totalmente personalizáveis
+  (fontsize desktop/mobile, font-weight, cor; botão também com cor de fundo e altura).
+  Ver CLAUDE.md → "Regra de personalização de textos e botões".
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+-%}
+
+<style>
+  #Albora-Hero-{{ uid }} {
+    --hero-title-color: {{ s.title_color }};
+    --hero-content-color: {{ s.content_color }};
+    --hero-btn-color: {{ s.button_color }};
+    --hero-btn-bg: {{ s.button_background }};
+    position: relative;
+    width: 100%;
+    font-family: 'Montserrat', var(--font-body-family, sans-serif);
+  }
+
+  #Albora-Hero-{{ uid }} .albora-hero__media {
+    position: relative;
+    display: block;
+    width: 100%;
+    line-height: 0;
+  }
+
+  #Albora-Hero-{{ uid }} .albora-hero__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #Albora-Hero-{{ uid }} .albora-hero__img--mobile { display: none; }
+
+  #Albora-Hero-{{ uid }} .albora-hero__container {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    {% if s.content_position == 'right' %}right: 4%; left: auto;
+    {% elsif s.content_position == 'center' %}left: 50%; transform: translate(-50%, -50%);
+    {% else %}left: 4%; right: auto;{% endif %}
+    box-sizing: border-box;
+    width: min(90%, {{ s.container_width }}px);
+    padding: {{ s.container_padding }}px;
+    background: {{ s.container_background }};
+    border-radius: {{ s.container_radius }}px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: {{ s.container_gap }}px;
+  }
+
+  #Albora-Hero-{{ uid }} .albora-hero__title {
+    margin: 0;
+    color: var(--hero-title-color);
+    font-size: {{ s.title_font_size_desktop }}px;
+    font-weight: {{ s.title_font_weight }};
+    line-height: 1.05;
+  }
+
+  #Albora-Hero-{{ uid }} .albora-hero__content {
+    margin: 0;
+    color: var(--hero-content-color);
+    font-size: {{ s.content_font_size_desktop }}px;
+    font-weight: {{ s.content_font_weight }};
+    line-height: 1.4;
+  }
+  #Albora-Hero-{{ uid }} .albora-hero__content p { margin: 0; }
+
+  #Albora-Hero-{{ uid }} .albora-hero__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: {{ s.button_height_desktop }}px;
+    padding: 0 32px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    text-decoration: none;
+    background: var(--hero-btn-bg);
+    color: var(--hero-btn-color);
+    font-family: inherit;
+    font-size: {{ s.button_font_size_desktop }}px;
+    font-weight: {{ s.button_font_weight }};
+    transition: opacity 0.2s ease;
+  }
+  #Albora-Hero-{{ uid }} .albora-hero__button:hover { opacity: 0.9; }
+
+  @media screen and (max-width: 749px) {
+    #Albora-Hero-{{ uid }} .albora-hero__img--desktop { display: none; }
+    #Albora-Hero-{{ uid }} .albora-hero__img--mobile { display: block; }
+
+    #Albora-Hero-{{ uid }} .albora-hero__container {
+      width: min(92%, {{ s.container_width_mobile }}px);
+      padding: {{ s.container_padding_mobile }}px;
+    }
+    #Albora-Hero-{{ uid }} .albora-hero__title { font-size: {{ s.title_font_size_mobile }}px; }
+    #Albora-Hero-{{ uid }} .albora-hero__content { font-size: {{ s.content_font_size_mobile }}px; }
+    #Albora-Hero-{{ uid }} .albora-hero__button {
+      height: {{ s.button_height_mobile }}px;
+      font-size: {{ s.button_font_size_mobile }}px;
+    }
+  }
+</style>
+
+<section id="Albora-Hero-{{ uid }}" class="albora-hero">
+  <div class="albora-hero__media">
+    {%- if s.image_desktop != blank -%}
+      {{
+        s.image_desktop
+        | image_url: width: 2000
+        | image_tag:
+          loading: 'eager',
+          fetchpriority: 'high',
+          class: 'albora-hero__img albora-hero__img--desktop',
+          sizes: '100vw',
+          widths: '600, 900, 1200, 1600, 2000'
+      }}
+    {%- else -%}
+      <div class="albora-hero__img albora-hero__img--desktop" style="background:#e5e5e5;aspect-ratio:16/7;">
+        {{ 'hero-apparel-1' | placeholder_svg_tag: 'albora-hero__img' }}
+      </div>
+    {%- endif -%}
+
+    {%- if s.image_mobile != blank -%}
+      {{
+        s.image_mobile
+        | image_url: width: 1200
+        | image_tag:
+          loading: 'eager',
+          fetchpriority: 'high',
+          class: 'albora-hero__img albora-hero__img--mobile',
+          sizes: '100vw',
+          widths: '400, 600, 800, 1000, 1200'
+      }}
+    {%- endif -%}
+
+    <div class="albora-hero__container">
+      {%- if s.title != blank -%}
+        <h2 class="albora-hero__title">{{ s.title }}</h2>
+      {%- endif -%}
+
+      {%- if s.content != blank -%}
+        <div class="albora-hero__content">{{ s.content }}</div>
+      {%- endif -%}
+
+      {%- if s.button_label != blank -%}
+        <a
+          href="{{ s.button_link | default: '#' }}"
+          class="albora-hero__button"
+          {% if s.button_link == blank %}role="link" aria-disabled="true"{% endif %}
+        >
+          {{ s.button_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Albora Hero",
+  "tag": "section",
+  "class": "albora-hero-section",
+  "settings": [
+    { "type": "header", "content": "Imagens" },
+    { "type": "image_picker", "id": "image_desktop", "label": "Imagem desktop" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Imagem mobile" },
+
+    { "type": "header", "content": "Conteúdo" },
+    { "type": "text", "id": "title", "label": "Título", "default": "NUTRIÇÃO À PRIMEIRA LUZ DO DIA" },
+    { "type": "richtext", "id": "content", "label": "Texto", "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>" },
+    { "type": "text", "id": "button_label", "label": "Texto do botão", "default": "Saiba mais" },
+    { "type": "url", "id": "button_link", "label": "Link do botão" },
+
+    { "type": "header", "content": "Container" },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Posição do container",
+      "options": [
+        { "value": "left", "label": "Esquerda" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Direita" }
+      ],
+      "default": "left"
+    },
+    { "type": "color", "id": "container_background", "label": "Fundo do container", "default": "#FFFFFFF2" },
+    { "type": "range", "id": "container_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Raio da borda", "default": 16 },
+    { "type": "range", "id": "container_gap", "min": 0, "max": 48, "step": 2, "unit": "px", "label": "Espaço entre elementos", "default": 20 },
+    { "type": "range", "id": "container_width", "min": 240, "max": 700, "step": 10, "unit": "px", "label": "Largura (desktop)", "default": 440 },
+    { "type": "range", "id": "container_padding", "min": 0, "max": 80, "step": 2, "unit": "px", "label": "Padding (desktop)", "default": 40 },
+    { "type": "range", "id": "container_width_mobile", "min": 200, "max": 600, "step": 10, "unit": "px", "label": "Largura (mobile)", "default": 340 },
+    { "type": "range", "id": "container_padding_mobile", "min": 0, "max": 60, "step": 2, "unit": "px", "label": "Padding (mobile)", "default": 24 },
+
+    { "type": "header", "content": "Título — tipografia" },
+    { "type": "range", "id": "title_font_size_desktop", "min": 20, "max": 96, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 52 },
+    { "type": "range", "id": "title_font_size_mobile", "min": 16, "max": 72, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 38 },
+    {
+      "type": "select", "id": "title_font_weight", "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "700"
+    },
+    { "type": "color", "id": "title_color", "label": "Cor", "default": "#06262D" },
+
+    { "type": "header", "content": "Texto — tipografia" },
+    { "type": "range", "id": "content_font_size_desktop", "min": 12, "max": 40, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 20 },
+    { "type": "range", "id": "content_font_size_mobile", "min": 10, "max": 32, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 16 },
+    {
+      "type": "select", "id": "content_font_weight", "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "content_color", "label": "Cor", "default": "#5A6B6E" },
+
+    { "type": "header", "content": "Botão (CTA)" },
+    { "type": "range", "id": "button_font_size_desktop", "min": 12, "max": 32, "step": 1, "unit": "px", "label": "Tamanho da fonte (desktop)", "default": 18 },
+    { "type": "range", "id": "button_font_size_mobile", "min": 10, "max": 28, "step": 1, "unit": "px", "label": "Tamanho da fonte (mobile)", "default": 16 },
+    {
+      "type": "select", "id": "button_font_weight", "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "500"
+    },
+    { "type": "color", "id": "button_color", "label": "Cor do texto", "default": "#FFFFFF" },
+    { "type": "color", "id": "button_background", "label": "Cor de fundo", "default": "#06262D" },
+    { "type": "range", "id": "button_height_desktop", "min": 32, "max": 96, "step": 2, "unit": "px", "label": "Altura (desktop)", "default": 60 },
+    { "type": "range", "id": "button_height_mobile", "min": 28, "max": 80, "step": 2, "unit": "px", "label": "Altura (mobile)", "default": 52 }
+  ],
+  "presets": [
+    { "name": "Albora Hero" }
+  ]
+}
+{% endschema %}
