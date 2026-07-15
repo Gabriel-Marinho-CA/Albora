@@ -1,7 +1,8 @@
 {%- comment -%}
   Albora — Vitrine de produtos ("Mais vendidos").
-  Cabeçalho com título + botão (CTA) e grid de cards.
+  Cabeçalho com título + botão (CTA) e carrossel Swiper de cards.
   O card vem do snippet reutilizável `res-cards.liquid` (CSS em base.css).
+  Swiper carregado globalmente via snippet `swiper-cdn` no theme.liquid.
   Ver CLAUDE.md → "Regra de personalização de textos e botões".
 {%- endcomment -%}
 
@@ -70,14 +71,35 @@
     font-weight: {{ s.button_font_weight }};
   }
   #Albora-FeaturedProducts-{{ uid }} .albora-fp__button:hover { opacity: 0.9; }
-  #Albora-FeaturedProducts-{{ uid }} .albora-fp__grid {
+
+  /* Carrossel: slides com altura igual para os preços alinharem na base. */
+  #Albora-FeaturedProducts-{{ uid }} .albora-fp__swiper {
+    width: 100%;
+  }
+  #Albora-FeaturedProducts-{{ uid }} .albora-fp__swiper .swiper-slide {
+    height: auto;
+    display: flex;
+  }
+  #Albora-FeaturedProducts-{{ uid }} .albora-fp__swiper .swiper-slide > .res-card {
+    width: 100%;
+  }
+  /* Sem JS (ou antes do init) o wrapper já se comporta como grid. */
+  #Albora-FeaturedProducts-{{ uid }} .albora-fp__swiper:not(.swiper-initialized) .swiper-wrapper {
     display: grid;
     grid-template-columns: repeat({{ s.columns_desktop }}, minmax(0, 1fr));
     gap: 32px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
   }
+  #Albora-FeaturedProducts-{{ uid }} .swiper-button-next,
+  #Albora-FeaturedProducts-{{ uid }} .swiper-button-prev {
+    color: {{ s.controls_color }};
+  }
+  #Albora-FeaturedProducts-{{ uid }} .swiper-pagination-bullet-active {
+    background: {{ s.controls_color }};
+  }
+  {%- if s.show_pagination %}
+    #Albora-FeaturedProducts-{{ uid }} .albora-fp__swiper { padding-bottom: 36px; }
+  {%- endif %}
+
   /* Tipografia do card vinda dos settings (escopada nesta instância). */
   #Albora-FeaturedProducts-{{ uid }} .res-card {
     --res-card-title-size: {{ s.card_title_font_size_desktop }}px;
@@ -95,7 +117,7 @@
   }
 
   @media screen and (max-width: 989px) {
-    #Albora-FeaturedProducts-{{ uid }} .albora-fp__grid {
+    #Albora-FeaturedProducts-{{ uid }} .albora-fp__swiper:not(.swiper-initialized) .swiper-wrapper {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 24px;
     }
@@ -113,8 +135,8 @@
       font-size: {{ s.button_font_size_mobile }}px;
       padding: 0 16px;
     }
-    #Albora-FeaturedProducts-{{ uid }} .albora-fp__grid {
-      grid-template-columns: repeat({{ s.columns_mobile }}, minmax(0, 1fr));
+    #Albora-FeaturedProducts-{{ uid }} .albora-fp__swiper:not(.swiper-initialized) .swiper-wrapper {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
     }
     #Albora-FeaturedProducts-{{ uid }} .res-card {
@@ -149,34 +171,118 @@
       </div>
     {%- endif -%}
 
-    <ul class="albora-fp__grid" role="list">
-      {%- if products.size > 0 -%}
-        {%- for product in products limit: s.products_to_show -%}
-          {%- if forloop.index <= s.columns_desktop -%}
-            {%- assign card_image_loading = 'eager' -%}
-          {%- else -%}
-            {%- assign card_image_loading = 'lazy' -%}
-          {%- endif -%}
-          <li class="albora-fp__item">
-            {% render 'res-cards',
-              product: product,
-              show_description: s.show_description,
-              show_wishlist: s.show_wishlist,
-              description_words: s.description_words,
-              image_loading: card_image_loading
-            %}
-          </li>
-        {%- endfor -%}
-      {%- else -%}
-        {%- for i in (1..s.products_to_show) -%}
-          <li class="albora-fp__item">
-            {% render 'res-cards', show_description: s.show_description, show_wishlist: s.show_wishlist %}
-          </li>
-        {%- endfor -%}
+    <div
+      class="swiper albora-fp__swiper"
+      data-albora-fp
+      data-slides-desktop="{{ s.columns_desktop }}"
+      data-slides-tablet="{{ s.slides_per_view_tablet }}"
+      data-slides-mobile="{{ s.slides_per_view_mobile }}"
+      data-navigation="{{ s.show_navigation }}"
+      data-pagination="{{ s.show_pagination }}"
+      data-loop="{{ s.loop }}"
+    >
+      <div class="swiper-wrapper">
+        {%- if products.size > 0 -%}
+          {%- for product in products limit: s.products_to_show -%}
+            {%- if forloop.index <= s.columns_desktop -%}
+              {%- assign card_image_loading = 'eager' -%}
+            {%- else -%}
+              {%- assign card_image_loading = 'lazy' -%}
+            {%- endif -%}
+            <div class="swiper-slide">
+              {% render 'res-cards',
+                product: product,
+                show_description: s.show_description,
+                show_wishlist: s.show_wishlist,
+                description_words: s.description_words,
+                image_loading: card_image_loading
+              %}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for i in (1..s.products_to_show) -%}
+            <div class="swiper-slide">
+              {% render 'res-cards', show_description: s.show_description, show_wishlist: s.show_wishlist %}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      {%- if s.show_pagination -%}
+        <div class="swiper-pagination"></div>
       {%- endif -%}
-    </ul>
+      {%- if s.show_navigation -%}
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      {%- endif -%}
+    </div>
   </div>
 </section>
+
+<script>
+  (function () {
+    function initVitrine(el) {
+      if (!el || el.dataset.inited === 'true') return true;
+      if (typeof Swiper === 'undefined') return false;
+      el.dataset.inited = 'true';
+
+      var config = {
+        // Centraliza quando há menos produtos do que cabem na viewport,
+        // evitando cards colados na borda esquerda.
+        centerInsufficientSlides: true,
+        watchOverflow: true,
+        loop: el.dataset.loop === 'true',
+        slidesPerView: parseFloat(el.dataset.slidesMobile) || 1.7,
+        spaceBetween: 16,
+        breakpoints: {
+          750: {
+            slidesPerView: parseFloat(el.dataset.slidesTablet) || 2,
+            spaceBetween: 24,
+          },
+          990: {
+            slidesPerView: parseInt(el.dataset.slidesDesktop, 10) || 4,
+            spaceBetween: 32,
+          },
+        },
+      };
+
+      if (el.dataset.navigation === 'true') {
+        config.navigation = {
+          nextEl: el.querySelector('.swiper-button-next'),
+          prevEl: el.querySelector('.swiper-button-prev'),
+        };
+      }
+      if (el.dataset.pagination === 'true') {
+        config.pagination = {
+          el: el.querySelector('.swiper-pagination'),
+          clickable: true,
+        };
+      }
+
+      new Swiper(el, config);
+      return true;
+    }
+
+    function initAll() {
+      document.querySelectorAll('[data-albora-fp]').forEach(initVitrine);
+    }
+
+    if (typeof Swiper === 'undefined') {
+      // Swiper é carregado com `defer`; espera o load.
+      window.addEventListener('load', initAll);
+    } else {
+      initAll();
+    }
+
+    // Reinicializa no editor de temas ao alterar a seção.
+    document.addEventListener('shopify:section:load', function (e) {
+      e.target.querySelectorAll('[data-albora-fp]').forEach(function (el) {
+        el.dataset.inited = 'false';
+        initVitrine(el);
+      });
+    });
+  })();
+</script>
 
 {% schema %}
 {
@@ -193,26 +299,7 @@
       "max": 12,
       "step": 1,
       "label": "Produtos exibidos",
-      "default": 4
-    },
-    {
-      "type": "range",
-      "id": "columns_desktop",
-      "min": 2,
-      "max": 6,
-      "step": 1,
-      "label": "Colunas (desktop)",
-      "default": 4
-    },
-    {
-      "type": "select",
-      "id": "columns_mobile",
-      "label": "Colunas (mobile)",
-      "options": [
-        { "value": "1", "label": "1 coluna" },
-        { "value": "2", "label": "2 colunas" }
-      ],
-      "default": "2"
+      "default": 8
     },
     { "type": "checkbox", "id": "show_description", "label": "Mostrar descrição", "default": true },
     { "type": "checkbox", "id": "show_wishlist", "label": "Mostrar botão de favoritar", "default": true },
@@ -226,6 +313,39 @@
       "default": 10,
       "visible_if": "{{ section.settings.show_description }}"
     },
+
+    { "type": "header", "content": "Carrossel" },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Slides visíveis (desktop)",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "slides_per_view_tablet",
+      "min": 1.2,
+      "max": 4,
+      "step": 0.1,
+      "label": "Slides visíveis (tablet)",
+      "default": 2.5
+    },
+    {
+      "type": "range",
+      "id": "slides_per_view_mobile",
+      "min": 1,
+      "max": 3,
+      "step": 0.1,
+      "label": "Slides visíveis (mobile)",
+      "default": 1.7
+    },
+    { "type": "checkbox", "id": "loop", "label": "Loop infinito", "default": false },
+    { "type": "checkbox", "id": "show_navigation", "label": "Mostrar navegação (setas)", "default": false },
+    { "type": "checkbox", "id": "show_pagination", "label": "Mostrar paginação (bolinhas)", "default": false },
+    { "type": "color", "id": "controls_color", "label": "Cor dos controles", "default": "#06262D" },
 
     { "type": "header", "content": "Layout" },
     {
