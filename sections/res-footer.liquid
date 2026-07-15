@@ -1,0 +1,681 @@
+{%- comment -%}
+  Res — Footer.
+  Faixa de newsletter + colunas de links + formas de pagamento + barra inferior.
+
+  As colunas são blocos `column`: o lojista edita o título e escolhe um menu
+  (linked_list) de onde vêm os links. O bloco `contact` monta a coluna
+  "Fale conosco" (WhatsApp/e-mail).
+
+  Newsletter: form 'customer' com `contact[tags] = newsletter`,
+  mesmo contrato de `sections/newsletter.liquid`.
+  Ícones de pagamento: `shop.enabled_payment_types` (configurados no admin).
+  Redes sociais: snippet `social-icons` (links em Configurações do tema).
+
+  Ver CLAUDE.md → "Regra de personalização de textos e botões".
+{%- endcomment -%}
+
+<link rel="stylesheet" href="{{ 'res-footer.css' | asset_url }}" media="all">
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+-%}
+
+<style>
+  #Res-Footer-{{ uid }} {
+    --footer-bg: {{ s.background }};
+    --footer-divider: {{ s.divider_color }};
+
+    --footer-news-title-color: {{ s.newsletter_title_color }};
+    --footer-news-title-size: {{ s.newsletter_title_font_size_desktop }}px;
+    --footer-news-title-weight: {{ s.newsletter_title_font_weight }};
+    --footer-news-content-color: {{ s.newsletter_content_color }};
+    --footer-news-content-size: {{ s.newsletter_content_font_size_desktop }}px;
+    --footer-news-content-weight: {{ s.newsletter_content_font_weight }};
+
+    --footer-input-color: {{ s.input_color }};
+    --footer-input-size: {{ s.input_font_size_desktop }}px;
+    --footer-input-height: {{ s.button_height_desktop }}px;
+
+    --footer-btn-color: {{ s.button_color }};
+    --footer-btn-bg: {{ s.button_background }};
+    --footer-btn-size: {{ s.button_font_size_desktop }}px;
+    --footer-btn-weight: {{ s.button_font_weight }};
+    --footer-btn-height: {{ s.button_height_desktop }}px;
+
+    --footer-col-title-color: {{ s.column_title_color }};
+    --footer-col-title-size: {{ s.column_title_font_size_desktop }}px;
+    --footer-col-title-weight: {{ s.column_title_font_weight }};
+    --footer-col-link-color: {{ s.column_link_color }};
+    --footer-col-link-size: {{ s.column_link_font_size_desktop }}px;
+    --footer-col-link-weight: {{ s.column_link_font_weight }};
+
+    --footer-payment-title-color: {{ s.payment_title_color }};
+    --footer-payment-title-size: {{ s.payment_title_font_size_desktop }}px;
+    --footer-payment-title-weight: {{ s.payment_title_font_weight }};
+
+    --footer-bottom-color: {{ s.bottom_color }};
+    --footer-bottom-size: {{ s.bottom_font_size_desktop }}px;
+    --footer-bottom-weight: {{ s.bottom_font_weight }};
+
+    --footer-container: {{ s.container_width }}px;
+    --footer-social-color: {{ s.social_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    #Res-Footer-{{ uid }} {
+      --footer-news-title-size: {{ s.newsletter_title_font_size_mobile }}px;
+      --footer-news-content-size: {{ s.newsletter_content_font_size_mobile }}px;
+      --footer-input-size: {{ s.input_font_size_mobile }}px;
+      --footer-input-height: {{ s.button_height_mobile }}px;
+      --footer-btn-size: {{ s.button_font_size_mobile }}px;
+      --footer-btn-height: {{ s.button_height_mobile }}px;
+      --footer-col-title-size: {{ s.column_title_font_size_mobile }}px;
+      --footer-col-link-size: {{ s.column_link_font_size_mobile }}px;
+      --footer-payment-title-size: {{ s.payment_title_font_size_mobile }}px;
+      --footer-bottom-size: {{ s.bottom_font_size_mobile }}px;
+    }
+  }
+</style>
+
+<div id="Res-Footer-{{ uid }}" class="res-footer">
+  {%- if s.newsletter_enable -%}
+    <div class="res-footer__newsletter">
+      <div class="res-footer__inner res-footer__newsletter-inner">
+        <div class="res-footer__newsletter-main">
+          {%- if s.newsletter_content != blank or s.newsletter_title != blank -%}
+            <div class="res-footer__newsletter-text">
+              {%- if s.newsletter_content != blank -%}
+                <p class="res-footer__newsletter-content">{{ s.newsletter_content }}</p>
+              {%- endif -%}
+              {%- if s.newsletter_title != blank -%}
+                <p class="res-footer__newsletter-title">{{ s.newsletter_title }}</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- form 'customer', id: 'ResFooterNewsletter', class: 'res-footer__form' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <div class="res-footer__field">
+              <label class="visually-hidden" for="ResFooterNewsletter--{{ uid }}">
+                {{ 'newsletter.label' | t }}
+              </label>
+              <input
+                id="ResFooterNewsletter--{{ uid }}"
+                type="email"
+                name="contact[email]"
+                class="res-footer__input"
+                value="{{ form.email }}"
+                aria-required="true"
+                autocorrect="off"
+                autocapitalize="off"
+                autocomplete="email"
+                {% if form.errors %}
+                  autofocus
+                  aria-invalid="true"
+                  aria-describedby="ResFooterNewsletter-error--{{ uid }}"
+                {% elsif form.posted_successfully? %}
+                  aria-describedby="ResFooterNewsletter-success--{{ uid }}"
+                {% endif %}
+                placeholder="{{ s.input_placeholder | default: 'name@mail.com' | escape }}"
+                required
+              >
+              <button type="submit" class="res-footer__submit" name="commit">
+                <span>{{ s.button_label | default: 'Assinar' }}</span>
+                <span class="res-footer__submit-icon svg-wrapper">
+                  {{- 'icon-arrow.svg' | inline_asset_content -}}
+                </span>
+              </button>
+            </div>
+
+            {%- if form.errors -%}
+              <small class="res-footer__message res-footer__message--error" id="ResFooterNewsletter-error--{{ uid }}">
+                {{- form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email -}}
+              </small>
+            {%- endif -%}
+            {%- if form.posted_successfully? -%}
+              <p
+                class="res-footer__message res-footer__message--success"
+                id="ResFooterNewsletter-success--{{ uid }}"
+                tabindex="-1"
+              >
+                {{- 'newsletter.success' | t -}}
+              </p>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+
+        {%- if s.show_social -%}
+          {%- render 'social-icons', class: 'res-footer__social' -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="res-footer__divider" role="presentation"></div>
+  {%- endif -%}
+
+  <footer class="res-footer__main">
+    <div class="res-footer__inner">
+      <div class="res-footer__columns">
+        <div class="res-footer__brand">
+          {%- if s.logo != blank -%}
+            <a href="{{ routes.root_url }}" class="res-footer__logo-link">
+              {%- assign logo_alt = s.logo.alt | default: shop.name -%}
+              {{
+                s.logo
+                | image_url: width: 500
+                | image_tag:
+                  loading: 'lazy',
+                  class: 'res-footer__logo',
+                  widths: '150, 250, 350, 500',
+                  sizes: '200px',
+                  alt: logo_alt
+              }}
+            </a>
+          {%- else -%}
+            <a href="{{ routes.root_url }}" class="res-footer__logo-text">{{ shop.name }}</a>
+          {%- endif -%}
+        </div>
+
+        {%- for block in section.blocks -%}
+          {%- assign b = block.settings -%}
+          {%- case block.type -%}
+            {%- when 'column' -%}
+              <div class="res-footer__col" {{ block.shopify_attributes }}>
+                {%- if b.title != blank -%}
+                  <h2 class="res-footer__col-title">{{ b.title }}</h2>
+                {%- endif -%}
+                {%- if b.menu != blank -%}
+                  <ul class="res-footer__col-links list-unstyled" role="list">
+                    {%- for link in b.menu.links -%}
+                      <li>
+                        <a
+                          href="{{ link.url }}"
+                          class="res-footer__col-link{% if link.active %} res-footer__col-link--active{% endif %}"
+                        >
+                          {{ link.title | escape }}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </div>
+
+            {%- when 'contact' -%}
+              <div class="res-footer__col" {{ block.shopify_attributes }}>
+                {%- if b.title != blank -%}
+                  <h2 class="res-footer__col-title">{{ b.title }}</h2>
+                {%- endif -%}
+                <div class="res-footer__col-links">
+                  {%- if b.phone != blank -%}
+                    {%- assign phone_digits = b.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' -%}
+                    <a
+                      href="{{ b.whatsapp_link | default: 'https://wa.me/' | append: phone_digits }}"
+                      class="res-footer__contact-item res-footer__col-link"
+                    >
+                      <span class="res-footer__contact-icon svg-wrapper">
+                        {{- 'icon-whatsapp.svg' | inline_asset_content -}}
+                      </span>
+                      {{ b.phone }}
+                    </a>
+                  {%- endif -%}
+                  {%- if b.email != blank -%}
+                    <a href="mailto:{{ b.email }}" class="res-footer__contact-item res-footer__col-link">
+                      <span class="res-footer__contact-icon svg-wrapper">
+                        {{- 'icon-email.svg' | inline_asset_content -}}
+                      </span>
+                      {{ b.email }}
+                    </a>
+                  {%- endif -%}
+                </div>
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+
+      {%- if s.payment_enable and shop.enabled_payment_types.size > 0 -%}
+        <div class="res-footer__payment">
+          {%- if s.payment_title != blank -%}
+            <p class="res-footer__payment-title">{{ s.payment_title }}</p>
+          {%- endif -%}
+          <ul class="res-footer__payment-list list-unstyled" role="list">
+            {%- for type in shop.enabled_payment_types -%}
+              <li class="res-footer__payment-item">
+                {{ type | payment_type_svg_tag: class: 'res-footer__payment-icon' }}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    </div>
+  </footer>
+
+  <div class="res-footer__divider" role="presentation"></div>
+
+  <div class="res-footer__bottom">
+    <div class="res-footer__inner res-footer__bottom-inner">
+      {%- if s.copyright != blank -%}
+        <p class="res-footer__copyright">{{ s.copyright }}</p>
+      {%- else -%}
+        <p class="res-footer__copyright">
+          &copy; {{ 'now' | date: '%Y' }} {{ shop.name }} &mdash; {{ 'sections.footer.copyright' | t }}
+        </p>
+      {%- endif -%}
+
+      {%- if s.credits_logo != blank or s.credits_label != blank -%}
+        <div class="res-footer__credits">
+          {%- if s.credits_label != blank -%}
+            <span>{{ s.credits_label }}</span>
+          {%- endif -%}
+          {%- if s.credits_logo != blank -%}
+            {%- capture credits_img -%}
+              {{
+                s.credits_logo
+                | image_url: width: 300
+                | image_tag:
+                  loading: 'lazy',
+                  class: 'res-footer__credits-logo',
+                  widths: '100, 150, 200, 300',
+                  sizes: '110px',
+                  alt: s.credits_logo.alt
+              }}
+            {%- endcapture -%}
+            {%- if s.credits_link != blank -%}
+              <a href="{{ s.credits_link }}" target="_blank" rel="noopener">{{ credits_img }}</a>
+            {%- else -%}
+              {{ credits_img }}
+            {%- endif -%}
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Res Footer",
+  "tag": "footer",
+  "class": "res-footer-section",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 1000,
+      "max": 1800,
+      "step": 10,
+      "unit": "px",
+      "label": "Largura máxima do container",
+      "default": 1370
+    },
+    { "type": "color", "id": "background", "label": "Fundo", "default": "#06262D" },
+    { "type": "color", "id": "divider_color", "label": "Cor das divisórias", "default": "#FFFFFF" },
+    { "type": "image_picker", "id": "logo", "label": "Logo" },
+
+    { "type": "header", "content": "Newsletter" },
+    { "type": "checkbox", "id": "newsletter_enable", "label": "Mostrar newsletter", "default": true },
+    {
+      "type": "text",
+      "id": "newsletter_content",
+      "label": "Texto (linha 1)",
+      "default": "Fique por dentro das nossas"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_title",
+      "label": "Título (linha 2)",
+      "default": "Novidades e promoções"
+    },
+    { "type": "text", "id": "input_placeholder", "label": "Placeholder do campo", "default": "name@mail.com" },
+    { "type": "text", "id": "button_label", "label": "Texto do botão", "default": "Assinar" },
+    { "type": "checkbox", "id": "show_social", "label": "Mostrar redes sociais", "default": true },
+    {
+      "type": "paragraph",
+      "content": "Os links das redes sociais são definidos em Configurações do tema → Redes sociais."
+    },
+    { "type": "color", "id": "social_color", "label": "Cor dos ícones sociais", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Newsletter — título (linha 2)" },
+    {
+      "type": "range",
+      "id": "newsletter_title_font_size_desktop",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (desktop)",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "newsletter_title_font_size_mobile",
+      "min": 8,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (mobile)",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "newsletter_title_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "700"
+    },
+    { "type": "color", "id": "newsletter_title_color", "label": "Cor", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Newsletter — texto (linha 1)" },
+    {
+      "type": "range",
+      "id": "newsletter_content_font_size_desktop",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (desktop)",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "newsletter_content_font_size_mobile",
+      "min": 8,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (mobile)",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "newsletter_content_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "newsletter_content_color", "label": "Cor", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Newsletter — campo" },
+    {
+      "type": "range",
+      "id": "input_font_size_desktop",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho da fonte (desktop)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "input_font_size_mobile",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho da fonte (mobile)",
+      "default": 13
+    },
+    { "type": "color", "id": "input_color", "label": "Cor do texto", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Newsletter — botão (CTA)" },
+    {
+      "type": "range",
+      "id": "button_font_size_desktop",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho da fonte (desktop)",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "button_font_size_mobile",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho da fonte (mobile)",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "button_color", "label": "Cor do texto", "default": "#FFFFFF" },
+    { "type": "color", "id": "button_background", "label": "Cor de fundo", "default": "#E74F3D" },
+    {
+      "type": "range",
+      "id": "button_height_desktop",
+      "min": 32,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Altura (desktop)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "button_height_mobile",
+      "min": 28,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "label": "Altura (mobile)",
+      "default": 44
+    },
+
+    { "type": "header", "content": "Colunas — título" },
+    {
+      "type": "range",
+      "id": "column_title_font_size_desktop",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (desktop)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "column_title_font_size_mobile",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (mobile)",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "column_title_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "column_title_color", "label": "Cor", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Colunas — links" },
+    {
+      "type": "range",
+      "id": "column_link_font_size_desktop",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (desktop)",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "column_link_font_size_mobile",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (mobile)",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "column_link_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "column_link_color", "label": "Cor", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Formas de pagamento" },
+    { "type": "checkbox", "id": "payment_enable", "label": "Mostrar formas de pagamento", "default": true },
+    {
+      "type": "paragraph",
+      "content": "Os ícones vêm dos meios de pagamento ativos da loja (Admin → Configurações → Pagamentos)."
+    },
+    { "type": "text", "id": "payment_title", "label": "Título", "default": "Formas de pagamento" },
+    {
+      "type": "range",
+      "id": "payment_title_font_size_desktop",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (desktop)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "payment_title_font_size_mobile",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (mobile)",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "payment_title_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "payment_title_color", "label": "Cor", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Barra inferior" },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Texto de copyright",
+      "info": "Deixe vazio para usar o padrão da loja."
+    },
+    { "type": "text", "id": "credits_label", "label": "Rótulo dos créditos", "default": "Tecnologia:" },
+    { "type": "image_picker", "id": "credits_logo", "label": "Logo dos créditos" },
+    { "type": "url", "id": "credits_link", "label": "Link dos créditos" },
+    {
+      "type": "range",
+      "id": "bottom_font_size_desktop",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho da fonte (desktop)",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "bottom_font_size_mobile",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho da fonte (mobile)",
+      "default": 11
+    },
+    {
+      "type": "select",
+      "id": "bottom_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "bottom_color", "label": "Cor", "default": "#FFFFFF" }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Coluna de menu",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Título", "default": "Categorias" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "info": "Os links vêm do menu escolhido." }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Coluna de contato",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Título", "default": "Fale conosco" },
+        { "type": "text", "id": "phone", "label": "Telefone / WhatsApp", "default": "(00) 00000-0000" },
+        {
+          "type": "url",
+          "id": "whatsapp_link",
+          "label": "Link do WhatsApp",
+          "info": "Opcional. Se vazio, é gerado a partir do telefone (wa.me)."
+        },
+        { "type": "text", "id": "email", "label": "E-mail", "default": "contato@albora.com.br" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Res Footer",
+      "blocks": [
+        { "type": "column", "settings": { "title": "Categorias" } },
+        { "type": "column", "settings": { "title": "Institucional" } },
+        { "type": "contact" }
+      ]
+    }
+  ]
+}
+{% endschema %}
