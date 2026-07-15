@@ -1,11 +1,104 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
+    "res_footer_VUDeDR": {
+      "type": "res-footer",
+      "blocks": {
+        "column_h7mrpd": {
+          "type": "column",
+          "settings": {
+            "title": "Categorias",
+            "menu": ""
+          }
+        },
+        "column_UR4pyi": {
+          "type": "column",
+          "settings": {
+            "title": "Institucional",
+            "menu": ""
+          }
+        },
+        "contact_FEcz4L": {
+          "type": "contact",
+          "settings": {
+            "title": "Fale conosco",
+            "phone": "(00) 00000-0000",
+            "whatsapp_link": "",
+            "email": "contato@albora.com.br"
+          }
+        }
+      },
+      "block_order": [
+        "column_h7mrpd",
+        "column_UR4pyi",
+        "contact_FEcz4L"
+      ],
+      "name": "Res Footer",
+      "settings": {
+        "container_width": 1370,
+        "background": "#06262D",
+        "divider_color": "#FFFFFF",
+        "newsletter_enable": true,
+        "newsletter_content": "Fique por dentro das nossas",
+        "newsletter_title": "Novidades e promoções",
+        "input_placeholder": "name@mail.com",
+        "button_label": "Assinar",
+        "show_social": true,
+        "social_color": "#FFFFFF",
+        "newsletter_title_font_size_desktop": 18,
+        "newsletter_title_font_size_mobile": 16,
+        "newsletter_title_font_weight": "700",
+        "newsletter_title_color": "#FFFFFF",
+        "newsletter_content_font_size_desktop": 15,
+        "newsletter_content_font_size_mobile": 13,
+        "newsletter_content_font_weight": "400",
+        "newsletter_content_color": "#FFFFFF",
+        "input_font_size_desktop": 14,
+        "input_font_size_mobile": 13,
+        "input_color": "#FFFFFF",
+        "button_font_size_desktop": 13,
+        "button_font_size_mobile": 13,
+        "button_font_weight": "400",
+        "button_color": "#FFFFFF",
+        "button_background": "#E74F3D",
+        "button_height_desktop": 48,
+        "button_height_mobile": 44,
+        "column_title_font_size_desktop": 14,
+        "column_title_font_size_mobile": 14,
+        "column_title_font_weight": "400",
+        "column_title_color": "#FFFFFF",
+        "column_link_font_size_desktop": 13,
+        "column_link_font_size_mobile": 13,
+        "column_link_font_weight": "400",
+        "column_link_color": "#FFFFFF",
+        "payment_enable": true,
+        "payment_title": "Formas de pagamento",
+        "payment_title_font_size_desktop": 14,
+        "payment_title_font_size_mobile": 14,
+        "payment_title_font_weight": "400",
+        "payment_title_color": "#FFFFFF",
+        "copyright": "",
+        "credits_label": "Tecnologia:",
+        "credits_link": "",
+        "bottom_font_size_desktop": 12,
+        "bottom_font_size_mobile": 11,
+        "bottom_font_weight": "400",
+        "bottom_color": "#FFFFFF"
+      }
+    },
     "footer": {
       "type": "footer",
-      "blocks": {},
-      "block_order": [],
+      "disabled": true,
       "settings": {
         "color_scheme": "scheme-1",
         "newsletter_enable": true,
@@ -23,6 +116,7 @@
     }
   },
   "order": [
+    "res_footer_VUDeDR",
     "footer"
   ]
 }
