@@ -1,0 +1,560 @@
+/* Albora — Product page (main-product) */
+
+.albora-product {
+  --albora-primary: #06262d;
+  --albora-secondary: #e74f3d;
+  --albora-muted: #3a575e;
+  --albora-border: rgba(6, 38, 45, 0.1);
+  --albora-border-active: rgba(6, 38, 45, 0.5);
+  font-family: Montserrat, var(--font-body-family);
+}
+
+/* ---------------------------------------------------------------- Preço -- */
+
+.albora-price {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.albora-price__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.albora-price__compare {
+  text-decoration: line-through;
+  text-decoration-skip-ink: none;
+  text-underline-offset: from-font;
+}
+
+.albora-price__current,
+.albora-price__compare,
+.albora-price__terms {
+  font-family: Montserrat, var(--font-body-family);
+  margin: 0;
+}
+
+.albora-price__terms strong {
+  font-weight: 600;
+}
+
+.albora-price__badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 54px;
+  padding: 2px 10px;
+  background: var(--albora-secondary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------- Variant picker -- */
+
+.albora-variants {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.albora-option {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.albora-option__label {
+  font-family: Montserrat, var(--font-body-family);
+  padding: 0;
+  margin: 0;
+}
+
+/* Pills */
+
+.albora-option__pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.albora-pill input[type='radio'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.albora-pill__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 24px;
+  border-radius: 54px;
+  border: 1px solid var(--albora-primary);
+  background: transparent;
+  color: var(--albora-primary);
+  font-family: Montserrat, var(--font-body-family);
+  line-height: 1.5;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.albora-pill input[type='radio']:checked + .albora-pill__label {
+  background: var(--albora-primary);
+  color: #fff;
+}
+
+.albora-pill input[type='radio']:focus-visible + .albora-pill__label {
+  outline: 2px solid var(--albora-primary);
+  outline-offset: 2px;
+}
+
+.albora-pill input[type='radio'][disabled] + .albora-pill__label,
+.albora-pill--soldout .albora-pill__label {
+  opacity: 0.4;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+/* Swatches (sabores) */
+
+.albora-option__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.albora-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  width: 76px;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.albora-swatch input[type='radio'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.albora-swatch__media {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f4f4f4;
+  border: 1px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+.albora-swatch__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.albora-swatch__name {
+  font-family: Montserrat, var(--font-body-family);
+  line-height: normal;
+}
+
+.albora-swatch input[type='radio']:checked + .albora-swatch__media,
+.albora-swatch[aria-current='true'] .albora-swatch__media {
+  border-color: var(--albora-primary);
+  box-shadow: 0 0 0 1px var(--albora-primary);
+}
+
+.albora-swatch input[type='radio']:focus-visible + .albora-swatch__media {
+  outline: 2px solid var(--albora-primary);
+  outline-offset: 2px;
+}
+
+.albora-swatch--soldout {
+  opacity: 0.45;
+}
+
+.albora-swatch--soldout .albora-swatch__name {
+  text-decoration: line-through;
+}
+
+/* ------------------------------------------------------------- Buy row -- */
+
+.albora-buy-row {
+  display: flex;
+  align-items: stretch;
+  gap: 36px;
+  width: 100%;
+}
+
+.albora-buy-row__quantity {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+/* O label e as regras de quantidade existem só para o product-info.js do Dawn. */
+.albora-buy-row .albora-qty__label,
+.albora-buy-row .quantity__rules:empty {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.albora-buy-row .quantity__rules {
+  margin: 4px 0 0;
+}
+
+.albora-buy-row .albora-qty {
+  display: flex;
+  align-items: stretch;
+  background: transparent;
+  border: 0;
+  width: auto;
+  min-height: 0;
+}
+
+.albora-buy-row .albora-qty__button {
+  width: 48px;
+  min-width: 25px;
+  padding: 12px 6px;
+  background: #fff;
+  border: 1px solid var(--albora-border);
+  color: var(--albora-primary);
+  font-family: Montserrat, var(--font-body-family);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.albora-buy-row .albora-qty__button:first-child {
+  border-radius: 100px 0 0 100px;
+}
+
+.albora-buy-row .albora-qty__button:last-child {
+  border-radius: 0 100px 100px 0;
+}
+
+.albora-buy-row .albora-qty__button svg {
+  width: 12px;
+  height: 12px;
+}
+
+.albora-buy-row .albora-qty__input {
+  width: 80px;
+  max-width: 80px;
+  padding: 13px 0;
+  text-align: center;
+  background: #fff;
+  border: 1px solid var(--albora-border);
+  border-left: 0;
+  border-right: 0;
+  color: var(--albora-primary);
+  font-family: Montserrat, var(--font-body-family);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: normal;
+  -moz-appearance: textfield;
+}
+
+.albora-buy-row .albora-qty__input::-webkit-outer-spin-button,
+.albora-buy-row .albora-qty__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.albora-buy-row__submit {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border: 0;
+  border-radius: 54px;
+  color: #fff;
+  font-family: Montserrat, var(--font-body-family);
+  line-height: 1.5;
+  text-align: center;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.albora-buy-row__submit:hover:not([disabled]) {
+  filter: brightness(0.94);
+}
+
+.albora-buy-row__submit[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.albora-buy-row__error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--albora-secondary);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.albora-buy-row__error[hidden] {
+  display: none;
+}
+
+.albora-buy-row__dynamic {
+  margin-top: 12px;
+}
+
+@media screen and (max-width: 749px) {
+  .albora-buy-row {
+    gap: 12px;
+  }
+
+  .albora-buy-row .albora-qty__button {
+    width: 40px;
+  }
+
+  .albora-buy-row .albora-qty__input {
+    width: 52px;
+  }
+}
+
+/* ------------------------------------------------------ Frete e Prazo -- */
+
+.albora-shipping {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.albora-shipping__title {
+  font-family: Montserrat, var(--font-body-family);
+  line-height: normal;
+  margin: 0;
+}
+
+.albora-shipping__calculator {
+  display: block;
+  width: 100%;
+}
+
+.albora-shipping__form {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+  width: 100%;
+}
+
+.albora-shipping__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 16px 24px;
+  border: 1px solid var(--albora-border);
+  border-radius: 35px;
+  background: #fff;
+  font-family: Montserrat, var(--font-body-family);
+  line-height: normal;
+}
+
+.albora-shipping__input::placeholder {
+  color: rgba(6, 38, 45, 0.5);
+}
+
+.albora-shipping__button {
+  flex: 0 0 auto;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 54px;
+  font-family: Montserrat, var(--font-body-family);
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.albora-shipping__button:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.albora-shipping__button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.albora-shipping__help {
+  font-family: Montserrat, var(--font-body-family);
+  line-height: 1.5;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.albora-shipping__response {
+  display: flex;
+  flex-direction: column;
+  font-family: Montserrat, var(--font-body-family);
+}
+
+.albora-shipping__response:not(:empty) {
+  padding: 12px 0 0;
+}
+
+.albora-shipping__response .response__rates {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.albora-shipping__response .response__rates li {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--albora-border);
+  line-height: 1.5;
+}
+
+.albora-shipping__response .response__rates strong {
+  font-weight: 600;
+}
+
+.albora-shipping__response.loading::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  margin: 10px auto;
+  border: 2px solid var(--albora-border);
+  border-top-color: var(--albora-primary);
+  border-radius: 50%;
+  animation: albora-shipping-spin 0.7s linear infinite;
+}
+
+@keyframes albora-shipping-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .albora-shipping__form {
+    gap: 8px;
+  }
+
+  .albora-shipping__input {
+    padding: 12px 18px;
+  }
+}
+
+/* ------------------------------------------------------------- Gallery -- */
+
+.albora-gallery {
+  display: block;
+  width: 100%;
+}
+
+.albora-gallery__layout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.albora-gallery__thumbs {
+  display: none;
+  flex: 0 0 76px;
+  width: 76px;
+  max-height: 545px;
+}
+
+.albora-gallery__main {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 1px solid var(--albora-border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.albora-gallery__main .swiper-slide {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.albora-gallery__main .swiper-slide img,
+.albora-gallery__main .swiper-slide > * {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.albora-gallery__thumb {
+  height: 100px;
+  border: 1px solid var(--albora-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.albora-gallery__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.albora-gallery__thumbs .swiper-slide-thumb-active .albora-gallery__thumb,
+.albora-gallery__thumb[aria-current='true'] {
+  border-color: var(--albora-border-active);
+}
+
+.albora-gallery__thumbs-mobile {
+  margin-top: 16px;
+}
+
+.albora-gallery__thumbs-mobile .swiper-slide {
+  width: 76px;
+}
+
+@media screen and (min-width: 990px) {
+  .albora-gallery__thumbs {
+    display: block;
+  }
+
+  .albora-gallery__thumbs-mobile {
+    display: none;
+  }
+}

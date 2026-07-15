@@ -30,19 +30,24 @@
         "variant_picker": {
           "type": "variant_picker",
           "settings": {
-            "picker_type": "button",
-            "swatch_shape": "circle"
+            "swatch_option_name": "Sabor",
+            "swatch_as_links": false
           }
         },
-        "quantity_selector": {
-          "type": "quantity_selector",
-          "settings": {}
-        },
-        "buy_buttons": {
-          "type": "buy_buttons",
+        "albora_buy_row": {
+          "type": "albora_buy_row",
           "settings": {
-            "show_dynamic_checkout": true,
-            "show_gift_card_recipient": true
+            "button_label": "Comprar Agora",
+            "show_dynamic_checkout": false
+          }
+        },
+        "albora_shipping": {
+          "type": "albora_shipping",
+          "settings": {
+            "title": "Frete e Prazo",
+            "input_placeholder": "Insira o CEP",
+            "button_label": "Calcular",
+            "help_label": "Não sei meu CEP"
           }
         },
         "description": {
@@ -61,14 +66,15 @@
         "title",
         "price",
         "variant_picker",
-        "quantity_selector",
-        "buy_buttons",
+        "albora_buy_row",
+        "albora_shipping",
         "description",
         "share"
       ],
       "settings": {
         "enable_sticky_info": true,
         "color_scheme": "scheme-1",
+        "use_albora_gallery": true,
         "media_size": "medium",
         "constrain_to_viewport": true,
         "media_fit": "contain",

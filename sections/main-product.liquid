@@ -25,6 +25,9 @@
     {{ 'component-volume-pricing.css' | asset_url | stylesheet_tag }}
   {%- endif -%}
 
+  {%- comment -%} Carregado por último para sobrescrever as classes do Dawn reaproveitadas. {%- endcomment -%}
+  <link rel="stylesheet" href="{{ 'albora-product.css' | asset_url }}" media="all">
+
   {%- style -%}
     .section-{{ section.id }}-padding {
       padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
@@ -75,9 +78,13 @@
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
   <product-component view-event-payload="{{ product | standard_event_data: 'view', context: 'page' | escape }}">
     <div class="page-width">
-      <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
+      <div class="product albora-product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
         <div class="grid__item product__media-wrapper">
-          {% render 'product-media-gallery', variant_images: variant_images %}
+          {%- if section.settings.use_albora_gallery -%}
+            {% render 'albora-product-gallery', product: product, section_id: section.id %}
+          {%- else -%}
+            {% render 'product-media-gallery', variant_images: variant_images %}
+          {%- endif -%}
         </div>
         <div class="product__info-wrapper grid__item{% if settings.page_width > 1400 and section.settings.media_size == "small" %} product__info-wrapper--extra-padding{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
           <section
@@ -108,12 +115,7 @@
                   </div>
                 {%- when 'price' -%}
                   <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
-                    {%- render 'price',
-                      product: product,
-                      use_variant: true,
-                      show_badges: true,
-                      price_class: 'price--large'
-                    -%}
+                    {%- render 'albora-price', product: product, block: block, section_id: section.id -%}
                   </div>
                   {%- if product.quantity_price_breaks_configured? -%}
                     <div class="volume-pricing-note" id="Volume-Note-{{ section.id }}">
@@ -486,11 +488,25 @@
                     surface: 'product_page'
                   -%}
                 {%- when 'variant_picker' -%}
-                  {% render 'product-variant-picker',
+                  {% render 'albora-variant-picker',
                     product: product,
                     block: block,
-                    product_form_id: product_form_id
+                    product_form_id: product_form_id,
+                    section_id: section.id
                   %}
+                {%- when 'albora_shipping' -%}
+                  {%- render 'albora-shipping-calculator',
+                    product: product,
+                    block: block,
+                    section_id: section.id
+                  -%}
+                {%- when 'albora_buy_row' -%}
+                  {%- render 'albora-buy-row',
+                    product: product,
+                    block: block,
+                    product_form_id: product_form_id,
+                    section_id: section.id
+                  -%}
                 {%- when 'buy_buttons' -%}
                   {%- render 'buy-buttons',
                     block: block,
@@ -802,7 +818,172 @@
     {
       "type": "price",
       "name": "t:sections.main-product.blocks.price.name",
-      "limit": 1
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Preço"
+        },
+        {
+          "type": "range",
+          "id": "price_font_size_desktop",
+          "min": 16,
+          "max": 64,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (desktop)",
+          "default": 32
+        },
+        {
+          "type": "range",
+          "id": "price_font_size_mobile",
+          "min": 14,
+          "max": 48,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (mobile)",
+          "default": 26
+        },
+        {
+          "type": "select",
+          "id": "price_font_weight",
+          "options": [
+            { "value": "400", "label": "400" },
+            { "value": "500", "label": "500" },
+            { "value": "600", "label": "600" },
+            { "value": "700", "label": "700" }
+          ],
+          "default": "700",
+          "label": "Peso da fonte"
+        },
+        {
+          "type": "color",
+          "id": "price_color",
+          "label": "Cor",
+          "default": "#06262d"
+        },
+        {
+          "type": "header",
+          "content": "Preço comparativo"
+        },
+        {
+          "type": "range",
+          "id": "compare_font_size_desktop",
+          "min": 10,
+          "max": 32,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (desktop)",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "compare_font_size_mobile",
+          "min": 10,
+          "max": 28,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (mobile)",
+          "default": 14
+        },
+        {
+          "type": "select",
+          "id": "compare_font_weight",
+          "options": [
+            { "value": "400", "label": "400" },
+            { "value": "500", "label": "500" },
+            { "value": "600", "label": "600" },
+            { "value": "700", "label": "700" }
+          ],
+          "default": "400",
+          "label": "Peso da fonte"
+        },
+        {
+          "type": "color",
+          "id": "compare_color",
+          "label": "Cor",
+          "default": "#3a575e"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_discount_badge",
+          "label": "Mostrar selo de desconto",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Parcelamento e Pix"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_terms",
+          "label": "Mostrar linha de parcelamento/Pix",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_installments",
+          "label": "Mostrar parcelamento",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "installments_count",
+          "min": 2,
+          "max": 12,
+          "step": 1,
+          "label": "Número de parcelas sem juros",
+          "default": 6
+        },
+        {
+          "type": "range",
+          "id": "pix_discount_percent",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "%",
+          "label": "Desconto no Pix",
+          "default": 5
+        },
+        {
+          "type": "range",
+          "id": "terms_font_size_desktop",
+          "min": 9,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (desktop)",
+          "default": 11
+        },
+        {
+          "type": "range",
+          "id": "terms_font_size_mobile",
+          "min": 9,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (mobile)",
+          "default": 11
+        },
+        {
+          "type": "select",
+          "id": "terms_font_weight",
+          "options": [
+            { "value": "400", "label": "400" },
+            { "value": "500", "label": "500" },
+            { "value": "600", "label": "600" },
+            { "value": "700", "label": "700" }
+          ],
+          "default": "400",
+          "label": "Peso da fonte"
+        },
+        {
+          "type": "color",
+          "id": "terms_color",
+          "label": "Cor",
+          "default": "#3a575e"
+        }
+      ]
     },
     {
       "type": "sku",
@@ -884,41 +1065,436 @@
       "limit": 1,
       "settings": [
         {
-          "type": "select",
-          "id": "picker_type",
-          "options": [
-            {
-              "value": "dropdown",
-              "label": "t:sections.main-product.blocks.variant_picker.settings.picker_type.options__1.label"
-            },
-            {
-              "value": "button",
-              "label": "t:sections.main-product.blocks.variant_picker.settings.picker_type.options__2.label"
-            }
-          ],
-          "default": "button",
-          "label": "t:sections.main-product.blocks.variant_picker.settings.picker_type.label"
+          "type": "header",
+          "content": "Sabores (opção com imagem)"
         },
         {
-          "id": "swatch_shape",
-          "label": "t:sections.main-product.blocks.variant_picker.settings.swatch_shape.label",
+          "type": "text",
+          "id": "swatch_option_name",
+          "label": "Nome da opção exibida com imagem",
+          "info": "Deve bater com o nome da opção do produto (ex.: Sabor). As demais opções viram pills.",
+          "default": "Sabor"
+        },
+        {
+          "type": "checkbox",
+          "id": "swatch_as_links",
+          "label": "Transformar sabores em links",
+          "info": "Ao clicar, navega para a página da variante (recarrega a página). Use quando outras seções mudam conforme a variante.",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Rótulo da opção"
+        },
+        {
+          "type": "range",
+          "id": "label_font_size_desktop",
+          "min": 10,
+          "max": 28,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (desktop)",
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "label_font_size_mobile",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (mobile)",
+          "default": 14
+        },
+        {
           "type": "select",
-          "info": "t:sections.main-product.blocks.variant_picker.settings.swatch_shape.info",
+          "id": "label_font_weight",
           "options": [
-            {
-              "value": "circle",
-              "label": "t:sections.main-product.blocks.variant_picker.settings.swatch_shape.options__1.label"
-            },
-            {
-              "value": "square",
-              "label": "t:sections.main-product.blocks.variant_picker.settings.swatch_shape.options__2.label"
-            },
-            {
-              "value": "none",
-              "label": "t:sections.main-product.blocks.variant_picker.settings.swatch_shape.options__3.label"
-            }
+            { "value": "400", "label": "400" },
+            { "value": "500", "label": "500" },
+            { "value": "600", "label": "600" },
+            { "value": "700", "label": "700" }
           ],
-          "default": "circle"
+          "default": "700",
+          "label": "Peso da fonte"
+        },
+        {
+          "type": "color",
+          "id": "label_color",
+          "label": "Cor",
+          "default": "#06262d"
+        },
+        {
+          "type": "header",
+          "content": "Valores"
+        },
+        {
+          "type": "range",
+          "id": "value_font_size_desktop",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (desktop)",
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "value_font_size_mobile",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (mobile)",
+          "default": 14
+        },
+        {
+          "type": "select",
+          "id": "value_font_weight",
+          "options": [
+            { "value": "400", "label": "400" },
+            { "value": "500", "label": "500" },
+            { "value": "600", "label": "600" },
+            { "value": "700", "label": "700" }
+          ],
+          "default": "500",
+          "label": "Peso da fonte"
+        },
+        {
+          "type": "color",
+          "id": "value_color",
+          "label": "Cor do nome do sabor",
+          "default": "#06262d"
+        },
+        {
+          "type": "color",
+          "id": "pill_color",
+          "label": "Cor da pill",
+          "default": "#06262d"
+        },
+        {
+          "type": "color",
+          "id": "pill_active_text_color",
+          "label": "Cor do texto da pill selecionada",
+          "default": "#ffffff"
+        }
+      ]
+    },
+    {
+      "type": "albora_shipping",
+      "name": "Frete e Prazo (Albora)",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Calcula o frete pelo CEP. Quando o carrinho está vazio, o produto é adicionado temporariamente e o carrinho é limpo em seguida para obter as taxas."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título",
+          "default": "Frete e Prazo"
+        },
+        {
+          "type": "range",
+          "id": "title_font_size_desktop",
+          "min": 10,
+          "max": 28,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (desktop)",
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "title_font_size_mobile",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (mobile)",
+          "default": 14
+        },
+        {
+          "type": "select",
+          "id": "title_font_weight",
+          "options": [
+            { "value": "400", "label": "400" },
+            { "value": "500", "label": "500" },
+            { "value": "600", "label": "600" },
+            { "value": "700", "label": "700" }
+          ],
+          "default": "700",
+          "label": "Peso da fonte"
+        },
+        {
+          "type": "color",
+          "id": "title_color",
+          "label": "Cor",
+          "default": "#06262d"
+        },
+        {
+          "type": "header",
+          "content": "Campo de CEP e resultado"
+        },
+        {
+          "type": "text",
+          "id": "input_placeholder",
+          "label": "Placeholder do campo",
+          "default": "Insira o CEP"
+        },
+        {
+          "type": "range",
+          "id": "content_font_size_desktop",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (desktop)",
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "content_font_size_mobile",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (mobile)",
+          "default": 14
+        },
+        {
+          "type": "select",
+          "id": "content_font_weight",
+          "options": [
+            { "value": "400", "label": "400" },
+            { "value": "500", "label": "500" },
+            { "value": "600", "label": "600" },
+            { "value": "700", "label": "700" }
+          ],
+          "default": "400",
+          "label": "Peso da fonte"
+        },
+        {
+          "type": "color",
+          "id": "content_color",
+          "label": "Cor",
+          "default": "#06262d"
+        },
+        {
+          "type": "header",
+          "content": "Botão calcular"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Texto do botão",
+          "default": "Calcular"
+        },
+        {
+          "type": "range",
+          "id": "button_font_size_desktop",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (desktop)",
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "button_font_size_mobile",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (mobile)",
+          "default": 14
+        },
+        {
+          "type": "select",
+          "id": "button_font_weight",
+          "options": [
+            { "value": "400", "label": "400" },
+            { "value": "500", "label": "500" },
+            { "value": "600", "label": "600" },
+            { "value": "700", "label": "700" }
+          ],
+          "default": "500",
+          "label": "Peso da fonte"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Cor do texto",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "button_background",
+          "label": "Cor de fundo",
+          "default": "#06262d"
+        },
+        {
+          "type": "range",
+          "id": "button_height_desktop",
+          "min": 36,
+          "max": 72,
+          "step": 1,
+          "unit": "px",
+          "label": "Altura do botão (desktop)",
+          "default": 44
+        },
+        {
+          "type": "range",
+          "id": "button_height_mobile",
+          "min": 32,
+          "max": 64,
+          "step": 1,
+          "unit": "px",
+          "label": "Altura do botão (mobile)",
+          "default": 44
+        },
+        {
+          "type": "header",
+          "content": "Link de ajuda"
+        },
+        {
+          "type": "text",
+          "id": "help_label",
+          "label": "Texto do link",
+          "default": "Não sei meu CEP"
+        },
+        {
+          "type": "url",
+          "id": "help_link",
+          "label": "Link",
+          "default": "https://buscacepinter.correios.com.br/app/endereco/index.php"
+        },
+        {
+          "type": "range",
+          "id": "help_font_size_desktop",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (desktop)",
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "help_font_size_mobile",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (mobile)",
+          "default": 14
+        },
+        {
+          "type": "select",
+          "id": "help_font_weight",
+          "options": [
+            { "value": "400", "label": "400" },
+            { "value": "500", "label": "500" },
+            { "value": "600", "label": "600" },
+            { "value": "700", "label": "700" }
+          ],
+          "default": "500",
+          "label": "Peso da fonte"
+        },
+        {
+          "type": "color",
+          "id": "help_color",
+          "label": "Cor",
+          "default": "#06262d"
+        }
+      ]
+    },
+    {
+      "type": "albora_buy_row",
+      "name": "Quantidade + Comprar (Albora)",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Junta o seletor de quantidade e o botão de compra numa linha só. Use no lugar dos blocos \"Seletor de quantidade\" e \"Botões de compra\"."
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Texto do botão",
+          "default": "Comprar Agora"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "label": "Mostrar botões de checkout dinâmico",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "button_font_size_desktop",
+          "min": 12,
+          "max": 28,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (desktop)",
+          "default": 18
+        },
+        {
+          "type": "range",
+          "id": "button_font_size_mobile",
+          "min": 12,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Tamanho da fonte (mobile)",
+          "default": 16
+        },
+        {
+          "type": "select",
+          "id": "button_font_weight",
+          "options": [
+            { "value": "400", "label": "400" },
+            { "value": "500", "label": "500" },
+            { "value": "600", "label": "600" },
+            { "value": "700", "label": "700" }
+          ],
+          "default": "500",
+          "label": "Peso da fonte"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Cor do texto",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "button_background",
+          "label": "Cor de fundo",
+          "default": "#34c759"
+        },
+        {
+          "type": "range",
+          "id": "button_height_desktop",
+          "min": 40,
+          "max": 80,
+          "step": 1,
+          "unit": "px",
+          "label": "Altura do botão (desktop)",
+          "default": 55
+        },
+        {
+          "type": "range",
+          "id": "button_height_mobile",
+          "min": 36,
+          "max": 72,
+          "step": 1,
+          "unit": "px",
+          "label": "Altura do botão (mobile)",
+          "default": 48
         }
       ]
     },
@@ -2162,6 +2738,13 @@
     {
       "type": "header",
       "content": "t:sections.main-product.settings.header.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_albora_gallery",
+      "label": "Usar galeria Albora (Swiper)",
+      "info": "Thumbnails na lateral no desktop e abaixo do produto no mobile. Ignora as configurações de galeria abaixo.",
+      "default": true
     },
     {
       "type": "select",

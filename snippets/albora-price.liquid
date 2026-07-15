@@ -1,0 +1,99 @@
+{% comment %}
+  Renders o preço customizado da Albora (substitui o snippet `price` da Shopify).
+
+  Accepts:
+  - product: {Object} product object.
+  - block: {Object} bloco `price` do main-product (traz os settings de estilo).
+  - section_id: {String} id da seção, para escopar o CSS inline.
+
+  Usage:
+  {% render 'albora-price', product: product, block: block, section_id: section.id %}
+{% endcomment %}
+
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign current_price = variant.price
+  assign compare_price = variant.compare_at_price
+  assign on_sale = false
+  if compare_price > current_price
+    assign on_sale = true
+  endif
+
+  assign installments = block.settings.installments_count | default: 6
+  assign installment_value = current_price | divided_by: installments
+  assign pix_discount = block.settings.pix_discount_percent | default: 0
+  assign pix_multiplier = 100 | minus: pix_discount
+  assign pix_price = current_price | times: pix_multiplier | divided_by: 100
+-%}
+
+<style>
+  #Albora-Price-{{ section_id }} .albora-price__current {
+    font-size: {{ block.settings.price_font_size_mobile }}px;
+    font-weight: {{ block.settings.price_font_weight }};
+    color: {{ block.settings.price_color }};
+  }
+  #Albora-Price-{{ section_id }} .albora-price__compare {
+    font-size: {{ block.settings.compare_font_size_mobile }}px;
+    font-weight: {{ block.settings.compare_font_weight }};
+    color: {{ block.settings.compare_color }};
+  }
+  #Albora-Price-{{ section_id }} .albora-price__terms {
+    font-size: {{ block.settings.terms_font_size_mobile }}px;
+    font-weight: {{ block.settings.terms_font_weight }};
+    color: {{ block.settings.terms_color }};
+  }
+  @media screen and (min-width: 750px) {
+    #Albora-Price-{{ section_id }} .albora-price__current {
+      font-size: {{ block.settings.price_font_size_desktop }}px;
+    }
+    #Albora-Price-{{ section_id }} .albora-price__compare {
+      font-size: {{ block.settings.compare_font_size_desktop }}px;
+    }
+    #Albora-Price-{{ section_id }} .albora-price__terms {
+      font-size: {{ block.settings.terms_font_size_desktop }}px;
+    }
+  }
+</style>
+
+<div id="Albora-Price-{{ section_id }}" class="albora-price">
+  <div class="albora-price__row">
+    {%- if on_sale -%}
+      <span class="albora-price__compare">
+        <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+        {{- compare_price | money -}}
+      </span>
+    {%- endif -%}
+
+    <span class="albora-price__current">
+      <span class="visually-hidden">
+        {%- if on_sale -%}
+          {{ 'products.product.price.sale_price' | t }}
+        {%- else -%}
+          {{ 'products.product.price.regular_price' | t }}
+        {%- endif -%}
+      </span>
+      {%- if variant == null -%}
+        {{- 'products.product.price.unavailable' | t -}}
+      {%- else -%}
+        {{- current_price | money -}}
+      {%- endif -%}
+    </span>
+
+    {%- if on_sale and block.settings.show_discount_badge -%}
+      {%- assign discount = compare_price | minus: current_price | times: 100.0 | divided_by: compare_price | round -%}
+      <span class="albora-price__badge">-{{ discount }}%</span>
+    {%- endif -%}
+  </div>
+
+  {%- if block.settings.show_terms and variant != null -%}
+    <p class="albora-price__terms">
+      {%- if block.settings.show_installments -%}
+        Até <strong>{{ installments }}x de {{ installment_value | money }} sem juros no cartão</strong>
+      {%- endif -%}
+      {%- if block.settings.show_installments and pix_discount > 0 %} ou {% endif -%}
+      {%- if pix_discount > 0 -%}
+        <strong>{{ pix_price | money }} no pix ({{ pix_discount }}% off)</strong>
+      {%- endif -%}
+    </p>
+  {%- endif -%}
+</div>

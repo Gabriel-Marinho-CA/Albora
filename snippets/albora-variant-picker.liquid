@@ -1,0 +1,205 @@
+{% comment %}
+  Renders o seletor de variantes da Albora.
+
+  A opção cujo nome bate com `block.settings.swatch_option_name` (ex.: "Sabor") vira
+  swatches com a imagem da variante; as demais viram pills.
+
+  Quando `block.settings.swatch_as_links` está ligado, os swatches viram links para a URL
+  da variante (navegação com reload), para que seções dependentes da variante atualizem.
+  Nesse modo um radio oculto guarda o valor selecionado, para que `variant-selects`
+  continue resolvendo a variante correta ao trocar as outras opções.
+
+  Accepts:
+  - product: {Object} product object.
+  - block: {Object} bloco `variant_picker`.
+  - product_form_id: {String} id do form de produto.
+  - section_id: {String} id da seção.
+
+  Usage:
+  {% render 'albora-variant-picker', product: product, block: block, product_form_id: product_form_id, section_id: section.id %}
+{% endcomment %}
+
+{%- unless product.has_only_default_variant -%}
+  {%- liquid
+    assign swatch_option_name = block.settings.swatch_option_name | downcase | strip
+    assign as_links = block.settings.swatch_as_links
+    assign current_variant = product.selected_or_first_available_variant
+  -%}
+
+  <style>
+    #Albora-Variants-{{ section_id }} .albora-option__label {
+      font-size: {{ block.settings.label_font_size_mobile }}px;
+      font-weight: {{ block.settings.label_font_weight }};
+      color: {{ block.settings.label_color }};
+    }
+    #Albora-Variants-{{ section_id }} .albora-pill__label,
+    #Albora-Variants-{{ section_id }} .albora-swatch__name {
+      font-size: {{ block.settings.value_font_size_mobile }}px;
+      font-weight: {{ block.settings.value_font_weight }};
+    }
+    #Albora-Variants-{{ section_id }} .albora-swatch__name {
+      color: {{ block.settings.value_color }};
+    }
+    #Albora-Variants-{{ section_id }} .albora-pill__label {
+      border-color: {{ block.settings.pill_color }};
+      color: {{ block.settings.pill_color }};
+    }
+    #Albora-Variants-{{ section_id }} .albora-pill input[type='radio']:checked + .albora-pill__label {
+      background: {{ block.settings.pill_color }};
+      color: {{ block.settings.pill_active_text_color }};
+    }
+    @media screen and (min-width: 750px) {
+      #Albora-Variants-{{ section_id }} .albora-option__label {
+        font-size: {{ block.settings.label_font_size_desktop }}px;
+      }
+      #Albora-Variants-{{ section_id }} .albora-pill__label,
+      #Albora-Variants-{{ section_id }} .albora-swatch__name {
+        font-size: {{ block.settings.value_font_size_desktop }}px;
+      }
+    }
+  </style>
+
+  <variant-selects
+    id="Albora-Variants-{{ section_id }}"
+    class="albora-variants"
+    data-section="{{ section_id }}"
+    data-product-handle="{{ product.handle }}"
+    data-product-title="{{ product.title | escape }}"
+    data-product-id="{{ product.id }}"
+    data-currency-code="{{ cart.currency.iso_code }}"
+    {% # theme-check-disable %}
+    data-selected-price-amount="{{ current_variant.price | default: 0 | money_amount | escape }}"
+    {% # theme-check-enable %}
+    {{ block.shopify_attributes }}
+  >
+    {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign option_name = option.name | downcase | strip
+        assign is_swatch = false
+        if swatch_option_name != blank and option_name == swatch_option_name
+          assign is_swatch = true
+        endif
+        assign render_as_links = false
+        if is_swatch and as_links
+          assign render_as_links = true
+        endif
+      -%}
+
+      {%- comment -%}
+        `product-form__input` é exigida pelo `VariantSelects.updateSelectionMetadata`,
+        que faz `target.closest('.product-form__input')` sem checar nulo.
+      {%- endcomment -%}
+      <fieldset class="albora-option product-form__input js">
+        <legend class="albora-option__label">{{ option.name | escape }}</legend>
+
+        <div class="{% if is_swatch %}albora-option__swatches{% else %}albora-option__pills{% endif %}">
+          {%- for value in option.values -%}
+            {%- liquid
+              assign escaped_value = value | escape
+              assign option_disabled = true
+              if value.available
+                assign option_disabled = false
+              endif
+            -%}
+
+            {%- capture input_id -%}
+              Albora-{{ section_id }}-{{ option.position }}-{{ forloop.index0 }}
+            {%- endcapture -%}
+
+            {%- capture input_dataset -%}
+              data-product-url="{{ value.product_url }}"
+              data-option-value-id="{{ value.id }}"
+              data-option-name="{{ option.name | escape }}"
+            {%- endcapture -%}
+
+            {%- capture value_media -%}
+              {%- liquid
+                assign value_image = value.variant.image | default: value.variant.featured_media.preview_image
+              -%}
+              <span class="albora-swatch__media">
+                {%- if value_image -%}
+                  {{
+                    value_image
+                    | image_url: width: 152
+                    | image_tag: loading: 'lazy', widths: '76, 152', alt: escaped_value
+                  }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag }}
+                {%- endif -%}
+              </span>
+              <span class="albora-swatch__name">
+                {{- escaped_value -}}
+                {%- if option_disabled -%}
+                  <span class="visually-hidden label-unavailable">
+                    {{- 'products.product.variant_sold_out_or_unavailable' | t -}}
+                  </span>
+                {%- endif -%}
+              </span>
+            {%- endcapture -%}
+
+            {%- if render_as_links -%}
+              <a
+                class="albora-swatch{% if option_disabled %} albora-swatch--soldout{% endif %}"
+                href="{{ value.variant.url | default: product.url }}"
+                aria-current="{% if value.selected %}true{% else %}false{% endif %}"
+              >
+                {{ value_media }}
+              </a>
+              {%- if value.selected -%}
+                <input
+                  type="radio"
+                  id="{{ input_id }}"
+                  name="{{ option.name | escape }}-{{ option.position }}"
+                  value="{{ escaped_value }}"
+                  form="{{ product_form_id }}"
+                  checked
+                  hidden
+                  {{ input_dataset }}
+                >
+              {%- endif -%}
+            {%- elsif is_swatch -%}
+              <label class="albora-swatch{% if option_disabled %} albora-swatch--soldout{% endif %}" for="{{ input_id }}">
+                <input
+                  type="radio"
+                  id="{{ input_id }}"
+                  name="{{ option.name | escape }}-{{ option.position }}"
+                  value="{{ escaped_value }}"
+                  form="{{ product_form_id }}"
+                  {% if value.selected %}checked{% endif %}
+                  {% if option_disabled %}class="disabled"{% endif %}
+                  {{ input_dataset }}
+                >
+                {{ value_media }}
+              </label>
+            {%- else -%}
+              <label class="albora-pill{% if option_disabled %} albora-pill--soldout{% endif %}" for="{{ input_id }}">
+                <input
+                  type="radio"
+                  id="{{ input_id }}"
+                  name="{{ option.name | escape }}-{{ option.position }}"
+                  value="{{ escaped_value }}"
+                  form="{{ product_form_id }}"
+                  {% if value.selected %}checked{% endif %}
+                  {% if option_disabled %}class="disabled"{% endif %}
+                  {{ input_dataset }}
+                >
+                <span class="albora-pill__label">
+                  {{- escaped_value -}}
+                  {%- if option_disabled -%}
+                    <span class="visually-hidden label-unavailable">
+                      {{- 'products.product.variant_sold_out_or_unavailable' | t -}}
+                    </span>
+                  {%- endif -%}
+                </span>
+              </label>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </fieldset>
+    {%- endfor -%}
+
+    <script type="application/json" data-selected-variant>
+      {{ current_variant | json }}
+    </script>
+  </variant-selects>
+{%- endunless -%}

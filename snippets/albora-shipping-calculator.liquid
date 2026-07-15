@@ -1,0 +1,94 @@
+{% comment %}
+  Renders o cálculo de frete por CEP (bloco `albora_shipping`).
+
+  Accepts:
+  - product: {Object} product object.
+  - block: {Object} bloco `albora_shipping`.
+  - section_id: {String} id da seção, para escopar o CSS inline.
+
+  Usage:
+  {% render 'albora-shipping-calculator', product: product, block: block, section_id: section.id %}
+{% endcomment %}
+
+<script src="{{ 'shipping-calculator.js' | asset_url }}" defer="defer"></script>
+
+<style>
+  #Albora-Shipping-{{ section_id }} .albora-shipping__title {
+    font-size: {{ block.settings.title_font_size_mobile }}px;
+    font-weight: {{ block.settings.title_font_weight }};
+    color: {{ block.settings.title_color }};
+  }
+  #Albora-Shipping-{{ section_id }} .albora-shipping__input {
+    font-size: {{ block.settings.content_font_size_mobile }}px;
+    font-weight: {{ block.settings.content_font_weight }};
+    color: {{ block.settings.content_color }};
+  }
+  #Albora-Shipping-{{ section_id }} .albora-shipping__response {
+    font-size: {{ block.settings.content_font_size_mobile }}px;
+    color: {{ block.settings.content_color }};
+  }
+  #Albora-Shipping-{{ section_id }} .albora-shipping__button {
+    background: {{ block.settings.button_background }};
+    color: {{ block.settings.button_color }};
+    font-size: {{ block.settings.button_font_size_mobile }}px;
+    font-weight: {{ block.settings.button_font_weight }};
+    min-height: {{ block.settings.button_height_mobile }}px;
+  }
+  #Albora-Shipping-{{ section_id }} .albora-shipping__help {
+    font-size: {{ block.settings.help_font_size_mobile }}px;
+    font-weight: {{ block.settings.help_font_weight }};
+    color: {{ block.settings.help_color }};
+  }
+  @media screen and (min-width: 750px) {
+    #Albora-Shipping-{{ section_id }} .albora-shipping__title {
+      font-size: {{ block.settings.title_font_size_desktop }}px;
+    }
+    #Albora-Shipping-{{ section_id }} .albora-shipping__input,
+    #Albora-Shipping-{{ section_id }} .albora-shipping__response {
+      font-size: {{ block.settings.content_font_size_desktop }}px;
+    }
+    #Albora-Shipping-{{ section_id }} .albora-shipping__button {
+      font-size: {{ block.settings.button_font_size_desktop }}px;
+      min-height: {{ block.settings.button_height_desktop }}px;
+    }
+    #Albora-Shipping-{{ section_id }} .albora-shipping__help {
+      font-size: {{ block.settings.help_font_size_desktop }}px;
+    }
+  }
+</style>
+
+<div id="Albora-Shipping-{{ section_id }}" class="albora-shipping" {{ block.shopify_attributes }}>
+  {%- if block.settings.title != blank -%}
+    <p class="albora-shipping__title">{{ block.settings.title | escape }}</p>
+  {%- endif -%}
+
+  <shipping-calculator class="albora-shipping__calculator">
+    <div class="albora-shipping__form">
+      <input type="hidden" name="variant_id" value="{{ product.selected_or_first_available_variant.id }}">
+
+      <label class="visually-hidden" for="Albora-Cep-{{ section_id }}">
+        {{- block.settings.input_placeholder | default: 'Insira o CEP' | escape -}}
+      </label>
+      <input
+        type="text"
+        inputmode="numeric"
+        autocomplete="postal-code"
+        id="Albora-Cep-{{ section_id }}"
+        class="albora-shipping__input js-zip"
+        placeholder="{{ block.settings.input_placeholder | default: 'Insira o CEP' | escape }}"
+      >
+
+      <button type="button" class="albora-shipping__button js-button">
+        {{- block.settings.button_label | default: 'Calcular' | escape -}}
+      </button>
+    </div>
+
+    <div class="albora-shipping__response shipping__response" role="status"></div>
+  </shipping-calculator>
+
+  {%- if block.settings.help_label != blank -%}
+    <a class="albora-shipping__help" href="{{ block.settings.help_link }}" target="_blank" rel="noopener">
+      {{- block.settings.help_label | escape -}}
+    </a>
+  {%- endif -%}
+</div>

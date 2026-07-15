@@ -1,0 +1,31 @@
+{{ 'shipping-calculator.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign sc_variant_id = variant_id | default: product.selected_or_first_available_variant.id
+  assign sc_title = title | default: 'Calcule seu frete'
+-%}
+
+<div class="shipping-calculator-wrapper">
+  <p class="shipping-calculator__title">{{ sc_title }}</p>
+  <p class="shipping-calculator__note">O frete é calculado com base nos produtos adicionados ao carrinho.</p>
+
+  <shipping-calculator class="bls__shipping-calculator">
+    <div class="shipping__form shipping-input-group flex items-center">
+      <input type="hidden" name="variant_id" value="{{ sc_variant_id }}">
+
+      <input
+        type="text"
+        class="form-input flex-1 form__zip js-zip"
+        placeholder="Digite seu CEP"
+      >
+
+      <button type="button" class="button__zip get-rates-button js-button">
+        Calcular
+      </button>
+    </div>
+
+    <div class="shipping__response"></div>
+  </shipping-calculator>
+</div>
+
+<script src="{{ 'shipping-calculator.js' | asset_url }}" defer="defer"></script>

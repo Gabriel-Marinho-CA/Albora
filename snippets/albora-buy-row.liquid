@@ -1,0 +1,175 @@
+{% comment %}
+  Renders quantidade + botão de compra lado a lado (bloco `albora_buy_row`).
+
+  Substitui os blocos `quantity_selector` + `buy_buttons` do Dawn quando se quer os dois
+  na mesma linha, como no layout da Albora.
+
+  Accepts:
+  - product: {Object} product object.
+  - block: {Object} bloco `albora_buy_row`.
+  - product_form_id: {String} id do form de produto.
+  - section_id: {String} id da seção.
+
+  Usage:
+  {% render 'albora-buy-row', product: product, block: block, product_form_id: product_form_id, section_id: section.id %}
+{% endcomment %}
+
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+
+  assign check_against_inventory = true
+  if variant.inventory_management != 'shopify' or variant.inventory_policy == 'continue'
+    assign check_against_inventory = false
+  endif
+
+  assign quantity_rule_soldout = false
+  if variant.quantity_rule.min > variant.inventory_quantity and check_against_inventory
+    assign quantity_rule_soldout = true
+  endif
+
+  assign is_unavailable = false
+  if variant == null or variant.available == false or quantity_rule_soldout
+    assign is_unavailable = true
+  endif
+
+  # theme-check-disable
+  assign cart_qty = cart | item_count_for_variant: variant.id
+  # theme-check-enable
+-%}
+
+<style>
+  #Albora-Buy-{{ section_id }} .albora-buy-row__submit {
+    background: {{ block.settings.button_background }};
+    color: {{ block.settings.button_color }};
+    font-size: {{ block.settings.button_font_size_mobile }}px;
+    font-weight: {{ block.settings.button_font_weight }};
+    min-height: {{ block.settings.button_height_mobile }}px;
+  }
+  @media screen and (min-width: 750px) {
+    #Albora-Buy-{{ section_id }} .albora-buy-row__submit {
+      font-size: {{ block.settings.button_font_size_desktop }}px;
+      min-height: {{ block.settings.button_height_desktop }}px;
+    }
+  }
+</style>
+
+<div id="Albora-Buy-{{ section_id }}" {{ block.shopify_attributes }}>
+  <product-form class="product-form" data-section-id="{{ section_id }}">
+    <div class="albora-buy-row__error product-form__error-message-wrapper" role="alert" hidden>
+      <span class="svg-wrapper">
+        {{- 'icon-error.svg' | inline_asset_content -}}
+      </span>
+      <span class="product-form__error-message"></span>
+    </div>
+
+    {%- form 'product',
+      product,
+      id: product_form_id,
+      class: 'form',
+      novalidate: 'novalidate',
+      data-type: 'add-to-cart-form'
+    -%}
+      <input
+        type="hidden"
+        name="id"
+        value="{{ variant.id }}"
+        {% if is_unavailable %}disabled{% endif %}
+        class="product-variant-id"
+      >
+
+      <div class="albora-buy-row">
+        <div
+          id="Quantity-Form-{{ section_id }}"
+          class="albora-buy-row__quantity product-form__input product-form__quantity"
+        >
+          {%- comment -%}
+            O label fica escondido no layout, mas a estrutura do Dawn é mantida:
+            `product-info.js` lê `.quantity__label` e `.quantity__rules-cart .loading__spinner`
+            sem checagem de nulo a cada atualização do carrinho.
+          {%- endcomment -%}
+          <label class="quantity__label form__label albora-qty__label" for="Quantity-{{ section_id }}">
+            <span>{{ 'products.product.quantity.label' | t }}</span>
+            <span class="quantity__rules-cart{% if cart_qty == 0 %} hidden{% endif %}" aria-hidden="true">
+              {%- render 'loading-spinner' -%}
+              <span>({{ 'products.product.quantity.in_cart_html' | t: quantity: cart_qty }})</span>
+            </span>
+          </label>
+          <quantity-input class="quantity albora-qty" data-url="{{ product.url }}" data-section="{{ section_id }}">
+            <button class="quantity__button albora-qty__button" name="minus" type="button">
+              <span class="visually-hidden">
+                {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+              </span>
+              <span class="svg-wrapper">{{- 'icon-minus.svg' | inline_asset_content -}}</span>
+            </button>
+            <input
+              class="quantity__input albora-qty__input"
+              type="number"
+              name="quantity"
+              id="Quantity-{{ section_id }}"
+              data-cart-quantity="{{ cart_qty }}"
+              data-min="{{ variant.quantity_rule.min }}"
+              min="{{ variant.quantity_rule.min }}"
+              {% if variant.quantity_rule.max != null %}
+                data-max="{{ variant.quantity_rule.max }}"
+                max="{{ variant.quantity_rule.max }}"
+              {% endif %}
+              step="{{ variant.quantity_rule.increment }}"
+              value="{{ variant.quantity_rule.min }}"
+              form="{{ product_form_id }}"
+            >
+            <button class="quantity__button albora-qty__button" name="plus" type="button">
+              <span class="visually-hidden">
+                {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+              </span>
+              <span class="svg-wrapper">{{- 'icon-plus.svg' | inline_asset_content -}}</span>
+            </button>
+          </quantity-input>
+
+          <div class="quantity__rules caption" id="Quantity-Rules-{{ section_id }}">
+            {%- if variant.quantity_rule.increment > 1 -%}
+              <span class="divider">
+                {{- 'products.product.quantity.multiples_of' | t: quantity: variant.quantity_rule.increment -}}
+              </span>
+            {%- endif -%}
+            {%- if variant.quantity_rule.min > 1 -%}
+              <span class="divider">
+                {{- 'products.product.quantity.minimum_of' | t: quantity: variant.quantity_rule.min -}}
+              </span>
+            {%- endif -%}
+            {%- if variant.quantity_rule.max != null -%}
+              <span class="divider">
+                {{- 'products.product.quantity.maximum_of' | t: quantity: variant.quantity_rule.max -}}
+              </span>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <button
+          id="ProductSubmitButton-{{ section_id }}"
+          type="submit"
+          name="add"
+          class="albora-buy-row__submit product-form__submit"
+          data-default-text="{{ block.settings.button_label | default: 'Comprar Agora' | escape }}"
+          {% if is_unavailable %}disabled{% endif %}
+        >
+          <span>
+            {%- if variant == null -%}
+              {{ 'products.product.unavailable' | t }}
+            {%- elsif is_unavailable -%}
+              {{ 'products.product.sold_out' | t }}
+            {%- else -%}
+              {{ block.settings.button_label | default: 'Comprar Agora' | escape }}
+            {%- endif -%}
+          </span>
+          {%- render 'loading-spinner' -%}
+        </button>
+      </div>
+
+      {%- if block.settings.show_dynamic_checkout -%}
+        <div class="albora-buy-row__dynamic">
+          {{ form | payment_button }}
+        </div>
+      {%- endif -%}
+    {%- endform -%}
+  </product-form>
+</div>

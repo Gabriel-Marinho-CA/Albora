@@ -1,0 +1,97 @@
+{% comment %}
+  Renders a galeria de mídia da Albora com Swiper.
+
+  Desktop: thumbnails verticais à esquerda + imagem principal.
+  Mobile: slider da imagem principal + thumbnails horizontais abaixo.
+
+  Accepts:
+  - product: {Object} product object.
+  - section_id: {String} id da seção.
+
+  Usage:
+  {% render 'albora-product-gallery', product: product, section_id: section.id %}
+{% endcomment %}
+
+<script src="{{ 'albora-product-gallery.js' | asset_url }}" defer="defer"></script>
+
+<albora-media-gallery
+  class="albora-gallery"
+  id="Albora-Gallery-{{ section_id }}"
+  data-section="{{ section_id }}"
+>
+  {%- if product.media.size > 0 -%}
+    <div class="albora-gallery__layout">
+      <div class="albora-gallery__thumbs swiper" data-albora-thumbs>
+        <div class="swiper-wrapper">
+          {%- for media in product.media -%}
+            <div class="swiper-slide" data-media-id="{{ media.id }}">
+              <div class="albora-gallery__thumb">
+                {{
+                  media.preview_image
+                  | image_url: width: 152
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '76, 152',
+                    alt: media.alt | default: product.title | escape
+                }}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="albora-gallery__main swiper" data-albora-main>
+        <div class="swiper-wrapper">
+          {%- for media in product.media -%}
+            {%- liquid
+              assign media_loading = 'lazy'
+              if forloop.first
+                assign media_loading = 'eager'
+              endif
+            -%}
+            <div class="swiper-slide" data-media-id="{{ media.id }}">
+              {%- if media.media_type == 'image' -%}
+                {{
+                  media
+                  | image_url: width: 1200
+                  | image_tag:
+                    loading: media_loading,
+                    widths: '400, 600, 800, 1000, 1200',
+                    sizes: '(min-width: 990px) 545px, 100vw',
+                    alt: media.alt | default: product.title | escape
+                }}
+              {%- else -%}
+                {% render 'product-media', media: media, loop: section.settings.enable_video_looping %}
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+
+    <div class="albora-gallery__thumbs-mobile swiper" data-albora-thumbs-mobile>
+      <div class="swiper-wrapper">
+        {%- for media in product.media -%}
+          <div class="swiper-slide" data-media-id="{{ media.id }}">
+            <div class="albora-gallery__thumb">
+              {{
+                media.preview_image
+                | image_url: width: 152
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '76, 152',
+                  alt: media.alt | default: product.title | escape
+              }}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- else -%}
+    <div class="albora-gallery__main">
+      <div class="swiper-slide">
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      </div>
+    </div>
+  {%- endif -%}
+</albora-media-gallery>
