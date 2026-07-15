@@ -1,0 +1,254 @@
+{%- comment -%}
+  Albora — Seção Instagram.
+  Cabeçalho com ícone (insta-ico.svg) + @handle + descrição (personalizáveis).
+  Blocos:
+    - "image": imagem + link (galeria manual).
+    - "@app": permite inserir um app de feed do Instagram (ex.: Instafeed).
+  Ver CLAUDE.md → "Regra de personalização de textos e botões".
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+  assign image_blocks = section.blocks | where: 'type', 'image'
+-%}
+
+<style>
+  #Instagram-{{ uid }} {
+    display: block;
+    width: 100%;
+    max-width: {{ s.max_width }}px;
+    margin: 0 auto;
+    padding: {{ s.padding_top }}px {{ s.side_padding }}px {{ s.padding_bottom }}px;
+    box-sizing: border-box;
+    font-family: 'Montserrat', var(--font-body-family, sans-serif);
+    text-align: center;
+  }
+  #Instagram-{{ uid }} .albora-ig__head {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--ig-handle-color);
+    text-decoration: none;
+  }
+  #Instagram-{{ uid }} .albora-ig__icon {
+    display: inline-flex;
+    width: {{ s.icon_size }}px;
+    height: {{ s.icon_size }}px;
+  }
+  #Instagram-{{ uid }} .albora-ig__icon svg,
+  #Instagram-{{ uid }} .albora-ig__icon img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  #Instagram-{{ uid }} .albora-ig__handle {
+    margin: 0;
+    color: var(--ig-handle-color);
+    font-size: {{ s.handle_font_size_desktop }}px;
+    font-weight: {{ s.handle_font_weight }};
+    line-height: 1.2;
+  }
+  #Instagram-{{ uid }} .albora-ig__desc {
+    margin: 12px auto 0;
+    max-width: 720px;
+    color: {{ s.desc_color }};
+    font-size: {{ s.desc_font_size_desktop }}px;
+    font-weight: {{ s.desc_font_weight }};
+    line-height: 1.5;
+  }
+  #Instagram-{{ uid }} .albora-ig__grid {
+    display: grid;
+    grid-template-columns: repeat({{ s.columns_desktop }}, 1fr);
+    gap: {{ s.gap }}px;
+    margin-top: {{ s.grid_spacing }}px;
+  }
+  #Instagram-{{ uid }} .albora-ig__item {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: {{ s.radius }}px;
+    aspect-ratio: {{ s.image_aspect }};
+    line-height: 0;
+  }
+  #Instagram-{{ uid }} .albora-ig__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  #Instagram-{{ uid }} .albora-ig__app { margin-top: {{ s.grid_spacing }}px; }
+
+  @media screen and (max-width: 749px) {
+    #Instagram-{{ uid }} {
+      padding: {{ s.padding_top_mobile }}px {{ s.side_padding_mobile }}px {{ s.padding_bottom_mobile }}px;
+    }
+    #Instagram-{{ uid }} .albora-ig__handle { font-size: {{ s.handle_font_size_mobile }}px; }
+    #Instagram-{{ uid }} .albora-ig__desc { font-size: {{ s.desc_font_size_mobile }}px; }
+    #Instagram-{{ uid }} .albora-ig__grid {
+      grid-template-columns: repeat({{ s.columns_mobile }}, 1fr);
+      gap: {{ s.gap_mobile }}px;
+    }
+  }
+</style>
+
+<section id="Instagram-{{ uid }}" class="albora-ig" style="--ig-handle-color: {{ s.handle_color }};">
+  {%- if s.handle != blank -%}
+    {%- if s.instagram_link != blank -%}
+      <a class="albora-ig__head" href="{{ s.instagram_link }}" target="_blank" rel="noopener" aria-label="{{ s.handle | escape }}">
+    {%- else -%}
+      <div class="albora-ig__head">
+    {%- endif -%}
+      {%- if s.show_icon -%}
+        <span class="albora-ig__icon">{{ 'insta-ico.svg' | inline_asset_content }}</span>
+      {%- endif -%}
+      <span class="albora-ig__handle">{{ s.handle }}</span>
+    {%- if s.instagram_link != blank -%}</a>{%- else -%}</div>{%- endif -%}
+  {%- endif -%}
+
+  {%- if s.description != blank -%}
+    <p class="albora-ig__desc">{{ s.description }}</p>
+  {%- endif -%}
+
+  {%- if image_blocks.size > 0 -%}
+    <div class="albora-ig__grid">
+      {%- for block in image_blocks -%}
+        {%- assign b = block.settings -%}
+        {%- liquid
+          assign item_tag = 'div'
+          if b.link != blank
+            assign item_tag = 'a'
+          endif
+        -%}
+        <{{ item_tag }}
+          class="albora-ig__item"
+          {% if b.link != blank %}href="{{ b.link }}" target="_blank" rel="noopener"{% if b.image_alt != blank %} aria-label="{{ b.image_alt | escape }}"{% endif %}{% endif %}
+          {{ block.shopify_attributes }}
+        >
+          {%- if b.image != blank -%}
+            {{
+              b.image
+              | image_url: width: 1000
+              | image_tag:
+                loading: 'lazy',
+                class: 'albora-ig__img',
+                sizes: '(max-width: 749px) 100vw, 33vw',
+                widths: '300, 450, 600, 800, 1000',
+                alt: b.image_alt
+            }}
+          {%- else -%}
+            <div class="albora-ig__img" style="background:#e5e5e5;width:100%;height:100%;">
+              {{ 'image' | placeholder_svg_tag: 'albora-ig__img' }}
+            </div>
+          {%- endif -%}
+        </{{ item_tag }}>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- for block in section.blocks -%}
+    {%- if block.type == '@app' -%}
+      <div class="albora-ig__app" {{ block.shopify_attributes }}>
+        {%- render block -%}
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+</section>
+
+{% schema %}
+{
+  "name": "Albora Instagram",
+  "tag": "section",
+  "class": "albora-ig-section",
+  "settings": [
+    { "type": "header", "content": "Cabeçalho" },
+    { "type": "checkbox", "id": "show_icon", "label": "Mostrar ícone do Instagram", "default": true },
+    { "type": "range", "id": "icon_size", "min": 16, "max": 48, "step": 2, "unit": "px", "label": "Tamanho do ícone", "default": 24 },
+    { "type": "text", "id": "handle", "label": "Perfil (@)", "default": "@alboranutrition" },
+    { "type": "url", "id": "instagram_link", "label": "Link do perfil" },
+    { "type": "richtext", "id": "description", "label": "Descrição", "default": "<p>Conecte-se conosco! Siga-nos nas redes sociais e mantenha-se atualizado com as nossas atividades e novidades.</p>" },
+
+    { "type": "header", "content": "Perfil (@) — tipografia" },
+    { "type": "range", "id": "handle_font_size_desktop", "min": 12, "max": 40, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 20 },
+    { "type": "range", "id": "handle_font_size_mobile", "min": 10, "max": 32, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 18 },
+    {
+      "type": "select", "id": "handle_font_weight", "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "600"
+    },
+    { "type": "color", "id": "handle_color", "label": "Cor", "default": "#06262D" },
+
+    { "type": "header", "content": "Descrição — tipografia" },
+    { "type": "range", "id": "desc_font_size_desktop", "min": 10, "max": 28, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 15 },
+    { "type": "range", "id": "desc_font_size_mobile", "min": 10, "max": 24, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 14 },
+    {
+      "type": "select", "id": "desc_font_weight", "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "desc_color", "label": "Cor", "default": "#5A6B6E" },
+
+    { "type": "header", "content": "Galeria" },
+    { "type": "range", "id": "columns_desktop", "min": 2, "max": 6, "step": 1, "label": "Colunas (desktop)", "default": 3 },
+    { "type": "range", "id": "columns_mobile", "min": 1, "max": 3, "step": 1, "label": "Colunas (mobile)", "default": 1 },
+    {
+      "type": "select", "id": "image_aspect", "label": "Proporção das imagens",
+      "options": [
+        { "value": "1 / 1", "label": "1 : 1 (quadrado)" },
+        { "value": "4 / 5", "label": "4 : 5 (retrato)" },
+        { "value": "3 / 4", "label": "3 : 4" },
+        { "value": "16 / 9", "label": "16 : 9" }
+      ],
+      "default": "1 / 1"
+    },
+    { "type": "range", "id": "radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Raio da borda", "default": 0 },
+    { "type": "range", "id": "gap", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Espaço entre imagens (desktop)", "default": 20 },
+    { "type": "range", "id": "gap_mobile", "min": 0, "max": 32, "step": 2, "unit": "px", "label": "Espaço entre imagens (mobile)", "default": 12 },
+    { "type": "range", "id": "grid_spacing", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Espaço acima da galeria", "default": 48 },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "min": 600, "max": 1600, "step": 10, "unit": "px", "label": "Largura máxima", "default": 900 },
+    { "type": "header", "content": "Espaçamento (desktop)" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Superior", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Inferior", "default": 48 },
+    { "type": "range", "id": "side_padding", "min": 0, "max": 80, "step": 2, "unit": "px", "label": "Lateral", "default": 20 },
+    { "type": "header", "content": "Espaçamento (mobile)" },
+    { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Superior", "default": 32 },
+    { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Inferior", "default": 32 },
+    { "type": "range", "id": "side_padding_mobile", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Lateral", "default": 16 }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Imagem",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Imagem" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "text", "id": "image_alt", "label": "Texto alternativo (acessibilidade)" }
+      ]
+    },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "Albora Instagram",
+      "blocks": [
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" }
+      ]
+    }
+  ]
+}
+{% endschema %}
