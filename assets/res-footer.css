@@ -273,11 +273,7 @@
   transition: opacity 0.2s ease;
 }
 
-.res-footer__col-link:hover,
-.res-footer__col-link--active {
-  opacity: 0.75;
-  text-decoration: underline;
-}
+
 
 .res-footer__contact-item {
   display: flex;
