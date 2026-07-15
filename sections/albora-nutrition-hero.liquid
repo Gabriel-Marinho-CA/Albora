@@ -76,14 +76,25 @@
     object-fit: cover;
   }
   #Albora-Hero-{{ uid }} .albora-hero__img--mobile { display: none; }
+  #Albora-Hero-{{ uid }} .albora-hero__slide-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+  }
   #Albora-Hero-{{ uid }} .albora-hero__container {
     position: absolute;
     top: 50%;
+    z-index: 2;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
+  /* Quando o slide inteiro é um link, os cliques atravessam o card;
+     só o botão (e o próprio link do slide) permanecem clicáveis. */
+  #Albora-Hero-{{ uid }} .albora-hero__media--linked .albora-hero__container { pointer-events: none; }
+  #Albora-Hero-{{ uid }} .albora-hero__media--linked .albora-hero__button { pointer-events: auto; }
   #Albora-Hero-{{ uid }} .albora-hero__title { margin: 0; color: var(--hero-title-color); line-height: 1.05; }
   #Albora-Hero-{{ uid }} .albora-hero__content { margin: 0; color: var(--hero-content-color); line-height: 1.4; }
   #Albora-Hero-{{ uid }} .albora-hero__content p { margin: 0; }
@@ -127,7 +138,14 @@
       {%- for block in section.blocks -%}
         {%- assign b = block.settings -%}
         <div class="swiper-slide" id="Slide-{{ block.id }}" {{ block.shopify_attributes }}>
-          <div class="albora-hero__media">
+          <div class="albora-hero__media{% if b.slide_link != blank %} albora-hero__media--linked{% endif %}">
+            {%- if b.slide_link != blank -%}
+              <a
+                href="{{ b.slide_link }}"
+                class="albora-hero__slide-link"
+                aria-label="{{ b.title | default: 'slide' | strip_html | escape }}"
+              ></a>
+            {%- endif -%}
             {%- if b.image_desktop != blank -%}
               {{
                 b.image_desktop
@@ -282,6 +300,7 @@
         { "type": "richtext", "id": "content", "label": "Texto", "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>" },
         { "type": "text", "id": "button_label", "label": "Texto do botão", "default": "Saiba mais" },
         { "type": "url", "id": "button_link", "label": "Link do botão" },
+        { "type": "url", "id": "slide_link", "label": "Link do slide inteiro", "info": "Deixe em branco para não tornar o slide clicável. O botão continua com seu próprio link." },
 
         { "type": "header", "content": "Container" },
         {

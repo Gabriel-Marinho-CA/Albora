@@ -1,0 +1,130 @@
+{%- comment -%}
+  Res — Card de produto reutilizável.
+
+  Uso:
+    {% render 'res-cards', product: product %}
+    {% render 'res-cards', product: product, show_description: false, show_wishlist: false %}
+    {% render 'res-cards' %}  {# sem produto: renderiza placeholder (onboarding) #}
+
+  Parâmetros:
+    - product          (object)  Produto. Se ausente, renderiza um placeholder.
+    - show_description (bool)    Mostra a descrição curta. Padrão: true.
+    - show_wishlist    (bool)    Mostra o botão de favoritar. Padrão: true.
+    - description_words(number)  Nº de palavras da descrição. Padrão: 10.
+    - image_loading    (string)  'lazy' (padrão) ou 'eager'.
+    - placeholder      (string)  Nome do placeholder_svg_tag. Padrão: 'product-apparel-2'.
+
+  CSS: `assets/base.css` → seção "Res — Card de produto".
+  Tipografia/cores são lidas de custom properties `--res-card-*`, definidas pela
+  seção que consome o card (ver CLAUDE.md → regra de personalização).
+{%- endcomment -%}
+
+{%- liquid
+  assign show_description = show_description | default: true, allow_false: true
+  assign show_wishlist = show_wishlist | default: true, allow_false: true
+  assign description_words = description_words | default: 10
+  assign image_loading = image_loading | default: 'lazy'
+  assign placeholder = placeholder | default: 'product-apparel-2'
+-%}
+
+<div class="res-card">
+  <div class="res-card__media">
+    {%- if product != blank and product != empty -%}
+      <a
+        href="{{ product.url }}"
+        class="res-card__media-link"
+        aria-label="{{ product.title | escape }}"
+        tabindex="-1"
+      >
+        {%- if product.featured_media != blank -%}
+          {{
+            product.featured_media
+            | image_url: width: 800
+            | image_tag:
+              loading: image_loading,
+              class: 'res-card__img',
+              widths: '200, 300, 400, 500, 600, 800',
+              sizes: '(min-width: 990px) 336px, (min-width: 750px) 45vw, 80vw',
+              alt: product.featured_media.alt
+          }}
+        {%- else -%}
+          {{ placeholder | placeholder_svg_tag: 'res-card__img res-card__img--placeholder' }}
+        {%- endif -%}
+      </a>
+    {%- else -%}
+      {{ placeholder | placeholder_svg_tag: 'res-card__img res-card__img--placeholder' }}
+    {%- endif -%}
+
+    {%- if show_wishlist -%}
+      <button
+        type="button"
+        class="res-card__wishlist"
+        aria-label="{{ 'products.product.add_to_wishlist' | t | default: 'Adicionar aos favoritos' }}"
+        aria-pressed="false"
+        data-res-wishlist
+        {% if product != blank and product != empty %}
+          data-product-id="{{ product.id }}"
+          data-product-handle="{{ product.handle }}"
+        {% endif %}
+      >
+        <span class="res-card__wishlist-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M15.696 4C18.871 4 21 6.98 21 9.755C21 15.388 12.161 20 12 20C11.839 20 3 15.388 3 9.755C3 6.98 5.129 4 8.304 4C10.119 4 11.311 4.905 12 5.711C12.689 4.905 13.881 4 15.696 4Z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </span>
+      </button>
+    {%- endif -%}
+  </div>
+
+  <div class="res-card__text">
+    <div class="res-card__group">
+      <h3 class="res-card__title">
+        {%- if product != blank and product != empty -%}
+          <a href="{{ product.url }}" class="res-card__title-link">{{ product.title | escape }}</a>
+        {%- else -%}
+          {{ 'onboarding.product_title' | t | default: 'Lorem Ipsum 300g' }}
+        {%- endif -%}
+      </h3>
+
+      {%- if show_description -%}
+        {%- liquid
+          if product != blank and product != empty
+            assign card_description = product.description | strip_html | truncatewords: description_words
+          else
+            assign card_description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit,'
+          endif
+        -%}
+        {%- if card_description != blank -%}
+          <p class="res-card__description">{{ card_description }}</p>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+
+    <div class="res-card__group res-card__prices">
+      {%- if product != blank and product != empty -%}
+        {%- if product.compare_at_price > product.price -%}
+          <span class="res-card__price-compare">
+            <s>{{ product.compare_at_price | money }}</s>
+          </span>
+        {%- endif -%}
+        <span class="res-card__price">
+          {%- if product.price_varies -%}
+            {{ 'products.product.from_price_html' | t: price: product.price_min | money }}
+          {%- else -%}
+            {{ product.price | money }}
+          {%- endif -%}
+        </span>
+      {%- else -%}
+        <span class="res-card__price-compare"><s>R$ 999,00</s></span>
+        <span class="res-card__price">R$ 888,00</span>
+      {%- endif -%}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,99 @@
+{%- comment -%}
+  Albora — Imagem com link.
+  Imagem desktop/mobile separadas (trocadas por @media). A imagem inteira é clicável (link opcional).
+  Ver CLAUDE.md → convenções.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+-%}
+
+<style>
+  #Albora-ImageLink-{{ uid }} {
+    display: block;
+    width: 100%;
+    font-family: 'Montserrat', var(--font-body-family, sans-serif);
+    margin: 0 auto;
+  }
+  #Albora-ImageLink-{{ uid }} .albora-image-link__media {
+    display: block;
+    width: 100%;
+    max-width: {{ s.max_width }}px;
+    margin: 0 auto;
+    line-height: 0;
+  }
+  #Albora-ImageLink-{{ uid }} .albora-image-link__img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  #Albora-ImageLink-{{ uid }} .albora-image-link__img--mobile { display: none; }
+
+  @media screen and (max-width: 749px) {
+    #Albora-ImageLink-{{ uid }} .albora-image-link__img--desktop { display: none; }
+    #Albora-ImageLink-{{ uid }} .albora-image-link__img--mobile { display: block; }
+  }
+</style>
+
+{%- capture media -%}
+  {%- if s.image_desktop != blank -%}
+    {{
+      s.image_desktop
+      | image_url: width: 2000
+      | image_tag:
+        loading: 'lazy',
+        class: 'albora-image-link__img albora-image-link__img--desktop',
+        sizes: '100vw',
+        widths: '600, 900, 1200, 1600, 2000'
+    }}
+  {%- else -%}
+    <div class="albora-image-link__img albora-image-link__img--desktop" style="background:#e5e5e5;aspect-ratio:16/7;">
+      {{ 'hero-apparel-1' | placeholder_svg_tag: 'albora-image-link__img' }}
+    </div>
+  {%- endif -%}
+
+  {%- if s.image_mobile != blank -%}
+    {{
+      s.image_mobile
+      | image_url: width: 1200
+      | image_tag:
+        loading: 'lazy',
+        class: 'albora-image-link__img albora-image-link__img--mobile',
+        sizes: '100vw',
+        widths: '400, 600, 800, 1000, 1200'
+    }}
+  {%- endif -%}
+{%- endcapture -%}
+
+<section id="Albora-ImageLink-{{ uid }}" class="albora-image-link">
+  {%- if s.link != blank -%}
+    <a href="{{ s.link }}" class="albora-image-link__media">{{ media }}</a>
+  {%- else -%}
+    <div class="albora-image-link__media">{{ media }}</div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Albora Imagem + Link",
+  "tag": "section",
+  "class": "albora-image-link-section",
+  "settings": [
+    { "type": "header", "content": "Imagens" },
+    { "type": "image_picker", "id": "image_desktop", "label": "Imagem desktop" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Imagem mobile" },
+
+    { "type": "header", "content": "Link" },
+    { "type": "url", "id": "link", "label": "Link da imagem" },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "min": 400, "max": 2000, "step": 20, "unit": "px", "label": "Largura máxima", "default": 2000 }
+  ],
+  "presets": [
+    {
+      "name": "Albora Imagem + Link"
+    }
+  ]
+}
+{% endschema %}

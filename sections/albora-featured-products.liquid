@@ -1,0 +1,501 @@
+{%- comment -%}
+  Albora — Vitrine de produtos ("Mais vendidos").
+  Cabeçalho com título + botão (CTA) e grid de cards.
+  O card vem do snippet reutilizável `res-cards.liquid` (CSS em base.css).
+  Ver CLAUDE.md → "Regra de personalização de textos e botões".
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+  assign products = s.collection.products
+-%}
+
+<style>
+  #Albora-FeaturedProducts-{{ uid }} {
+    --fp-title-color: {{ s.title_color }};
+    --fp-btn-color: {{ s.button_color }};
+    --fp-btn-bg: {{ s.button_background }};
+
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Montserrat', var(--font-body-family, sans-serif);
+    padding-top: {{ s.padding_top }}px;
+    padding-bottom: {{ s.padding_bottom }}px;
+    background: {{ s.section_background }};
+  }
+  #Albora-FeaturedProducts-{{ uid }} .albora-fp__inner {
+    box-sizing: border-box;
+    max-width: {{ s.container_width }}px;
+    margin: 0 auto;
+    padding-inline: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  #Albora-FeaturedProducts-{{ uid }} .albora-fp__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+  }
+  #Albora-FeaturedProducts-{{ uid }} .albora-fp__title {
+    margin: 0;
+    color: var(--fp-title-color);
+    text-transform: uppercase;
+    line-height: normal;
+    font-size: {{ s.title_font_size_desktop }}px;
+    font-weight: {{ s.title_font_weight }};
+  }
+  #Albora-FeaturedProducts-{{ uid }} .albora-fp__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    padding: 0 20px;
+    border: none;
+    border-radius: 54px;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    background: var(--fp-btn-bg);
+    color: var(--fp-btn-color);
+    font-family: inherit;
+    transition: opacity 0.2s ease;
+    height: {{ s.button_height_desktop }}px;
+    font-size: {{ s.button_font_size_desktop }}px;
+    font-weight: {{ s.button_font_weight }};
+  }
+  #Albora-FeaturedProducts-{{ uid }} .albora-fp__button:hover { opacity: 0.9; }
+  #Albora-FeaturedProducts-{{ uid }} .albora-fp__grid {
+    display: grid;
+    grid-template-columns: repeat({{ s.columns_desktop }}, minmax(0, 1fr));
+    gap: 32px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  /* Tipografia do card vinda dos settings (escopada nesta instância). */
+  #Albora-FeaturedProducts-{{ uid }} .res-card {
+    --res-card-title-size: {{ s.card_title_font_size_desktop }}px;
+    --res-card-title-weight: {{ s.card_title_font_weight }};
+    --res-card-title-color: {{ s.card_title_color }};
+    --res-card-description-size: {{ s.card_description_font_size_desktop }}px;
+    --res-card-description-weight: {{ s.card_description_font_weight }};
+    --res-card-description-color: {{ s.card_description_color }};
+    --res-card-price-size: {{ s.card_price_font_size_desktop }}px;
+    --res-card-price-weight: {{ s.card_price_font_weight }};
+    --res-card-price-color: {{ s.card_price_color }};
+    --res-card-price-compare-size: {{ s.card_price_compare_font_size_desktop }}px;
+    --res-card-price-compare-weight: {{ s.card_price_compare_font_weight }};
+    --res-card-price-compare-color: {{ s.card_price_compare_color }};
+  }
+
+  @media screen and (max-width: 989px) {
+    #Albora-FeaturedProducts-{{ uid }} .albora-fp__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+  }
+  @media screen and (max-width: 749px) {
+    #Albora-FeaturedProducts-{{ uid }} .albora-fp__inner {
+      padding-inline: 16px;
+      gap: 24px;
+    }
+    #Albora-FeaturedProducts-{{ uid }} .albora-fp__title {
+      font-size: {{ s.title_font_size_mobile }}px;
+    }
+    #Albora-FeaturedProducts-{{ uid }} .albora-fp__button {
+      height: {{ s.button_height_mobile }}px;
+      font-size: {{ s.button_font_size_mobile }}px;
+      padding: 0 16px;
+    }
+    #Albora-FeaturedProducts-{{ uid }} .albora-fp__grid {
+      grid-template-columns: repeat({{ s.columns_mobile }}, minmax(0, 1fr));
+      gap: 16px;
+    }
+    #Albora-FeaturedProducts-{{ uid }} .res-card {
+      --res-card-title-size: {{ s.card_title_font_size_mobile }}px;
+      --res-card-description-size: {{ s.card_description_font_size_mobile }}px;
+      --res-card-price-size: {{ s.card_price_font_size_mobile }}px;
+      --res-card-price-compare-size: {{ s.card_price_compare_font_size_mobile }}px;
+      --res-card-gap: 16px;
+    }
+  }
+</style>
+
+<section id="Albora-FeaturedProducts-{{ uid }}" class="albora-fp">
+  <div class="albora-fp__inner">
+    {%- if s.title != blank or s.button_label != blank -%}
+      <div class="albora-fp__header">
+        {%- if s.title != blank -%}
+          <h2 class="albora-fp__title">{{ s.title }}</h2>
+        {%- endif -%}
+        {%- if s.button_label != blank -%}
+          <a
+            href="{{ s.button_link | default: s.collection.url | default: '#' }}"
+            class="albora-fp__button"
+            {% if s.button_link == blank and s.collection == blank %}
+              role="link"
+              aria-disabled="true"
+            {% endif %}
+          >
+            {{ s.button_label }}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <ul class="albora-fp__grid" role="list">
+      {%- if products.size > 0 -%}
+        {%- for product in products limit: s.products_to_show -%}
+          {%- if forloop.index <= s.columns_desktop -%}
+            {%- assign card_image_loading = 'eager' -%}
+          {%- else -%}
+            {%- assign card_image_loading = 'lazy' -%}
+          {%- endif -%}
+          <li class="albora-fp__item">
+            {% render 'res-cards',
+              product: product,
+              show_description: s.show_description,
+              show_wishlist: s.show_wishlist,
+              description_words: s.description_words,
+              image_loading: card_image_loading
+            %}
+          </li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..s.products_to_show) -%}
+          <li class="albora-fp__item">
+            {% render 'res-cards', show_description: s.show_description, show_wishlist: s.show_wishlist %}
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Albora Vitrine",
+  "tag": "section",
+  "class": "albora-featured-products-section",
+  "settings": [
+    { "type": "header", "content": "Produtos" },
+    { "type": "collection", "id": "collection", "label": "Coleção" },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "label": "Produtos exibidos",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Colunas (desktop)",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Colunas (mobile)",
+      "options": [
+        { "value": "1", "label": "1 coluna" },
+        { "value": "2", "label": "2 colunas" }
+      ],
+      "default": "2"
+    },
+    { "type": "checkbox", "id": "show_description", "label": "Mostrar descrição", "default": true },
+    { "type": "checkbox", "id": "show_wishlist", "label": "Mostrar botão de favoritar", "default": true },
+    {
+      "type": "range",
+      "id": "description_words",
+      "min": 4,
+      "max": 30,
+      "step": 1,
+      "label": "Palavras na descrição",
+      "default": 10,
+      "visible_if": "{{ section.settings.show_description }}"
+    },
+
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 1000,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "label": "Largura máxima do container",
+      "default": 1440
+    },
+    { "type": "color", "id": "section_background", "label": "Fundo da seção", "default": "#FFFFFF" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Espaço acima",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Espaço abaixo",
+      "default": 60
+    },
+
+    { "type": "header", "content": "Conteúdo" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Mais vendidos" },
+    { "type": "text", "id": "button_label", "label": "Texto do botão", "default": "Mais produtos" },
+    { "type": "url", "id": "button_link", "label": "Link do botão" },
+
+    { "type": "header", "content": "Título — tipografia" },
+    {
+      "type": "range",
+      "id": "title_font_size_desktop",
+      "min": 14,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (desktop)",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_mobile",
+      "min": 12,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (mobile)",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "600"
+    },
+    { "type": "color", "id": "title_color", "label": "Cor", "default": "#06262D" },
+
+    { "type": "header", "content": "Botão (CTA)" },
+    {
+      "type": "range",
+      "id": "button_font_size_desktop",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho da fonte (desktop)",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "button_font_size_mobile",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho da fonte (mobile)",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "500"
+    },
+    { "type": "color", "id": "button_color", "label": "Cor do texto", "default": "#FFFFFF" },
+    { "type": "color", "id": "button_background", "label": "Cor de fundo", "default": "#06262D" },
+    {
+      "type": "range",
+      "id": "button_height_desktop",
+      "min": 28,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Altura (desktop)",
+      "default": 39
+    },
+    {
+      "type": "range",
+      "id": "button_height_mobile",
+      "min": 24,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "label": "Altura (mobile)",
+      "default": 34
+    },
+
+    { "type": "header", "content": "Card — título do produto" },
+    {
+      "type": "range",
+      "id": "card_title_font_size_desktop",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (desktop)",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "card_title_font_size_mobile",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (mobile)",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "card_title_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "600"
+    },
+    { "type": "color", "id": "card_title_color", "label": "Cor", "default": "#000000" },
+
+    { "type": "header", "content": "Card — descrição" },
+    {
+      "type": "range",
+      "id": "card_description_font_size_desktop",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (desktop)",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_description_font_size_mobile",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (mobile)",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "card_description_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "card_description_color", "label": "Cor", "default": "#3A575E" },
+
+    { "type": "header", "content": "Card — preço" },
+    {
+      "type": "range",
+      "id": "card_price_font_size_desktop",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (desktop)",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "card_price_font_size_mobile",
+      "min": 8,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (mobile)",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "card_price_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "600"
+    },
+    { "type": "color", "id": "card_price_color", "label": "Cor", "default": "#06262D" },
+
+    { "type": "header", "content": "Card — preço comparado" },
+    {
+      "type": "range",
+      "id": "card_price_compare_font_size_desktop",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (desktop)",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_price_compare_font_size_mobile",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho (mobile)",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "card_price_compare_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "card_price_compare_color", "label": "Cor", "default": "#3A575E" }
+  ],
+  "presets": [{ "name": "Albora Vitrine" }]
+}
+{% endschema %}

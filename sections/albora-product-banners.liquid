@@ -1,0 +1,183 @@
+{%- comment -%}
+  Albora — Grade de banners de produtos.
+  Cada card é um bloco: imagem desktop + mobile e link (card inteiro clicável).
+  Desktop: 2 colunas. Cards normais empilham na coluna esquerda; um card marcado como
+  "altura total" ocupa a coluna direita inteira.
+  Mobile: todos os cards empilhados, um embaixo do outro.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+-%}
+
+<style>
+  #Banners-{{ uid }} {
+    display: block;
+    width: 100%;
+    max-width: {{ s.max_width }}px;
+    margin: 0 auto;
+    padding: {{ s.padding_top }}px {{ s.side_padding }}px {{ s.padding_bottom }}px;
+    box-sizing: border-box;
+  }
+  #Banners-{{ uid }} .albora-banners__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: {{ s.gap }}px;
+    align-items: stretch;
+  }
+  #Banners-{{ uid }} .albora-banners__card {
+    position: relative;
+    grid-column: 1;
+    aspect-ratio: {{ s.card_aspect }};
+    display: block;
+    overflow: hidden;
+    border-radius: {{ s.radius }}px;
+    line-height: 0;
+  }
+  #Banners-{{ uid }} .albora-banners__card--tall {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    aspect-ratio: auto;
+  }
+  #Banners-{{ uid }} .albora-banners__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #Banners-{{ uid }} .albora-banners__img--mobile { display: none; }
+
+  @media screen and (max-width: 749px) {
+    #Banners-{{ uid }} {
+      padding: {{ s.padding_top_mobile }}px {{ s.side_padding_mobile }}px {{ s.padding_bottom_mobile }}px;
+    }
+    #Banners-{{ uid }} .albora-banners__grid {
+      grid-template-columns: 1fr;
+      gap: {{ s.gap_mobile }}px;
+    }
+    #Banners-{{ uid }} .albora-banners__card,
+    #Banners-{{ uid }} .albora-banners__card--tall {
+      grid-column: auto;
+      grid-row: auto;
+      aspect-ratio: auto;
+    }
+    #Banners-{{ uid }} .albora-banners__img { height: auto; }
+    #Banners-{{ uid }} .albora-banners__img--desktop { display: none; }
+    #Banners-{{ uid }} .albora-banners__img--mobile { display: block; }
+  }
+</style>
+
+<section id="Banners-{{ uid }}" class="albora-banners">
+  <div class="albora-banners__grid">
+    {%- for block in section.blocks -%}
+      {%- assign b = block.settings -%}
+      {%- liquid
+        assign card_tag = 'div'
+        if b.link != blank
+          assign card_tag = 'a'
+        endif
+        assign card_class = 'albora-banners__card'
+        if b.desktop_full_height
+          assign card_class = card_class | append: ' albora-banners__card--tall'
+        endif
+      -%}
+      <{{ card_tag }}
+        class="{{ card_class }}"
+        {% if b.link != blank %}href="{{ b.link }}"{% if b.image_alt != blank %} aria-label="{{ b.image_alt | escape }}"{% endif %}{% endif %}
+        {{ block.shopify_attributes }}
+      >
+        {%- if b.image_desktop != blank -%}
+          {{
+            b.image_desktop
+            | image_url: width: 1500
+            | image_tag:
+              loading: 'lazy',
+              class: 'albora-banners__img albora-banners__img--desktop',
+              sizes: '(max-width: 749px) 100vw, 50vw',
+              widths: '400, 600, 800, 1000, 1200, 1500',
+              alt: b.image_alt
+          }}
+        {%- else -%}
+          <div class="albora-banners__img albora-banners__img--desktop" style="background:#e5e5e5;width:100%;height:100%;">
+            {{ 'collection-1' | placeholder_svg_tag: 'albora-banners__img' }}
+          </div>
+        {%- endif -%}
+
+        {%- if b.image_mobile != blank -%}
+          {{
+            b.image_mobile
+            | image_url: width: 1200
+            | image_tag:
+              loading: 'lazy',
+              class: 'albora-banners__img albora-banners__img--mobile',
+              sizes: '100vw',
+              widths: '400, 600, 800, 1000, 1200',
+              alt: b.image_alt
+          }}
+        {%- endif -%}
+      </{{ card_tag }}>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Albora Banners",
+  "tag": "section",
+  "class": "albora-banners-section",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "min": 800, "max": 1600, "step": 10, "unit": "px", "label": "Largura máxima", "default": 1370 },
+    { "type": "range", "id": "radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Raio da borda dos cards", "default": 16 },
+    {
+      "type": "select",
+      "id": "card_aspect",
+      "label": "Proporção dos cards pequenos (desktop)",
+      "info": "Largura : altura de cada card da coluna esquerda.",
+      "options": [
+        { "value": "2.05 / 1", "label": "2,05 : 1 (padrão)" },
+        { "value": "2 / 1", "label": "2 : 1" },
+        { "value": "16 / 9", "label": "16 : 9" },
+        { "value": "3 / 2", "label": "3 : 2" },
+        { "value": "1 / 1", "label": "1 : 1 (quadrado)" }
+      ],
+      "default": "2.05 / 1"
+    },
+    { "type": "range", "id": "gap", "min": 0, "max": 48, "step": 2, "unit": "px", "label": "Espaço entre cards (desktop)", "default": 20 },
+    { "type": "range", "id": "gap_mobile", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Espaço entre cards (mobile)", "default": 16 },
+    { "type": "header", "content": "Espaçamento (desktop)" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Superior", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Inferior", "default": 40 },
+    { "type": "range", "id": "side_padding", "min": 0, "max": 80, "step": 2, "unit": "px", "label": "Lateral", "default": 20 },
+    { "type": "header", "content": "Espaçamento (mobile)" },
+    { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Superior", "default": 24 },
+    { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Inferior", "default": 24 },
+    { "type": "range", "id": "side_padding_mobile", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Lateral", "default": 16 }
+  ],
+  "blocks": [
+    {
+      "type": "banner",
+      "name": "Banner",
+      "settings": [
+        { "type": "image_picker", "id": "image_desktop", "label": "Imagem desktop" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Imagem mobile" },
+        { "type": "url", "id": "link", "label": "Link (card inteiro clicável)" },
+        { "type": "text", "id": "image_alt", "label": "Texto alternativo (acessibilidade)" },
+        { "type": "checkbox", "id": "desktop_full_height", "label": "Ocupar altura total no desktop", "info": "Use no card da coluna direita.", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Albora Banners",
+      "blocks": [
+        { "type": "banner" },
+        { "type": "banner" },
+        { "type": "banner", "settings": { "desktop_full_height": true } }
+      ]
+    }
+  ]
+}
+{% endschema %}
