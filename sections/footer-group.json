@@ -101,7 +101,7 @@
         "column_link_font_size_mobile": 13,
         "column_link_font_weight": "400",
         "column_link_color": "#ffffff",
-        "payment_enable": false,
+        "payment_enable": true,
         "payment_image_desktop": "shopify://shop_images/Frame_1112.png",
         "payment_image_mobile": "shopify://shop_images/Frame_1112_1.png",
         "payment_image_width_desktop": 420,
