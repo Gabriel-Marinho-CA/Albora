@@ -93,7 +93,7 @@
       "type": "albora-featured-products",
       "name": "Albora Vitrine",
       "settings": {
-        "collection": "",
+        "collection": "frontpage",
         "products_to_show": 4,
         "columns_desktop": 4,
         "columns_mobile": "1",
