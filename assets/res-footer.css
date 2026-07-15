@@ -19,6 +19,12 @@
 
 .res-footer__newsletter {
   padding-block: 48px;
+
+  .res-footer__newsletter {
+    border-bottom: 1px solid #ffff;
+    padding-bottom: 4rem;
+
+  }
 }
 
 .res-footer__newsletter-inner {
@@ -35,6 +41,12 @@
   gap: 48px;
   flex: 1 1 auto;
   flex-wrap: wrap;
+
+  @media (max-width: 989px) {
+    max-height: 108px;
+    flex-wrap: nowrap;
+    width: 100%;
+  }
 }
 
 .res-footer__newsletter-text {
@@ -191,7 +203,7 @@
 
 .res-footer__main {
   display: block;
-  padding-block: 64px;
+  padding-block: 32px;
 }
 
 .res-footer__columns {
@@ -339,6 +351,11 @@
 
 .res-footer__bottom {
   padding-block: 11px;
+
+  .res-footer__bottom-inner {
+    border-top: 1px solid #ffff;
+    padding-top: 4rem;
+  }
 }
 
 .res-footer__bottom-inner {
