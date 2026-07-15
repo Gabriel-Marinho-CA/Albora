@@ -96,7 +96,7 @@
         "collection": "",
         "products_to_show": 4,
         "columns_desktop": 4,
-        "columns_mobile": "2",
+        "columns_mobile": "1",
         "show_description": true,
         "show_wishlist": true,
         "description_words": 10,
