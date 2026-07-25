@@ -10,6 +10,7 @@ Tema Shopify (base Dawn) com seções customizadas próprias, prefixadas com `al
 - **Fonte**: `Montserrat` (já importada em `albora-header.css`), com fallback `var(--font-body-family)`.
 - **Variáveis de cor de referência**: primária `#06262d`, secundária `#e74f3d`.
 - Nomear ids de settings em `snake_case`.
+- **Settings do tipo `range`**: o Shopify calcula `(max - min) / step` e exige que o resultado seja **no máximo 101** (erro: `FileSaveError: Invalid schema: setting with id="..." step não tem validade. As configurações do intervalo podem ter no máximo 101 etapas`). Ao criar ou editar um range, sempre conferir essa conta e ajustar o `step` (aumentando-o) se passar de 101.
 
 ## Regra de personalização de textos e botões (OBRIGATÓRIA)
 
