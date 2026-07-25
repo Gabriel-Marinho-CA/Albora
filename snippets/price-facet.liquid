@@ -1,45 +1,82 @@
-<span class="field-currency">{{ cart.currency.symbol }}</span>
-
-<div class="field">
-  <input
-    class="field__input"
-    name="{{ filter.min_value.param_name }}"
-    id="{{ id_prefix }}{{ filter.label | escape }}-GTE"
-    {%- if filter.min_value.value -%}
-      value="{{ filter.min_value.value | money_without_currency }}"
-    {%- endif -%}
-    type="text"
-    inputmode="decimal"
-    placeholder="0"
-    data-pattern="\d| |,|\."
-    data-min="0"
-    data-max="{{ filter.range_max | money_without_currency }}"
-  >
-  <label class="field__label" for="{{ id_prefix }}{{ filter.label | escape }}-GTE">
-    {{- 'products.facets.from' | t -}}
-  </label>
-</div>
-
-{%- if filter_type != 'vertical' -%}
-  <span class="field-currency">{{ cart.currency.symbol }}</span>
+{%- if filter_type == 'vertical' -%}
+  {%- liquid
+    assign range_max = filter.range_max
+    assign min_value = filter.min_value.value | default: 0
+    assign max_value = filter.max_value.value | default: range_max
+  -%}
+  <div class="albora-price-slider" data-currency-symbol="{{ cart.currency.symbol }}">
+    <div class="albora-price-slider__track">
+      <div class="albora-price-slider__range"></div>
+    </div>
+    <input
+      type="range"
+      class="albora-price-slider__input albora-price-slider__input--min"
+      min="0"
+      max="{{ range_max }}"
+      value="{{ min_value }}"
+      aria-label="{{ 'products.facets.from' | t }}"
+    >
+    <input
+      type="range"
+      class="albora-price-slider__input albora-price-slider__input--max"
+      min="0"
+      max="{{ range_max }}"
+      value="{{ max_value }}"
+      aria-label="{{ 'products.facets.to' | t }}"
+    >
+  </div>
+  <p class="albora-price-slider__label">
+    Preço:
+    <strong class="albora-price-slider__min-label">{{ min_value | money }}</strong>
+    —
+    <strong class="albora-price-slider__max-label">{{ max_value | money }}</strong>
+  </p>
 {%- endif -%}
 
-<div class="field">
-  <input
-    class="field__input"
-    name="{{ filter.max_value.param_name }}"
-    id="{{ id_prefix }}{{ filter.label | escape }}-LTE"
-    {%- if filter.max_value.value -%}
-      value="{{ filter.max_value.value | money_without_currency }}"
-    {%- endif -%}
-    type="text"
-    inputmode="decimal"
-    placeholder="{{ filter.range_max | money_without_currency }}"
-    data-pattern="\d| |,|\."
-    data-min="0"
-    data-max="{{ filter.range_max | money_without_currency }}"
-  >
-  <label class="field__label" for="{{ id_prefix }}{{ filter.label | escape }}-LTE">
-    {{- 'products.facets.to' | t -}}
-  </label>
+<div class="albora-price-slider__fields{% if filter_type == 'vertical' %} visually-hidden{% endif %}">
+  <span class="field-currency">{{ cart.currency.symbol }}</span>
+
+  <div class="field">
+    <input
+      class="field__input"
+      name="{{ filter.min_value.param_name }}"
+      id="{{ id_prefix }}{{ filter.label | escape }}-GTE"
+      {%- if filter.min_value.value -%}
+        value="{{ filter.min_value.value | money_without_currency }}"
+      {%- endif -%}
+      type="text"
+      inputmode="decimal"
+      placeholder="0"
+      data-pattern="\d| |,|\."
+      data-min="0"
+      data-max="{{ filter.range_max | money_without_currency }}"
+    >
+    <label class="field__label" for="{{ id_prefix }}{{ filter.label | escape }}-GTE">
+      {{- 'products.facets.from' | t -}}
+    </label>
+  </div>
+
+  {%- if filter_type != 'vertical' -%}
+    <span class="field-currency">{{ cart.currency.symbol }}</span>
+  {%- endif -%}
+
+  <div class="field">
+    <input
+      class="field__input"
+      name="{{ filter.max_value.param_name }}"
+      id="{{ id_prefix }}{{ filter.label | escape }}-LTE"
+      {%- if filter.max_value.value -%}
+        value="{{ filter.max_value.value | money_without_currency }}"
+      {%- endif -%}
+      type="text"
+      inputmode="decimal"
+      placeholder="{{ filter.range_max | money_without_currency }}"
+      data-pattern="\d| |,|\."
+      data-min="0"
+      data-max="{{ filter.range_max | money_without_currency }}"
+    >
+    <label class="field__label" for="{{ id_prefix }}{{ filter.label | escape }}-LTE">
+      {{- 'products.facets.to' | t -}}
+    </label>
+  </div>
 </div>

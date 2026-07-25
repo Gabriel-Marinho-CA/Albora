@@ -1,0 +1,246 @@
+/* Albora — Filtro lateral (vertical facets) da coleção.
+   Sobrescreve o visual padrão do Dawn só no escopo `.facets-vertical`,
+   mantendo a lógica de filtragem/JS original intacta. */
+
+.facets-vertical .facets-wrapper {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  padding-right: 20px;
+}
+
+.facets-vertical .facets__form-vertical {
+  width: 100%;
+  max-width: 300px;
+}
+
+.facets-vertical .facets__heading--vertical {
+  font-family: 'Montserrat', var(--font-body-family, sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+  color: #06262d;
+}
+
+/* Grupos de filtro (preço, sabor, necessidades, tamanho) */
+
+.facets-vertical .facets__disclosure-vertical {
+  border-top: none;
+  border-bottom: 1px solid rgba(6, 38, 45, 0.1);
+  margin-right: 0;
+  padding-bottom: 31px;
+  margin-bottom: 30px;
+}
+
+.facets-vertical .facets__disclosure-vertical:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.facets-vertical .facets__summary {
+  padding: 0;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.facets-vertical .facets__summary > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.facets-vertical .facets__summary-label {
+  font-family: 'Montserrat', var(--font-body-family, sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+  color: #06262d;
+  text-transform: capitalize;
+}
+
+.facets-vertical .facets__summary .facets__selected,
+.facets-vertical .facets__and-helptext {
+  display: none;
+}
+
+.facets-vertical .facets__summary svg {
+  width: 10px;
+  height: 6px;
+  color: rgba(6, 38, 45, 0.4);
+}
+
+.facets-vertical .facets__display-vertical {
+  padding-bottom: 0;
+}
+
+.facets-vertical .facets-wrap-vertical {
+  border: none;
+  padding-left: 0;
+}
+
+/* Lista de checkboxes */
+
+.facets-vertical .facets__list--vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+}
+
+.facets-vertical .facets__item {
+  padding: 0;
+}
+
+.facets-vertical .facet-checkbox {
+  padding: 0;
+  align-items: center;
+  font-size: 15px;
+}
+
+.facets-vertical .facet-checkbox > svg {
+  width: 15px;
+  height: 15px;
+  margin-right: 8px;
+  color: rgba(6, 38, 45, 0.15);
+  flex-shrink: 0;
+}
+
+.facets-vertical .facet-checkbox > input[type='checkbox']:checked ~ svg {
+  background: #06262d;
+  color: #06262d;
+  border-radius: 2px;
+}
+
+.facets-vertical .facet-checkbox .svg-wrapper {
+  left: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 9px;
+  height: 7px;
+  color: #ffffff;
+}
+
+.facets-vertical .facet-checkbox__text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 8px;
+  font-family: 'Montserrat', var(--font-body-family, sans-serif);
+  font-size: 15px;
+  color: #06262d;
+}
+
+.facets-vertical .facet-checkbox__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 20px;
+  padding: 1px 6px;
+  border: 1px solid rgba(6, 38, 45, 0.1);
+  border-radius: 35px;
+  font-family: 'Montserrat', var(--font-body-family, sans-serif);
+  font-size: 12px;
+  color: #06262d;
+  flex-shrink: 0;
+}
+
+/* Filtro de preço — slider de duas alças */
+
+.facets-vertical .facets__price {
+  padding: 0;
+  display: block;
+}
+
+.albora-price-slider {
+  position: relative;
+  height: 20px;
+  margin-bottom: 20px;
+}
+
+.albora-price-slider__track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: rgba(6, 38, 45, 0.1);
+  border-radius: 2px;
+}
+
+.albora-price-slider__range {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: #e74f3d;
+  border-radius: 2px;
+}
+
+.albora-price-slider__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  background: none;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.albora-price-slider__input::-webkit-slider-runnable-track {
+  background: transparent;
+}
+
+.albora-price-slider__input::-moz-range-track {
+  background: transparent;
+}
+
+.albora-price-slider__input::-webkit-slider-thumb {
+  pointer-events: auto;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 6px;
+  height: 16px;
+  border-radius: 3px;
+  background: #e74f3d;
+  border: none;
+  cursor: pointer;
+  margin-top: 0;
+}
+
+.albora-price-slider__input::-moz-range-thumb {
+  pointer-events: auto;
+  width: 6px;
+  height: 16px;
+  border-radius: 3px;
+  background: #e74f3d;
+  border: none;
+  cursor: pointer;
+}
+
+.albora-price-slider__label {
+  margin: 0;
+  font-family: 'Montserrat', var(--font-body-family, sans-serif);
+  font-size: 14px;
+  color: rgba(6, 38, 45, 0.6);
+}
+
+.albora-price-slider__label strong {
+  color: #06262d;
+  font-weight: 600;
+}
+
+.albora-price-slider__fields {
+  margin-top: 12px;
+}
+
+@media screen and (min-width: 750px) {
+  .facets-vertical .facets-wrapper {
+    padding-right: 20px;
+  }
+}

@@ -379,11 +379,12 @@ FacetFiltersForm.setListeners();
 class PriceRange extends HTMLElement {
   constructor() {
     super();
-    this.querySelectorAll('input').forEach((element) => {
+    this.querySelectorAll('.field__input').forEach((element) => {
       element.addEventListener('change', this.onRangeChange.bind(this));
       element.addEventListener('keydown', this.onKeyDown.bind(this));
     });
     this.setMinAndMaxValues();
+    this.initSlider();
   }
 
   onRangeChange(event) {
@@ -399,7 +400,7 @@ class PriceRange extends HTMLElement {
   }
 
   setMinAndMaxValues() {
-    const inputs = this.querySelectorAll('input');
+    const inputs = this.querySelectorAll('.field__input');
     const minInput = inputs[0];
     const maxInput = inputs[1];
     if (maxInput.value) minInput.setAttribute('data-max', maxInput.value);
@@ -415,6 +416,69 @@ class PriceRange extends HTMLElement {
 
     if (value < min) input.value = min;
     if (value > max) input.value = max;
+  }
+
+  // Progressive-enhancement dual-range visual slider for the vertical filter layout.
+  // Drives the (visually hidden) text fields above so Dawn's existing filtering keeps working unchanged.
+  initSlider() {
+    const slider = this.querySelector('.albora-price-slider');
+    if (!slider) return;
+
+    const minInput = slider.querySelector('.albora-price-slider__input--min');
+    const maxInput = slider.querySelector('.albora-price-slider__input--max');
+    const range = slider.querySelector('.albora-price-slider__range');
+    const fields = this.querySelectorAll('.field__input');
+    const fieldMin = fields[0];
+    const fieldMax = fields[1];
+    const minLabel = this.querySelector('.albora-price-slider__min-label');
+    const maxLabel = this.querySelector('.albora-price-slider__max-label');
+    const currencySymbol = slider.dataset.currencySymbol || '';
+
+    const formatMoney = (cents) => {
+      const amount = (Number(cents) / 100).toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+      return `${currencySymbol}${amount}`;
+    };
+
+    const updateRangeFill = () => {
+      const max = Number(minInput.max) || 1;
+      const minPercent = (Number(minInput.value) / max) * 100;
+      const maxPercent = (Number(maxInput.value) / max) * 100;
+      range.style.left = `${minPercent}%`;
+      range.style.right = `${100 - maxPercent}%`;
+    };
+
+    // The slider works in cents (matching filter.range_max), but the text fields
+    // Dawn submits as the actual filter params expect the major currency unit.
+    const toMajorUnit = (cents) => (Number(cents) / 100).toFixed(2);
+
+    const commit = () => {
+      if (fieldMin) fieldMin.value = toMajorUnit(minInput.value);
+      if (fieldMax) fieldMax.value = toMajorUnit(maxInput.value);
+      if (minLabel) minLabel.textContent = formatMoney(minInput.value);
+      if (maxLabel) maxLabel.textContent = formatMoney(maxInput.value);
+      updateRangeFill();
+    };
+
+    minInput.addEventListener('input', () => {
+      if (Number(minInput.value) > Number(maxInput.value)) minInput.value = maxInput.value;
+      commit();
+    });
+    maxInput.addEventListener('input', () => {
+      if (Number(maxInput.value) < Number(minInput.value)) maxInput.value = minInput.value;
+      commit();
+    });
+
+    minInput.addEventListener('change', () => {
+      if (fieldMin) fieldMin.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    maxInput.addEventListener('change', () => {
+      if (fieldMax) fieldMax.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    commit();
   }
 }
 
