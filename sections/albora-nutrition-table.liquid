@@ -207,7 +207,7 @@
 
   <div class="albora-nutri__inner">
     {%- if has_title != blank -%}
-      <div class="albora-nutri__title">{{ title }}</div>
+      <div class="albora-nutri__title">{{ title | metafield_tag}}</div>
     {%- endif -%}
 
     {%- if entry != blank -%}
@@ -255,7 +255,7 @@
             {%- if s.ingredients_title != blank -%}
               <h3 class="albora-nutri__ingredients-title">{{ s.ingredients_title }}</h3>
             {%- endif -%}
-            <div class="albora-nutri__ingredients-text">{{ ingredients }}</div>
+            <div class="albora-nutri__ingredients-text">{{ ingredients | metafield_tag }}</div>
           </div>
         {%- endif -%}
       </div>
