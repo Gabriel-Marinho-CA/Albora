@@ -1,0 +1,442 @@
+{%- comment -%}
+  Albora — Tabela nutricional (metaobjeto).
+
+  Conteúdo vindo de `product.metafields.custom.tabela_nutricional` (metaobjeto), com:
+    imagem_desktop / imagem_mobile  → imagem decorativa de fundo
+    titulo                          → richtext (o <strong> recebe a cor de destaque)
+    porcao / porcao_detalhe         → cabeçalho da 1ª coluna ("Porção: 28g" + "(1 colher-medida)")
+    coluna_1 / coluna_2             → cabeçalhos das colunas de valores ("28g", "%VD*")
+    nutrientes                      → lista de textos (rótulos das linhas)
+    valores                         → lista de textos (coluna 1), na mesma ordem
+    valores_vd                      → lista de textos (coluna 2), na mesma ordem
+    aviso                           → texto do rodapé da tabela
+    ingredientes                    → richtext
+
+  Cores, tamanhos de fonte, paddings e larguras ficam no schema da seção.
+  Ver CLAUDE.md → "Regra de personalização de textos e botões".
+{%- endcomment -%}
+
+<link rel="stylesheet" href="{{ 'albora-nutrition-table.css' | asset_url }}" media="all">
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+
+  assign entry = product.metafields.custom.tabela_nutricional.value
+
+  assign image_desktop = entry.imagem_desktop.value
+  assign image_mobile = entry.imagem_mobile.value
+  if image_mobile == blank
+    assign image_mobile = image_desktop
+  endif
+
+  comment
+    Richtext: renderiza o próprio metafield (gera o HTML), não o `.value`.
+  endcomment
+  assign title = entry.titulo
+  assign ingredients = entry.ingredientes
+  assign has_title = entry.titulo.value
+  assign has_ingredients = entry.ingredientes.value
+
+  assign portion = entry.porcao.value
+  assign portion_note = entry.porcao_detalhe.value
+  assign col_1 = entry.coluna_1.value
+  assign col_2 = entry.coluna_2.value
+  assign notice = entry.aviso.value
+
+  assign labels = entry.nutrientes.value
+  assign values_1 = entry.valores.value
+  assign values_2 = entry.valores_vd.value
+-%}
+
+<style>
+  #Albora-NutritionTable-{{ uid }} {
+    --nt-title-accent-color: {{ s.title_accent_color }};
+    --nt-divider-color: {{ s.divider_color }};
+    background-color: {{ s.background_color }};
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__bg {
+    left: {{ s.image_left_desktop }}%;
+    top: {{ s.image_top_desktop }}px;
+    width: {{ s.image_width_desktop }}%;
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__inner {
+    max-width: {{ s.max_width }}px;
+    padding: {{ s.padding_top_desktop }}px {{ s.padding_side_desktop }}px {{ s.padding_bottom_desktop }}px;
+    gap: {{ s.inner_gap_desktop }}px;
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__title {
+    font-size: {{ s.title_font_size_desktop }}px;
+    font-weight: {{ s.title_font_weight }};
+    line-height: {{ s.title_line_height }};
+    color: {{ s.title_color }};
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__card {
+    width: {{ s.card_width_desktop }}px;
+    padding: {{ s.card_padding_desktop }}px;
+    gap: {{ s.card_gap_desktop }}px;
+    border-radius: {{ s.card_radius }}px;
+    background: {{ s.card_background }};
+    {% if s.card_blur > 0 %}
+      backdrop-filter: blur({{ s.card_blur }}px);
+      -webkit-backdrop-filter: blur({{ s.card_blur }}px);
+    {% endif %}
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__card-title {
+    font-size: {{ s.card_title_font_size_desktop }}px;
+    font-weight: {{ s.card_title_font_weight }};
+    color: {{ s.card_title_color }};
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__table {
+    gap: {{ s.table_gap }}px;
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__head,
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__row {
+    padding: {{ s.row_padding_y }}px {{ s.row_padding_x_desktop }}px;
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__head {
+    font-size: {{ s.head_font_size_desktop }}px;
+    font-weight: {{ s.head_font_weight }};
+    color: {{ s.head_color }};
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__portion-note {
+    font-size: {{ s.body_font_size_desktop }}px;
+    font-weight: 400;
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__row {
+    font-size: {{ s.body_font_size_desktop }}px;
+    font-weight: {{ s.body_font_weight }};
+    color: {{ s.body_color }};
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__value {
+    width: {{ s.value_column_width_desktop }}px;
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__note {
+    font-size: {{ s.note_font_size_desktop }}px;
+    font-weight: {{ s.note_font_weight }};
+    line-height: {{ s.note_line_height }};
+    color: {{ s.note_color }};
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__ingredients {
+    gap: {{ s.ingredients_gap }}px;
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__ingredients-title {
+    font-size: {{ s.ingredients_title_font_size_desktop }}px;
+    font-weight: {{ s.ingredients_title_font_weight }};
+    color: {{ s.ingredients_title_color }};
+  }
+  #Albora-NutritionTable-{{ uid }} .albora-nutri__ingredients-text {
+    font-size: {{ s.ingredients_font_size_desktop }}px;
+    font-weight: {{ s.ingredients_font_weight }};
+    line-height: {{ s.ingredients_line_height }};
+    color: {{ s.ingredients_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__bg {
+      left: {{ s.image_left_mobile }}%;
+      top: {{ s.image_top_mobile }}px;
+      width: {{ s.image_width_mobile }}%;
+    }
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__inner {
+      padding: {{ s.padding_top_mobile }}px {{ s.padding_side_mobile }}px {{ s.padding_bottom_mobile }}px;
+      gap: {{ s.inner_gap_mobile }}px;
+    }
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__title {
+      font-size: {{ s.title_font_size_mobile }}px;
+    }
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__card {
+      width: 100%;
+      padding: {{ s.card_padding_y_mobile }}px {{ s.card_padding_x_mobile }}px;
+      gap: {{ s.card_gap_mobile }}px;
+    }
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__card-title {
+      font-size: {{ s.card_title_font_size_mobile }}px;
+    }
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__head,
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__row {
+      padding: {{ s.row_padding_y }}px {{ s.row_padding_x_mobile }}px;
+    }
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__head {
+      font-size: {{ s.head_font_size_mobile }}px;
+    }
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__portion-note,
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__row {
+      font-size: {{ s.body_font_size_mobile }}px;
+    }
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__value {
+      width: {{ s.value_column_width_mobile }}px;
+    }
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__note {
+      font-size: {{ s.note_font_size_mobile }}px;
+    }
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__ingredients-title {
+      font-size: {{ s.ingredients_title_font_size_mobile }}px;
+    }
+    #Albora-NutritionTable-{{ uid }} .albora-nutri__ingredients-text {
+      font-size: {{ s.ingredients_font_size_mobile }}px;
+    }
+  }
+</style>
+
+<section id="Albora-NutritionTable-{{ uid }}" class="albora-nutri">
+  {%- if image_desktop != blank -%}
+    <div class="albora-nutri__bg" aria-hidden="true">
+      {{
+        image_desktop
+        | image_url: width: 1600
+        | image_tag:
+          loading: 'lazy',
+          class: 'albora-nutri__bg-img albora-nutri__bg-img--desktop',
+          sizes: '60vw',
+          widths: '600, 900, 1200, 1600'
+      }}
+      {%- if image_mobile != blank -%}
+        {{
+          image_mobile
+          | image_url: width: 1000
+          | image_tag:
+            loading: 'lazy',
+            class: 'albora-nutri__bg-img albora-nutri__bg-img--mobile',
+            sizes: '135vw',
+            widths: '400, 600, 800, 1000'
+        }}
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="albora-nutri__inner">
+    {%- if has_title != blank -%}
+      <div class="albora-nutri__title">{{ title }}</div>
+    {%- endif -%}
+
+    {%- if entry != blank -%}
+      <div class="albora-nutri__card">
+        {%- if s.card_title != blank -%}
+          <h2 class="albora-nutri__card-title">{{ s.card_title }}</h2>
+        {%- endif -%}
+
+        {%- if labels != blank or portion != blank -%}
+          <div class="albora-nutri__table">
+            <div class="albora-nutri__head">
+              <div class="albora-nutri__label">
+                <span class="albora-nutri__portion">{{ portion }}</span>
+                {%- if portion_note != blank -%}
+                  <span class="albora-nutri__portion-note">{{ portion_note }}</span>
+                {%- endif -%}
+              </div>
+              <div class="albora-nutri__values">
+                <div class="albora-nutri__value">{{ col_1 }}</div>
+                <div class="albora-nutri__value">{{ col_2 }}</div>
+              </div>
+            </div>
+
+            <div class="albora-nutri__body">
+              {%- for label in labels -%}
+                {%- assign i = forloop.index0 -%}
+                <div class="albora-nutri__row">
+                  <div class="albora-nutri__label">{{ label }}</div>
+                  <div class="albora-nutri__values">
+                    <div class="albora-nutri__value">{{ values_1[i] }}</div>
+                    <div class="albora-nutri__value">{{ values_2[i] }}</div>
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if notice != blank -%}
+          <p class="albora-nutri__note">{{ notice }}</p>
+        {%- endif -%}
+
+        {%- if has_ingredients != blank -%}
+          <div class="albora-nutri__ingredients">
+            {%- if s.ingredients_title != blank -%}
+              <h3 class="albora-nutri__ingredients-title">{{ s.ingredients_title }}</h3>
+            {%- endif -%}
+            <div class="albora-nutri__ingredients-text">{{ ingredients }}</div>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Albora Tabela Nutricional",
+  "tag": "section",
+  "class": "albora-nutrition-table-section",
+  "settings": [
+    { "type": "header", "content": "Textos fixos" },
+    { "type": "text", "id": "card_title", "label": "Título do card", "default": "Tabela nutricional" },
+    { "type": "text", "id": "ingredients_title", "label": "Título dos ingredientes", "default": "Ingredientes" },
+
+    { "type": "header", "content": "Layout — desktop" },
+    { "type": "range", "id": "max_width", "min": 1000, "max": 2000, "step": 20, "unit": "px", "label": "Largura máxima", "default": 1920 },
+    { "type": "range", "id": "padding_top_desktop", "min": 0, "max": 240, "step": 4, "unit": "px", "label": "Padding superior", "default": 152 },
+    { "type": "range", "id": "padding_bottom_desktop", "min": 0, "max": 240, "step": 4, "unit": "px", "label": "Padding inferior", "default": 152 },
+    { "type": "range", "id": "padding_side_desktop", "min": 0, "max": 400, "step": 5, "unit": "px", "label": "Padding lateral", "default": 275 },
+    { "type": "range", "id": "inner_gap_desktop", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Espaço entre título e card", "default": 40 },
+    { "type": "range", "id": "card_width_desktop", "min": 400, "max": 900, "step": 10, "unit": "px", "label": "Largura do card", "default": 700 },
+    { "type": "range", "id": "card_padding_desktop", "min": 0, "max": 64, "step": 2, "unit": "px", "label": "Padding do card", "default": 24 },
+    { "type": "range", "id": "card_gap_desktop", "min": 0, "max": 64, "step": 2, "unit": "px", "label": "Espaço entre blocos do card", "default": 24 },
+    { "type": "range", "id": "row_padding_x_desktop", "min": 0, "max": 64, "step": 2, "unit": "px", "label": "Padding lateral das linhas", "default": 32 },
+    { "type": "range", "id": "value_column_width_desktop", "min": 40, "max": 180, "step": 5, "unit": "px", "label": "Largura das colunas de valores", "default": 100 },
+
+    { "type": "header", "content": "Layout — mobile" },
+    { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 200, "step": 4, "unit": "px", "label": "Padding superior", "default": 120 },
+    { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 200, "step": 4, "unit": "px", "label": "Padding inferior", "default": 80 },
+    { "type": "range", "id": "padding_side_mobile", "min": 0, "max": 60, "step": 2, "unit": "px", "label": "Padding lateral", "default": 16 },
+    { "type": "range", "id": "inner_gap_mobile", "min": 0, "max": 80, "step": 2, "unit": "px", "label": "Espaço entre título e card", "default": 32 },
+    { "type": "range", "id": "card_padding_y_mobile", "min": 0, "max": 48, "step": 2, "unit": "px", "label": "Padding vertical do card", "default": 24 },
+    { "type": "range", "id": "card_padding_x_mobile", "min": 0, "max": 48, "step": 2, "unit": "px", "label": "Padding lateral do card", "default": 16 },
+    { "type": "range", "id": "card_gap_mobile", "min": 0, "max": 48, "step": 2, "unit": "px", "label": "Espaço entre blocos do card", "default": 24 },
+    { "type": "range", "id": "row_padding_x_mobile", "min": 0, "max": 40, "step": 1, "unit": "px", "label": "Padding lateral das linhas", "default": 8 },
+    { "type": "range", "id": "value_column_width_mobile", "min": 30, "max": 140, "step": 5, "unit": "px", "label": "Largura das colunas de valores", "default": 70 },
+
+    { "type": "header", "content": "Imagem de fundo" },
+    { "type": "range", "id": "image_left_desktop", "min": -50, "max": 100, "step": 1, "unit": "%", "label": "Posição horizontal (desktop)", "default": 19 },
+    { "type": "range", "id": "image_top_desktop", "min": -200, "max": 600, "step": 4, "unit": "px", "label": "Posição vertical (desktop)", "default": 224 },
+    { "type": "range", "id": "image_width_desktop", "min": 10, "max": 120, "step": 1, "unit": "%", "label": "Largura (desktop)", "default": 52 },
+    { "type": "range", "id": "image_left_mobile", "min": -80, "max": 100, "step": 1, "unit": "%", "label": "Posição horizontal (mobile)", "default": -17 },
+    { "type": "range", "id": "image_top_mobile", "min": -200, "max": 400, "step": 1, "unit": "px", "label": "Posição vertical (mobile)", "default": 15 },
+    { "type": "range", "id": "image_width_mobile", "min": 40, "max": 220, "step": 1, "unit": "%", "label": "Largura (mobile)", "default": 134 },
+
+    { "type": "header", "content": "Título — tipografia" },
+    { "type": "range", "id": "title_font_size_desktop", "min": 20, "max": 96, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 56 },
+    { "type": "range", "id": "title_font_size_mobile", "min": 16, "max": 72, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 40 },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extrabold (800)" },
+        { "value": "900", "label": "Black (900)" }
+      ],
+      "default": "800"
+    },
+    { "type": "text", "id": "title_line_height", "label": "Altura da linha", "default": "0.93" },
+    { "type": "color", "id": "title_color", "label": "Cor", "default": "#06262D" },
+    { "type": "color", "id": "title_accent_color", "label": "Cor do destaque (negrito)", "default": "#E74F3D", "info": "Aplicada ao texto em negrito (<strong>) dentro do título." },
+
+    { "type": "header", "content": "Card" },
+    { "type": "color", "id": "card_background", "label": "Fundo do card", "default": "#FFFFFF33" },
+    { "type": "range", "id": "card_radius", "min": 0, "max": 48, "step": 2, "unit": "px", "label": "Raio da borda", "default": 16 },
+    { "type": "range", "id": "card_blur", "min": 0, "max": 40, "step": 1, "unit": "px", "label": "Desfoque do fundo", "default": 24 },
+    { "type": "range", "id": "card_title_font_size_desktop", "min": 10, "max": 40, "step": 1, "unit": "px", "label": "Título do card — tamanho (desktop)", "default": 16 },
+    { "type": "range", "id": "card_title_font_size_mobile", "min": 10, "max": 32, "step": 1, "unit": "px", "label": "Título do card — tamanho (mobile)", "default": 16 },
+    {
+      "type": "select",
+      "id": "card_title_font_weight",
+      "label": "Título do card — peso",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extrabold (800)" },
+        { "value": "900", "label": "Black (900)" }
+      ],
+      "default": "900"
+    },
+    { "type": "color", "id": "card_title_color", "label": "Título do card — cor", "default": "#06262D" },
+
+    { "type": "header", "content": "Tabela" },
+    { "type": "range", "id": "table_gap", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Espaço entre cabeçalho e corpo", "default": 16 },
+    { "type": "range", "id": "row_padding_y", "min": 0, "max": 32, "step": 1, "unit": "px", "label": "Padding vertical das linhas", "default": 12 },
+    { "type": "color", "id": "divider_color", "label": "Cor das divisórias", "default": "#06262D4D" },
+    { "type": "range", "id": "head_font_size_desktop", "min": 10, "max": 32, "step": 1, "unit": "px", "label": "Cabeçalho — tamanho (desktop)", "default": 16 },
+    { "type": "range", "id": "head_font_size_mobile", "min": 10, "max": 28, "step": 1, "unit": "px", "label": "Cabeçalho — tamanho (mobile)", "default": 16 },
+    {
+      "type": "select",
+      "id": "head_font_weight",
+      "label": "Cabeçalho — peso",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "700"
+    },
+    { "type": "color", "id": "head_color", "label": "Cabeçalho — cor", "default": "#06262D" },
+    { "type": "range", "id": "body_font_size_desktop", "min": 8, "max": 28, "step": 1, "unit": "px", "label": "Linhas — tamanho (desktop)", "default": 12 },
+    { "type": "range", "id": "body_font_size_mobile", "min": 8, "max": 24, "step": 1, "unit": "px", "label": "Linhas — tamanho (mobile)", "default": 12 },
+    {
+      "type": "select",
+      "id": "body_font_weight",
+      "label": "Linhas — peso",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "body_color", "label": "Linhas — cor", "default": "#06262D" },
+
+    { "type": "header", "content": "Aviso (*VD)" },
+    { "type": "range", "id": "note_font_size_desktop", "min": 8, "max": 24, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 12 },
+    { "type": "range", "id": "note_font_size_mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 12 },
+    {
+      "type": "select",
+      "id": "note_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "text", "id": "note_line_height", "label": "Altura da linha", "default": "1.4" },
+    { "type": "color", "id": "note_color", "label": "Cor", "default": "#78959E" },
+
+    { "type": "header", "content": "Ingredientes" },
+    { "type": "range", "id": "ingredients_gap", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Espaço entre título e texto", "default": 12 },
+    { "type": "range", "id": "ingredients_title_font_size_desktop", "min": 10, "max": 32, "step": 1, "unit": "px", "label": "Título — tamanho (desktop)", "default": 16 },
+    { "type": "range", "id": "ingredients_title_font_size_mobile", "min": 10, "max": 28, "step": 1, "unit": "px", "label": "Título — tamanho (mobile)", "default": 16 },
+    {
+      "type": "select",
+      "id": "ingredients_title_font_weight",
+      "label": "Título — peso",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "700"
+    },
+    { "type": "color", "id": "ingredients_title_color", "label": "Título — cor", "default": "#06262D" },
+    { "type": "range", "id": "ingredients_font_size_desktop", "min": 8, "max": 24, "step": 1, "unit": "px", "label": "Texto — tamanho (desktop)", "default": 12 },
+    { "type": "range", "id": "ingredients_font_size_mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "label": "Texto — tamanho (mobile)", "default": 12 },
+    {
+      "type": "select",
+      "id": "ingredients_font_weight",
+      "label": "Texto — peso",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "text", "id": "ingredients_line_height", "label": "Texto — altura da linha", "default": "1.4" },
+    { "type": "color", "id": "ingredients_color", "label": "Texto — cor", "default": "#78959E" },
+
+    { "type": "header", "content": "Geral" },
+    { "type": "color", "id": "background_color", "label": "Cor de fundo da seção", "default": "#FFFFFF" }
+  ],
+  "presets": [{ "name": "Albora Tabela Nutricional" }]
+}
+{% endschema %}

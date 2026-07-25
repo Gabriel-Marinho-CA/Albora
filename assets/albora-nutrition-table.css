@@ -1,0 +1,183 @@
+/* Albora — Tabela nutricional (metaobjeto).
+   Estrutura fixa. Tudo que vem de settings fica inline no .liquid,
+   com escopo por #Albora-NutritionTable-<section.id>. */
+
+.albora-nutri {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Montserrat', var(--font-body-family, sans-serif);
+}
+
+/* Imagem decorativa de fundo — fica atrás do conteúdo. */
+.albora-nutri__bg {
+  position: absolute;
+  z-index: 0;
+  line-height: 0;
+  pointer-events: none;
+}
+
+.albora-nutri__bg-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.albora-nutri__bg-img--mobile {
+  display: none;
+}
+
+.albora-nutri__inner {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Título — o <strong> do richtext assume a cor de destaque. */
+.albora-nutri__title {
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.albora-nutri__title p,
+.albora-nutri__title h1,
+.albora-nutri__title h2,
+.albora-nutri__title h3 {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  line-height: inherit;
+}
+
+.albora-nutri__title strong,
+.albora-nutri__title b {
+  color: var(--nt-title-accent-color);
+  font-weight: inherit;
+}
+
+/* Card */
+.albora-nutri__card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.albora-nutri__card-title {
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* Tabela */
+.albora-nutri__table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.albora-nutri__head,
+.albora-nutri__row {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.albora-nutri__head {
+  align-items: flex-start;
+}
+
+.albora-nutri__body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.albora-nutri__row + .albora-nutri__row {
+  border-top: 1px solid var(--nt-divider-color);
+}
+
+.albora-nutri__label {
+  display: flex;
+  flex: 1 0 0;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.albora-nutri__values {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.albora-nutri__value {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.albora-nutri__note,
+.albora-nutri__ingredients-text {
+  margin: 0;
+}
+
+.albora-nutri__ingredients {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.albora-nutri__ingredients-title {
+  margin: 0;
+}
+
+.albora-nutri__ingredients-text p {
+  margin: 0;
+}
+
+.albora-nutri__ingredients-text p + p {
+  margin-top: 0.6em;
+}
+
+.albora-nutri__ingredients-text a {
+  color: inherit;
+}
+
+@media screen and (max-width: 749px) {
+  .albora-nutri__inner {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .albora-nutri__card {
+    flex-shrink: 1;
+    width: 100%;
+  }
+
+  /* Porção e "(1 colher-medida)" empilhados. */
+  .albora-nutri__head .albora-nutri__label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .albora-nutri__bg-img--desktop {
+    display: none;
+  }
+
+  .albora-nutri__bg-img--mobile {
+    display: block;
+  }
+}
