@@ -60,7 +60,7 @@
   word-break: break-word;
 }
 
-.albora-itp__title p {
+.albora-itp__title * {
   margin: 0;
 }
 

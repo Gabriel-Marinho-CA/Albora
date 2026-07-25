@@ -36,7 +36,6 @@
     background-color: {{ s.background_color }};
   }
   #Albora-ImageTextPerformance-{{ uid }} .albora-itp__inner {
-    max-width: {{ s.max_width }}px;
     padding: {{ s.padding_top_desktop }}px {{ s.padding_side_desktop }}px {{ s.padding_bottom_desktop }}px;
     gap: {{ s.gap_desktop }}px;
   }
@@ -88,7 +87,7 @@
 
 {%- if entry != blank or request.design_mode -%}
   <section id="Albora-ImageTextPerformance-{{ uid }}" class="albora-itp">
-    <div class="albora-itp__inner albora-itp__inner--{{ s.image_position }}">
+    <div class="albora-itp__inner page-width albora-itp__inner--{{ s.image_position }}">
       <div class="albora-itp__media{% if image_mobile == blank %} albora-itp__media--single{% endif %}">
         {%- if image_desktop != blank -%}
           {{
@@ -147,8 +146,6 @@
       ],
       "default": "left"
     },
-    { "type": "range", "id": "max_width", "min": 1000, "max": 2000, "step": 20, "unit": "px", "label": "Largura máxima", "default": 1920 },
-
     { "type": "header", "content": "Layout — desktop" },
     { "type": "range", "id": "padding_top_desktop", "min": 0, "max": 240, "step": 4, "unit": "px", "label": "Padding superior", "default": 60 },
     { "type": "range", "id": "padding_bottom_desktop", "min": 0, "max": 240, "step": 4, "unit": "px", "label": "Padding inferior", "default": 60 },
