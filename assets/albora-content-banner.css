@@ -11,21 +11,16 @@
 }
 
 .albora-content-banner__media {
-  position: absolute;
-  inset: 0;
+  position: relative;
   z-index: 1;
   display: block;
-  overflow: hidden;
   line-height: 0;
 }
 
 .albora-content-banner__img {
-  position: absolute;
-  inset: 0;
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
 }
 
 .albora-content-banner__img--mobile {
@@ -33,12 +28,11 @@
 }
 
 .albora-content-banner__inner {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 2;
   box-sizing: border-box;
   display: flex;
-  width: 100%;
-  height: 100%;
 }
 
 .albora-content-banner__content {

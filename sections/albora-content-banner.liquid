@@ -40,13 +40,12 @@
 <style>
   #Albora-ContentBanner-{{ uid }} {
     --cb-title-accent-color: {{ s.title_accent_color }};
-    min-height: {{ s.height_desktop }}px;
     border-radius: {{ s.radius_top_desktop }}px {{ s.radius_top_desktop }}px {{ s.radius_bottom_desktop }}px {{ s.radius_bottom_desktop }}px;
     background-color: {{ s.background_color }};
   }
   #Albora-ContentBanner-{{ uid }} .albora-content-banner__inner {
-    min-height: {{ s.height_desktop }}px;
-    padding: {{ s.padding_top_desktop }}px {{ s.padding_right_desktop }}px {{ s.padding_bottom_desktop }}px {{ s.padding_left_desktop }}px;
+    padding-top: {{ s.padding_top_desktop }}px;
+    padding-bottom: {{ s.padding_bottom_desktop }}px;
     align-items: {{ s.vertical_alignment }};
     justify-content: {% if s.horizontal_alignment == 'left' %}flex-start{% elsif s.horizontal_alignment == 'center' %}center{% else %}flex-end{% endif %};
   }
@@ -71,12 +70,11 @@
 
   @media screen and (max-width: 749px) {
     #Albora-ContentBanner-{{ uid }} {
-      min-height: {{ s.height_mobile }}px;
       border-radius: {{ s.radius_top_mobile }}px {{ s.radius_top_mobile }}px {{ s.radius_bottom_mobile }}px {{ s.radius_bottom_mobile }}px;
     }
     #Albora-ContentBanner-{{ uid }} .albora-content-banner__inner {
-      min-height: {{ s.height_mobile }}px;
-      padding: {{ s.padding_top_mobile }}px {{ s.padding_right_mobile }}px {{ s.padding_bottom_mobile }}px {{ s.padding_left_mobile }}px;
+      padding-top: {{ s.padding_top_mobile }}px;
+      padding-bottom: {{ s.padding_bottom_mobile }}px;
       align-items: {{ s.vertical_alignment_mobile }};
       justify-content: {% if s.horizontal_alignment_mobile == 'left' %}flex-start{% elsif s.horizontal_alignment_mobile == 'center' %}center{% else %}flex-end{% endif %};
     }
@@ -122,13 +120,13 @@
   </div>
 
   {%- if has_text -%}
-    <div class="albora-content-banner__inner">
+    <div class="albora-content-banner__inner page-width">
       <div class="albora-content-banner__content">
         {%- if has_title != blank -%}
-          <div class="albora-content-banner__title">{{ title }}</div>
+          <div class="albora-content-banner__title">{{ title | metafield_tag}}</div>
         {%- endif -%}
         {%- if has_content != blank -%}
-          <div class="albora-content-banner__text">{{ content }}</div>
+          <div class="albora-content-banner__text">{{ content | metafield_tag}}</div>
         {%- endif -%}
       </div>
     </div>
@@ -147,16 +145,6 @@
     },
 
     { "type": "header", "content": "Layout — desktop" },
-    {
-      "type": "range",
-      "id": "height_desktop",
-      "min": 320,
-      "max": 1000,
-      "step": 10,
-      "unit": "px",
-      "label": "Altura mínima",
-      "default": 830
-    },
     {
       "type": "range",
       "id": "content_width_desktop",
@@ -196,26 +184,6 @@
       "unit": "px",
       "label": "Padding inferior",
       "default": 40
-    },
-    {
-      "type": "range",
-      "id": "padding_left_desktop",
-      "min": 0,
-      "max": 400,
-      "step": 5,
-      "unit": "px",
-      "label": "Padding esquerdo",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "padding_right_desktop",
-      "min": 0,
-      "max": 400,
-      "step": 5,
-      "unit": "px",
-      "label": "Padding direito",
-      "default": 275
     },
     {
       "type": "select",
@@ -274,16 +242,6 @@
     { "type": "header", "content": "Layout — mobile" },
     {
       "type": "range",
-      "id": "height_mobile",
-      "min": 300,
-      "max": 900,
-      "step": 10,
-      "unit": "px",
-      "label": "Altura mínima",
-      "default": 740
-    },
-    {
-      "type": "range",
       "id": "content_width_mobile",
       "min": 200,
       "max": 600,
@@ -321,26 +279,6 @@
       "unit": "px",
       "label": "Padding inferior",
       "default": 24
-    },
-    {
-      "type": "range",
-      "id": "padding_left_mobile",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "label": "Padding esquerdo",
-      "default": 30
-    },
-    {
-      "type": "range",
-      "id": "padding_right_mobile",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "label": "Padding direito",
-      "default": 30
     },
     {
       "type": "select",
