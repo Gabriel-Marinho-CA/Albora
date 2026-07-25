@@ -61,7 +61,6 @@
     width: {{ s.image_width_desktop }}%;
   }
   #Albora-NutritionTable-{{ uid }} .albora-nutri__inner {
-    max-width: {{ s.max_width }}px;
     padding: {{ s.padding_top_desktop }}px {{ s.padding_side_desktop }}px {{ s.padding_bottom_desktop }}px;
     gap: {{ s.inner_gap_desktop }}px;
   }
@@ -205,7 +204,7 @@
     </div>
   {%- endif -%}
 
-  <div class="albora-nutri__inner">
+  <div class="albora-nutri__inner page-width">
     {%- if has_title != blank -%}
       <div class="albora-nutri__title">{{ title | metafield_tag}}</div>
     {%- endif -%}
@@ -274,16 +273,6 @@
     { "type": "text", "id": "ingredients_title", "label": "Título dos ingredientes", "default": "Ingredientes" },
 
     { "type": "header", "content": "Layout — desktop" },
-    {
-      "type": "range",
-      "id": "max_width",
-      "min": 1000,
-      "max": 2000,
-      "step": 20,
-      "unit": "px",
-      "label": "Largura máxima",
-      "default": 1920
-    },
     {
       "type": "range",
       "id": "padding_top_desktop",

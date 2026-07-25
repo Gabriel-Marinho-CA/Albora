@@ -42,6 +42,7 @@
 /* Título — o <strong> do richtext assume a cor de destaque. */
 .albora-nutri__title {
   margin: 0;
+  min-width: max-content;
   text-transform: uppercase;
 }
 
@@ -164,6 +165,10 @@
   .albora-nutri__card {
     flex-shrink: 1;
     width: 100%;
+  }
+
+  .albora-nutri__title {
+    min-width: 0;
   }
 
   /* Porção e "(1 colher-medida)" empilhados. */
