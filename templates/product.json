@@ -144,7 +144,7 @@
         "vertical_alignment_mobile": "flex-start",
         "text_alignment_mobile": "left",
         "radius_top_mobile": 0,
-        "radius_bottom_mobile": 40,
+        "radius_bottom_mobile": 0,
         "title_font_size_desktop": 55,
         "title_font_size_mobile": 26,
         "title_font_weight": "900",
