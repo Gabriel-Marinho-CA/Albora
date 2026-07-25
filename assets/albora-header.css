@@ -3,7 +3,7 @@
   https://www.figma.com/design/zG2CDbVeoYsKumZnFm4yOc/Albora--Copy-?node-id=43-118
   Loaded from sections/header.liquid. Safe to edit/override here.
 */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 
 .albora-header {
   --albora-primary: #06262d;

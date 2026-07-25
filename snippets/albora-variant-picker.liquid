@@ -21,7 +21,12 @@
 
 {%- unless product.has_only_default_variant -%}
   {%- liquid
-    assign swatch_option_name = block.settings.swatch_option_name | downcase | strip
+    comment
+      Aceita lista separada por vírgula (ex.: "Sabor, Tamanho") e ignora singular/plural,
+      para "Sabor" no setting casar com a opção "Sabores" do produto (e vice-versa).
+    endcomment
+    assign swatch_option_setting = block.settings.swatch_option_name | default: 'Sabor'
+    assign swatch_option_names = swatch_option_setting | downcase | split: ','
     assign as_links = block.settings.swatch_as_links
     assign current_variant = product.selected_or_first_available_variant
   -%}
@@ -75,10 +80,15 @@
     {%- for option in product.options_with_values -%}
       {%- liquid
         assign option_name = option.name | downcase | strip
+        assign option_key = option_name | remove_last: 's'
         assign is_swatch = false
-        if swatch_option_name != blank and option_name == swatch_option_name
-          assign is_swatch = true
-        endif
+        for swatch_name in swatch_option_names
+          assign swatch_key = swatch_name | strip | remove_last: 's'
+          if swatch_key != blank and option_key == swatch_key
+            assign is_swatch = true
+            break
+          endif
+        endfor
         assign render_as_links = false
         if is_swatch and as_links
           assign render_as_links = true
@@ -114,7 +124,9 @@
 
             {%- capture value_media -%}
               {%- liquid
-                assign value_image = value.variant.image | default: value.variant.featured_media.preview_image
+                assign value_image = value.variant.image
+                | default: value.variant.featured_media.preview_image
+                | default: product.featured_image
               -%}
               <span class="albora-swatch__media">
                 {%- if value_image -%}

@@ -1,0 +1,312 @@
+{%- comment -%}
+  Albora — Banner de conteúdo (metaobjeto).
+
+  O conteúdo vem de um metafield de referência a metaobjeto (produto, coleção ou página),
+  com os campos: imagem de fundo desktop, imagem de fundo mobile, título (richtext) e
+  conteúdo (richtext). No título, o `<strong>` recebe a cor de destaque.
+
+  Cores, tamanhos de fonte, paddings e alturas ficam no schema da seção.
+  Ver CLAUDE.md → "Regra de personalização de textos e botões".
+{%- endcomment -%}
+
+<link rel="stylesheet" href="{{ 'albora-content-banner.css' | asset_url }}" media="all">
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+
+  case s.metafield_owner
+    when 'collection'
+      assign owner = collection
+    when 'page'
+      assign owner = page
+    when 'shop'
+      assign owner = shop
+    else
+      assign owner = product
+  endcase
+
+  assign entry = owner.metafields[s.metafield_namespace][s.metafield_key].value
+
+  assign image_desktop = entry[s.field_image_desktop].value
+  assign image_mobile = entry[s.field_image_mobile].value
+
+  comment
+    Richtext: renderiza o próprio metafield (gera o HTML), não o `.value`.
+  endcomment
+  assign title = entry[s.field_title]
+  assign content = entry[s.field_content]
+  assign has_title = entry[s.field_title].value
+  assign has_content = entry[s.field_content].value
+
+  if image_mobile == blank
+    assign image_mobile = image_desktop
+  endif
+
+  unless has_title == blank and has_content == blank
+    assign has_text = true
+  endunless
+-%}
+
+<style>
+  #Albora-ContentBanner-{{ uid }} {
+    --cb-title-accent-color: {{ s.title_accent_color }};
+    min-height: {{ s.height_desktop }}px;
+    border-radius: {{ s.radius_top_desktop }}px {{ s.radius_top_desktop }}px {{ s.radius_bottom_desktop }}px {{ s.radius_bottom_desktop }}px;
+    background-color: {{ s.background_color }};
+  }
+  #Albora-ContentBanner-{{ uid }} .albora-content-banner__inner {
+    min-height: {{ s.height_desktop }}px;
+    padding: {{ s.padding_top_desktop }}px {{ s.padding_right_desktop }}px {{ s.padding_bottom_desktop }}px {{ s.padding_left_desktop }}px;
+    align-items: {{ s.vertical_alignment }};
+    justify-content: {% if s.horizontal_alignment == 'left' %}flex-start{% elsif s.horizontal_alignment == 'center' %}center{% else %}flex-end{% endif %};
+  }
+  #Albora-ContentBanner-{{ uid }} .albora-content-banner__content {
+    max-width: {{ s.content_width_desktop }}px;
+    gap: {{ s.content_gap_desktop }}px;
+    text-align: {{ s.text_alignment }};
+  }
+  #Albora-ContentBanner-{{ uid }} .albora-content-banner__title {
+    font-size: {{ s.title_font_size_desktop }}px;
+    font-weight: {{ s.title_font_weight }};
+    line-height: {{ s.title_line_height }};
+    letter-spacing: {{ s.title_letter_spacing }}px;
+    color: {{ s.title_color }};
+  }
+  #Albora-ContentBanner-{{ uid }} .albora-content-banner__text {
+    font-size: {{ s.content_font_size_desktop }}px;
+    font-weight: {{ s.content_font_weight }};
+    line-height: {{ s.content_line_height }};
+    color: {{ s.content_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    #Albora-ContentBanner-{{ uid }} {
+      min-height: {{ s.height_mobile }}px;
+      border-radius: {{ s.radius_top_mobile }}px {{ s.radius_top_mobile }}px {{ s.radius_bottom_mobile }}px {{ s.radius_bottom_mobile }}px;
+    }
+    #Albora-ContentBanner-{{ uid }} .albora-content-banner__inner {
+      min-height: {{ s.height_mobile }}px;
+      padding: {{ s.padding_top_mobile }}px {{ s.padding_right_mobile }}px {{ s.padding_bottom_mobile }}px {{ s.padding_left_mobile }}px;
+      align-items: {{ s.vertical_alignment_mobile }};
+      justify-content: {% if s.horizontal_alignment_mobile == 'left' %}flex-start{% elsif s.horizontal_alignment_mobile == 'center' %}center{% else %}flex-end{% endif %};
+    }
+    #Albora-ContentBanner-{{ uid }} .albora-content-banner__content {
+      max-width: {{ s.content_width_mobile }}px;
+      gap: {{ s.content_gap_mobile }}px;
+      text-align: {{ s.text_alignment_mobile }};
+    }
+    #Albora-ContentBanner-{{ uid }} .albora-content-banner__title {
+      font-size: {{ s.title_font_size_mobile }}px;
+    }
+    #Albora-ContentBanner-{{ uid }} .albora-content-banner__text {
+      font-size: {{ s.content_font_size_mobile }}px;
+    }
+  }
+</style>
+
+<section id="Albora-ContentBanner-{{ uid }}" class="albora-content-banner">
+  <div class="albora-content-banner__media">
+    {%- if image_desktop != blank -%}
+      {{
+        image_desktop
+        | image_url: width: 2000
+        | image_tag:
+          loading: 'lazy',
+          class: 'albora-content-banner__img albora-content-banner__img--desktop',
+          sizes: '100vw',
+          widths: '600, 900, 1200, 1600, 2000'
+      }}
+    {%- endif -%}
+
+    {%- if image_mobile != blank -%}
+      {{
+        image_mobile
+        | image_url: width: 1200
+        | image_tag:
+          loading: 'lazy',
+          class: 'albora-content-banner__img albora-content-banner__img--mobile',
+          sizes: '100vw',
+          widths: '400, 600, 800, 1000, 1200'
+      }}
+    {%- endif -%}
+  </div>
+
+  {%- if has_text -%}
+    <div class="albora-content-banner__inner">
+      <div class="albora-content-banner__content">
+        {%- if has_title != blank -%}
+          <div class="albora-content-banner__title">{{ title }}</div>
+        {%- endif -%}
+        {%- if has_content != blank -%}
+          <div class="albora-content-banner__text">{{ content }}</div>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Albora Banner Conteúdo",
+  "tag": "section",
+  "class": "albora-content-banner-section",
+  "settings": [
+    { "type": "header", "content": "Fonte de dados (metaobjeto)" },
+    {
+      "type": "paragraph",
+      "content": "O conteúdo vem de um metafield de referência a metaobjeto. Informe abaixo o namespace e a chave do metafield e as chaves dos campos do metaobjeto."
+    },
+    {
+      "type": "select",
+      "id": "metafield_owner",
+      "label": "Metafield de",
+      "options": [
+        { "value": "product", "label": "Produto" },
+        { "value": "collection", "label": "Coleção" },
+        { "value": "page", "label": "Página" },
+        { "value": "shop", "label": "Loja" }
+      ],
+      "default": "product"
+    },
+    { "type": "text", "id": "metafield_namespace", "label": "Namespace do metafield", "default": "custom" },
+    { "type": "text", "id": "metafield_key", "label": "Chave do metafield", "default": "banner_conteudo" },
+    { "type": "text", "id": "field_image_desktop", "label": "Campo — imagem de fundo (desktop)", "default": "imagem_desktop" },
+    { "type": "text", "id": "field_image_mobile", "label": "Campo — imagem de fundo (mobile)", "default": "imagem_mobile" },
+    { "type": "text", "id": "field_title", "label": "Campo — título (richtext)", "default": "titulo" },
+    { "type": "text", "id": "field_content", "label": "Campo — conteúdo (richtext)", "default": "conteudo" },
+
+    { "type": "header", "content": "Layout — desktop" },
+    { "type": "range", "id": "height_desktop", "min": 320, "max": 1000, "step": 10, "unit": "px", "label": "Altura mínima", "default": 830 },
+    { "type": "range", "id": "content_width_desktop", "min": 280, "max": 1000, "step": 10, "unit": "px", "label": "Largura do conteúdo", "default": 740 },
+    { "type": "range", "id": "content_gap_desktop", "min": 0, "max": 64, "step": 2, "unit": "px", "label": "Espaço entre título e texto", "default": 24 },
+    { "type": "range", "id": "padding_top_desktop", "min": 0, "max": 200, "step": 4, "unit": "px", "label": "Padding superior", "default": 40 },
+    { "type": "range", "id": "padding_bottom_desktop", "min": 0, "max": 200, "step": 4, "unit": "px", "label": "Padding inferior", "default": 40 },
+    { "type": "range", "id": "padding_left_desktop", "min": 0, "max": 400, "step": 5, "unit": "px", "label": "Padding esquerdo", "default": 40 },
+    { "type": "range", "id": "padding_right_desktop", "min": 0, "max": 400, "step": 5, "unit": "px", "label": "Padding direito", "default": 275 },
+    {
+      "type": "select",
+      "id": "horizontal_alignment",
+      "label": "Posição horizontal do conteúdo",
+      "options": [
+        { "value": "left", "label": "Esquerda" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Direita" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "Posição vertical do conteúdo",
+      "options": [
+        { "value": "flex-start", "label": "Topo" },
+        { "value": "center", "label": "Centro" },
+        { "value": "flex-end", "label": "Base" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Alinhamento do texto",
+      "options": [
+        { "value": "left", "label": "Esquerda" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Direita" }
+      ],
+      "default": "left"
+    },
+    { "type": "range", "id": "radius_top_desktop", "min": 0, "max": 96, "step": 2, "unit": "px", "label": "Raio superior", "default": 0 },
+    { "type": "range", "id": "radius_bottom_desktop", "min": 0, "max": 96, "step": 2, "unit": "px", "label": "Raio inferior", "default": 64 },
+
+    { "type": "header", "content": "Layout — mobile" },
+    { "type": "range", "id": "height_mobile", "min": 300, "max": 900, "step": 10, "unit": "px", "label": "Altura mínima", "default": 740 },
+    { "type": "range", "id": "content_width_mobile", "min": 200, "max": 600, "step": 10, "unit": "px", "label": "Largura do conteúdo", "default": 340 },
+    { "type": "range", "id": "content_gap_mobile", "min": 0, "max": 48, "step": 2, "unit": "px", "label": "Espaço entre título e texto", "default": 14 },
+    { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 160, "step": 1, "unit": "px", "label": "Padding superior", "default": 55 },
+    { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 160, "step": 1, "unit": "px", "label": "Padding inferior", "default": 24 },
+    { "type": "range", "id": "padding_left_mobile", "min": 0, "max": 120, "step": 1, "unit": "px", "label": "Padding esquerdo", "default": 37 },
+    { "type": "range", "id": "padding_right_mobile", "min": 0, "max": 120, "step": 1, "unit": "px", "label": "Padding direito", "default": 37 },
+    {
+      "type": "select",
+      "id": "horizontal_alignment_mobile",
+      "label": "Posição horizontal do conteúdo",
+      "options": [
+        { "value": "left", "label": "Esquerda" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Direita" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment_mobile",
+      "label": "Posição vertical do conteúdo",
+      "options": [
+        { "value": "flex-start", "label": "Topo" },
+        { "value": "center", "label": "Centro" },
+        { "value": "flex-end", "label": "Base" }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment_mobile",
+      "label": "Alinhamento do texto",
+      "options": [
+        { "value": "left", "label": "Esquerda" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Direita" }
+      ],
+      "default": "left"
+    },
+    { "type": "range", "id": "radius_top_mobile", "min": 0, "max": 64, "step": 2, "unit": "px", "label": "Raio superior", "default": 0 },
+    { "type": "range", "id": "radius_bottom_mobile", "min": 0, "max": 64, "step": 2, "unit": "px", "label": "Raio inferior", "default": 40 },
+
+    { "type": "header", "content": "Título — tipografia" },
+    { "type": "range", "id": "title_font_size_desktop", "min": 20, "max": 96, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 55 },
+    { "type": "range", "id": "title_font_size_mobile", "min": 14, "max": 64, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 26 },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extrabold (800)" },
+        { "value": "900", "label": "Black (900)" }
+      ],
+      "default": "900"
+    },
+    { "type": "text", "id": "title_line_height", "label": "Altura da linha", "default": "0.93" },
+    { "type": "range", "id": "title_letter_spacing", "min": -2, "max": 4, "step": 0.5, "unit": "px", "label": "Espaçamento entre letras", "default": 0 },
+    { "type": "color", "id": "title_color", "label": "Cor", "default": "#FFFFFF" },
+    { "type": "color", "id": "title_accent_color", "label": "Cor do destaque (negrito)", "default": "#E74F3D", "info": "Aplicada ao texto em negrito (<strong>) dentro do título." },
+
+    { "type": "header", "content": "Conteúdo — tipografia" },
+    { "type": "range", "id": "content_font_size_desktop", "min": 10, "max": 40, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 18 },
+    { "type": "range", "id": "content_font_size_mobile", "min": 10, "max": 32, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 14 },
+    {
+      "type": "select",
+      "id": "content_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "text", "id": "content_line_height", "label": "Altura da linha", "default": "1.45" },
+    { "type": "color", "id": "content_color", "label": "Cor", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Geral" },
+    { "type": "color", "id": "background_color", "label": "Cor de fundo (fallback)", "default": "#06262D" }
+  ],
+  "presets": [{ "name": "Albora Banner Conteúdo" }]
+}
+{% endschema %}

@@ -235,6 +235,12 @@
   border: 0;
   width: auto;
   min-height: 0;
+
+
+  &::before,
+  &::after {
+    display: none;
+  }
 }
 
 .albora-buy-row .albora-qty__button {
