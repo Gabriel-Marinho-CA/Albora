@@ -1,8 +1,8 @@
 {%- comment -%}
   Albora — Performance.
 
-  Conteúdo vem de um METAOBJETO referenciado por um METAFIELD do produto
-  (namespace/chave configuráveis nas settings da seção — padrão `custom.performance`).
+  Conteúdo vem do metafield product.metafields.custom.secao_com_icones_e_imagens
+  (referência a metaobjeto).
 
   Campos esperados no metaobjeto:
     titulo                   → single_line_text_field   (renderizado como <h2>)
@@ -30,7 +30,7 @@
   assign s = section.settings
   assign uid = section.id
 
-  assign mo = product.metafields[s.metafield_namespace][s.metafield_key].value
+  assign mo = product.metafields.custom.secao_com_icones_e_imagens.value
 
   assign title = mo.titulo.value | default: s.title_fallback
   assign icones = mo.icones.value
@@ -178,10 +178,8 @@
     { "type": "header", "content": "Origem do conteúdo" },
     {
       "type": "paragraph",
-      "content": "O conteúdo vem de um metaobjeto referenciado por um metafield do produto. Campos do metaobjeto: titulo, icones (lista), texto (lista), imagem_fundo_desktop, imagem_fundo_mobile, imagem_produto_desktop, imagem_produto_mobile. Cada ícone é pareado com o texto de mesma posição."
+      "content": "O conteúdo vem do metafield product.metafields.custom.secao_com_icones_e_imagens (referência a metaobjeto). Campos: titulo, icones (lista), texto (lista), imagem_fundo_desktop, imagem_fundo_mobile, imagem_produto_desktop, imagem_produto_mobile. Cada ícone é pareado com o texto de mesma posição."
     },
-    { "type": "text", "id": "metafield_namespace", "label": "Namespace do metafield", "default": "custom" },
-    { "type": "text", "id": "metafield_key", "label": "Chave do metafield", "default": "performance" },
 
     { "type": "header", "content": "Fallback " },
     { "type": "text", "id": "title_fallback", "label": "Título", "default": "Máxima performance para o seu corpo" },
