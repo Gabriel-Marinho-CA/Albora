@@ -41,7 +41,7 @@
         "variant_picker_8cEMmy": {
           "type": "variant_picker",
           "settings": {
-            "swatch_option_name": "Sabor",
+            "swatch_option_name": "Sabores",
             "swatch_as_links": false,
             "label_font_size_desktop": 14,
             "label_font_size_mobile": 14,
