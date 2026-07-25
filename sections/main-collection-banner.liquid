@@ -1,49 +1,92 @@
-{% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
-{{ 'component-collection-hero.css' | asset_url | stylesheet_tag }}
+{%- comment -%}
+  Albora — Banner principal da coleção + breadcrumb.
+  Banner: imagem de fundo com altura fixa (desktop 156px / mobile 112px), título em position absolute por cima.
+  Breadcrumb: Home > Todos os produtos > {{ collection.title }}, exibido logo abaixo do banner.
+  Ver CLAUDE.md → "Regra de personalização de textos e botões".
+{%- endcomment -%}
 
-{%- style -%}
+{{ 'albora-collection-banner.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+-%}
+
+<style>
+  #Albora-CollectionBanner-{{ uid }} .albora-collection-banner__media {
+    height: 156px;
+    {%- if s.image_desktop == blank %}
+    background-color: {{ s.background_color }};
+    {%- endif %}
+  }
+  #Albora-CollectionBanner-{{ uid }} .albora-collection-banner__title {
+    font-size: {{ s.title_font_size_desktop }}px;
+    font-weight: {{ s.title_font_weight }};
+    color: {{ s.title_color }};
+  }
+  #Albora-CollectionBreadcrumb-{{ uid }} .albora-collection-breadcrumb__list {
+    color: {{ s.breadcrumb_color }};
+  }
   @media screen and (max-width: 749px) {
-    .collection-hero--with-image .collection-hero__inner {
-      padding-bottom: calc({{ settings.media_shadow_vertical_offset | at_least: 0 }}px + 2rem);
+    #Albora-CollectionBanner-{{ uid }} .albora-collection-banner__media {
+      height: 112px;
+    }
+    #Albora-CollectionBanner-{{ uid }} .albora-collection-banner__title {
+      font-size: {{ s.title_font_size_mobile }}px;
     }
   }
-{%- endstyle -%}
+</style>
 
-<div class="collection-hero{% if section.settings.show_collection_image and collection.image %} collection-hero--with-image{% endif %} color-{{ section.settings.color_scheme }} gradient">
-  <div class="collection-hero__inner page-width {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
-    <div class="collection-hero__text-wrapper">
-      <h1 class="collection-hero__title">
-        <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
-        {{- collection.title | escape -}}
-      </h1>
-
-      {%- if section.settings.show_collection_description -%}
-        <div class="collection-hero__description rte">{{ collection.description }}</div>
-      {%- endif -%}
-    </div>
-
-    {%- if section.settings.show_collection_image and collection.image -%}
-      <div class="collection-hero__image-container media gradient">
-        <img
-          srcset="
-            {%- if collection.image.width >= 165 -%}{{ collection.image | image_url: width: 165 }} 165w,{%- endif -%}
-            {%- if collection.image.width >= 360 -%}{{ collection.image | image_url: width: 360 }} 360w,{%- endif -%}
-            {%- if collection.image.width >= 535 -%}{{ collection.image | image_url: width: 535 }} 535w,{%- endif -%}
-            {%- if collection.image.width >= 750 -%}{{ collection.image | image_url: width: 750 }} 750w,{%- endif -%}
-            {%- if collection.image.width >= 1070 -%}{{ collection.image | image_url: width: 1070 }} 1070w,{%- endif -%}
-            {%- if collection.image.width >= 1500 -%}{{ collection.image | image_url: width: 1500 }} 1500w,{%- endif -%}
-            {{ collection.image | image_url }} {{ collection.image.width }}w
-          "
-          src="{{ collection.image | image_url: width: 750 }}"
-          sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc(50vw - 130px), calc(50vw - 55px)"
-          alt="{{ collection.image.alt | escape }}"
-          width="{{ collection.image.width }}"
-          height="{{ collection.image.height }}"
-        >
-      </div>
+<div id="Albora-CollectionBanner-{{ uid }}" class="albora-collection-banner">
+  <div
+    class="albora-collection-banner__media"
+    {% if s.image_desktop != blank %}
+      style="background-image: url({{ s.image_desktop | image_url: width: 2000 }});"
+    {% endif %}
+  >
+    {%- if s.image_mobile != blank -%}
+      <style>
+        @media screen and (max-width: 749px) {
+          #Albora-CollectionBanner-{{ uid }} .albora-collection-banner__media {
+            background-image: url({{ s.image_mobile | image_url: width: 1200 }});
+          }
+        }
+      </style>
     {%- endif -%}
+    <div class="albora-collection-banner__content">
+      <div class="page-width">
+        <h1 class="albora-collection-banner__title">
+          <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
+          {{- collection.title | escape -}}
+        </h1>
+      </div>
+    </div>
   </div>
 </div>
+
+{%- if s.show_breadcrumb -%}
+  <div id="Albora-CollectionBreadcrumb-{{ uid }}" class="albora-collection-breadcrumb">
+    <div class="page-width">
+      <ul class="albora-collection-breadcrumb__list">
+        <li class="albora-collection-breadcrumb__item">
+          <a href="{{ routes.root_url }}" class="albora-collection-breadcrumb__link">
+            {{- s.breadcrumb_home_label -}}
+          </a>
+          <span class="albora-collection-breadcrumb__separator">{{ 'icon-caret.svg' | inline_asset_content }}</span>
+        </li>
+        <li class="albora-collection-breadcrumb__item">
+          <a href="{{ routes.all_products_collection_url }}" class="albora-collection-breadcrumb__link">
+            {{- s.breadcrumb_all_products_label -}}
+          </a>
+          <span class="albora-collection-breadcrumb__separator">{{ 'icon-caret.svg' | inline_asset_content }}</span>
+        </li>
+        <li class="albora-collection-breadcrumb__item">
+          <span class="albora-collection-breadcrumb__current">{{ collection.title | escape }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+{%- endif -%}
 
 {% schema %}
 {
@@ -51,27 +94,35 @@
   "class": "section",
   "settings": [
     {
-      "type": "paragraph",
-      "content": "t:sections.main-collection-banner.settings.paragraph.content"
+      "type": "header",
+      "content": "Imagem de fundo"
     },
+    { "type": "image_picker", "id": "image_desktop", "label": "Imagem desktop" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Imagem mobile" },
+    { "type": "color", "id": "background_color", "label": "Cor de fundo (sem imagem)", "default": "#F2F0F0" },
+
+    { "type": "header", "content": "Título" },
+    { "type": "range", "id": "title_font_size_desktop", "min": 20, "max": 60, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 36 },
+    { "type": "range", "id": "title_font_size_mobile", "min": 16, "max": 40, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 24 },
     {
-      "type": "checkbox",
-      "id": "show_collection_description",
-      "default": true,
-      "label": "t:sections.main-collection-banner.settings.show_collection_description.label"
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "500"
     },
-    {
-      "type": "checkbox",
-      "id": "show_collection_image",
-      "default": false,
-      "label": "t:sections.main-collection-banner.settings.show_collection_image.label"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:sections.all.colors.label",
-      "default": "scheme-1"
-    }
+    { "type": "color", "id": "title_color", "label": "Cor", "default": "#06262D" },
+
+    { "type": "header", "content": "Breadcrumb" },
+    { "type": "checkbox", "id": "show_breadcrumb", "label": "Mostrar breadcrumb", "default": true },
+    { "type": "text", "id": "breadcrumb_home_label", "label": "Texto do primeiro link", "default": "Home" },
+    { "type": "text", "id": "breadcrumb_all_products_label", "label": "Texto do link intermediário", "default": "Todos os produtos" },
+    { "type": "color", "id": "breadcrumb_color", "label": "Cor do texto", "default": "#06262D" }
   ]
 }
 {% endschema %}
