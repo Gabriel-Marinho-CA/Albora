@@ -160,6 +160,24 @@
         "background_color": "#06262d"
       }
     },
+    "albora_performance_wz7Kwr": {
+      "type": "albora-performance",
+      "name": "Albora Performance",
+      "settings": {
+        "metafield_namespace": "custom",
+        "metafield_key": "performance",
+        "title_fallback": "Máxima performance para o seu corpo",
+        "title_font_size_desktop": 55,
+        "title_font_size_mobile": 28,
+        "title_font_weight": "900",
+        "title_color": "#FFFFFF",
+        "label_font_size_desktop": 20,
+        "label_font_size_mobile": 14,
+        "label_font_weight": "500",
+        "label_color": "#FFFFFF",
+        "label_background": "#E74F3D"
+      }
+    },
     "related-products": {
       "type": "related-products",
       "disabled": true,
@@ -183,6 +201,7 @@
   "order": [
     "main",
     "albora_content_banner_C9Janr",
+    "albora_performance_wz7Kwr",
     "related-products"
   ]
 }
