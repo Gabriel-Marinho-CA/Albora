@@ -80,10 +80,23 @@
     {%- for option in product.options_with_values -%}
       {%- liquid
         assign option_name = option.name | downcase | strip
-        assign option_key = option_name | remove_last: 's'
+        comment
+          `option_key` / `swatch_key` = nome sem o "s" final, para "Sabor" casar com "Sabores".
+        endcomment
+        assign option_key = option_name
+        assign option_last_char = option_name | slice: -1
+        if option_last_char == 's'
+          assign option_key_size = option_name.size | minus: 1
+          assign option_key = option_name | slice: 0, option_key_size
+        endif
         assign is_swatch = false
         for swatch_name in swatch_option_names
-          assign swatch_key = swatch_name | strip | remove_last: 's'
+          assign swatch_key = swatch_name | strip
+          assign swatch_last_char = swatch_key | slice: -1
+          if swatch_last_char == 's'
+            assign swatch_key_size = swatch_key.size | minus: 1
+            assign swatch_key = swatch_key | slice: 0, swatch_key_size
+          endif
           if swatch_key != blank and option_key == swatch_key
             assign is_swatch = true
             break
