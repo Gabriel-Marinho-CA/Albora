@@ -119,10 +119,10 @@
 
       <div class="albora-itp__text">
         {%- if has_title != blank -%}
-          <div class="albora-itp__title">{{ title }}</div>
+          <div class="albora-itp__title">{{ title | metafield_tag }}</div>
         {%- endif -%}
         {%- if has_content != blank -%}
-          <div class="albora-itp__content">{{ content }}</div>
+          <div class="albora-itp__content">{{ content | metafield_tag }}</div>
         {%- endif -%}
       </div>
     </div>

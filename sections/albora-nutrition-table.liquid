@@ -61,7 +61,8 @@
     width: {{ s.image_width_desktop }}%;
   }
   #Albora-NutritionTable-{{ uid }} .albora-nutri__inner {
-    padding: {{ s.padding_top_desktop }}px {{ s.padding_side_desktop }}px {{ s.padding_bottom_desktop }}px;
+    padding-top: {{ s.padding_top_desktop }}px;
+    padding-bottom: {{ s.padding_bottom_desktop }}px;
     gap: {{ s.inner_gap_desktop }}px;
   }
   #Albora-NutritionTable-{{ uid }} .albora-nutri__title {
@@ -138,7 +139,8 @@
       width: {{ s.image_width_mobile }}%;
     }
     #Albora-NutritionTable-{{ uid }} .albora-nutri__inner {
-      padding: {{ s.padding_top_mobile }}px {{ s.padding_side_mobile }}px {{ s.padding_bottom_mobile }}px;
+      padding-top: {{ s.padding_top_mobile }}px;
+      padding-bottom: {{ s.padding_bottom_mobile }}px;
       gap: {{ s.inner_gap_mobile }}px;
     }
     #Albora-NutritionTable-{{ uid }} .albora-nutri__title {
@@ -295,16 +297,6 @@
     },
     {
       "type": "range",
-      "id": "padding_side_desktop",
-      "min": 0,
-      "max": 400,
-      "step": 5,
-      "unit": "px",
-      "label": "Padding lateral",
-      "default": 275
-    },
-    {
-      "type": "range",
       "id": "inner_gap_desktop",
       "min": 0,
       "max": 120,
@@ -384,16 +376,6 @@
       "unit": "px",
       "label": "Padding inferior",
       "default": 80
-    },
-    {
-      "type": "range",
-      "id": "padding_side_mobile",
-      "min": 0,
-      "max": 60,
-      "step": 2,
-      "unit": "px",
-      "label": "Padding lateral",
-      "default": 16
     },
     {
       "type": "range",
