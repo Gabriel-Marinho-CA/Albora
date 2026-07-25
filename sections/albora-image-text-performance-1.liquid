@@ -1,7 +1,7 @@
 ﻿{%- comment -%}
-  Albora — Imagem com texto / performance 2.
+  Albora — Imagem com texto / performance 1.
 
-  Conteúdo vindo de `product.metafields.custom.imagemcom_text_performance_2` (metaobjeto), com:
+  Conteúdo vindo de `product.metafields.custom.imagemcom_text_performance_1` (metaobjeto), com:
     imagem_desktop / imagem_mobile → imagem do lado esquerdo (quadrada, cantos arredondados)
     titulo                         → richtext (título em destaque)
     conteudo                       → richtext (parágrafo)
@@ -17,7 +17,7 @@
   assign s = section.settings
   assign uid = section.id
 
-  assign entry = product.metafields.custom.imagemcom_text_performance_2.value
+  assign entry = product.metafields.custom.imagemcom_text_performance_1.value
 
   assign image_desktop = entry.imagem_desktop.value
   assign image_mobile = entry.imagem_mobile.value
@@ -132,7 +132,7 @@
 
 {% schema %}
 {
-  "name": "Albora Imagem+Texto 2",
+  "name": "Albora Imagem+Texto 1",
   "tag": "section",
   "class": "albora-image-text-performance-section",
   "settings": [
@@ -211,6 +211,6 @@
     { "type": "header", "content": "Geral" },
     { "type": "color", "id": "background_color", "label": "Cor de fundo da seção", "default": "#FFFFFF" }
   ],
-  "presets": [{ "name": "Albora Imagem+Texto 2" }]
+  "presets": [{ "name": "Albora Imagem+Texto 1" }]
 }
 {% endschema %}
