@@ -123,19 +123,52 @@
         "padding_bottom": 12
       }
     },
-    "disclosures": {
-      "type": "disclosures",
+    "albora_content_banner_C9Janr": {
+      "type": "albora-content-banner",
+      "name": "Albora Banner Conteúdo",
       "settings": {
-        "heading": "Disclosures",
-        "heading_size": "h2",
-        "open_by_default": false,
-        "color_scheme": "",
-        "padding_top": 36,
-        "padding_bottom": 0
+        "height_desktop": 830,
+        "content_width_desktop": 740,
+        "content_gap_desktop": 24,
+        "padding_top_desktop": 40,
+        "padding_bottom_desktop": 40,
+        "padding_left_desktop": 40,
+        "padding_right_desktop": 275,
+        "horizontal_alignment": "right",
+        "vertical_alignment": "center",
+        "text_alignment": "left",
+        "radius_top_desktop": 0,
+        "radius_bottom_desktop": 64,
+        "height_mobile": 740,
+        "content_width_mobile": 340,
+        "content_gap_mobile": 14,
+        "padding_top_mobile": 50,
+        "padding_bottom_mobile": 24,
+        "padding_left_mobile": 30,
+        "padding_right_mobile": 30,
+        "horizontal_alignment_mobile": "left",
+        "vertical_alignment_mobile": "flex-start",
+        "text_alignment_mobile": "left",
+        "radius_top_mobile": 0,
+        "radius_bottom_mobile": 40,
+        "title_font_size_desktop": 55,
+        "title_font_size_mobile": 26,
+        "title_font_weight": "900",
+        "title_line_height": "0.93",
+        "title_letter_spacing": 0,
+        "title_color": "#FFFFFF",
+        "title_accent_color": "#E74F3D",
+        "content_font_size_desktop": 18,
+        "content_font_size_mobile": 14,
+        "content_font_weight": "400",
+        "content_line_height": "1.45",
+        "content_color": "#FFFFFF",
+        "background_color": "#06262D"
       }
     },
     "related-products": {
       "type": "related-products",
+      "disabled": true,
       "settings": {
         "heading": "You may also like",
         "heading_size": "h2",
@@ -155,7 +188,7 @@
   },
   "order": [
     "main",
-    "disclosures",
+    "albora_content_banner_C9Janr",
     "related-products"
   ]
 }
