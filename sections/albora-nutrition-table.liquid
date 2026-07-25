@@ -70,9 +70,10 @@
     font-weight: {{ s.title_font_weight }};
     line-height: {{ s.title_line_height }};
     color: {{ s.title_color }};
+    margin-inline:auto;
   }
   #Albora-NutritionTable-{{ uid }} .albora-nutri__card {
-    width: {{ s.card_width_desktop }}px;
+    max-width: {{ s.card_width_desktop }}px;
     padding: {{ s.card_padding_desktop }}px;
     gap: {{ s.card_gap_desktop }}px;
     border-radius: {{ s.card_radius }}px;

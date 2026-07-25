@@ -62,6 +62,11 @@
 
 .albora-itp__title * {
   margin: 0;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-transform: inherit;
 }
 
 .albora-itp__content {
