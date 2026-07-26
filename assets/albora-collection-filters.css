@@ -293,6 +293,7 @@
 
   @media (max-width:547px) {
     padding: 0;
+    width: 100%;
   }
 }
 
@@ -311,7 +312,11 @@
 .albora-mobile-facets-bar .albora-mobile-sort .facets__form {
   display: block;
   margin: 0 0 0 auto;
-  max-width: 207px;
+  max-width: 171px;
+
+  .facet-filters__field {
+      max-width: 171px;
+  }
 }
 
 @media screen and (max-width: 749px) {
