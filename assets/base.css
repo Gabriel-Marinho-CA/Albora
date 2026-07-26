@@ -3722,14 +3722,18 @@ details-disclosure > details {
   height: 100%;
 }
 
-/* CTA sobre a imagem: no mobile fica sempre visível; no desktop (>= 750px)
+/* CTA no rodapé do card: no mobile fica sempre visível; no desktop (>= 750px)
    só aparece no hover/foco do card — ver media query abaixo. */
+.res-card__form,
+.res-card__form .form {
+  margin-top: auto;
+  width: 100%;
+}
+
 .res-card__button {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  left: 16px;
-  z-index: 2;
+  position: relative;
+  margin-top: auto;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3750,26 +3754,51 @@ details-disclosure > details {
   cursor: pointer;
 }
 
+.res-card__button[disabled],
+.res-card__button[aria-disabled='true'] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.res-card__button.loading > .loading__spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  transform: translate(-50%, -50%);
+}
+
+.res-card__button.loading > .loading__spinner .path {
+  stroke: var(--res-card-button-color);
+}
+
+/* Enquanto carrega, o texto some para não sobrepor o spinner. */
+.res-card__button.loading > span {
+  visibility: hidden;
+}
+
+/* No desktop o botão continua ocupando o espaço dele (só some visualmente),
+   para o card não mudar de altura ao entrar/sair o hover. */
 @media screen and (min-width: 750px) {
   .res-card__button {
     opacity: 0;
-    transform: translateY(8px);
-    pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0s linear 0.25s;
   }
 
   .res-card:hover .res-card__button,
   .res-card:focus-within .res-card__button {
     opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+    visibility: visible;
+    transition-delay: 0s;
   }
 }
 
 @media screen and (prefers-reduced-motion: reduce) {
   .res-card__button {
     transition: none;
-    transform: none;
   }
 }
 

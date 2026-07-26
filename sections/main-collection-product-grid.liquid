@@ -1,6 +1,9 @@
 {{ 'template-collection.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 
+{%- comment -%} O CTA do card (`res-cards`) usa <product-form> para adicionar ao carrinho via AJAX. {%- endcomment -%}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
 {%- style -%}
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;

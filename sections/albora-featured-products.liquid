@@ -6,6 +6,9 @@
   Ver CLAUDE.md → "Regra de personalização de textos e botões".
 {%- endcomment -%}
 
+{%- comment -%} O CTA do card usa <product-form> para adicionar ao carrinho via AJAX. {%- endcomment -%}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
 {%- liquid
   assign s = section.settings
   assign uid = section.id
