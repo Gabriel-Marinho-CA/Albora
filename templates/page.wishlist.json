@@ -1,15 +1,60 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "wishlist": {
-      "type": "albora-wishlist",
+    "main": {
+      "type": "main-page",
+      "disabled": true,
       "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "albora_wishlist_48qaTR": {
+      "type": "albora-wishlist",
+      "name": "Albora Favoritos",
+      "settings": {
+        "container_width": 1440,
+        "columns_desktop": 4,
+        "columns_mobile": 2,
+        "section_background": "#FFFFFF",
+        "padding_top_desktop": 80,
+        "padding_bottom_desktop": 80,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
         "title": "Meus favoritos",
         "show_count": true,
         "count_label": "produto(s) salvo(s)",
         "empty_text": "Você ainda não salvou nenhum produto.",
-        "button_label": "Ver produtos"
+        "button_label": "Ver produtos",
+        "button_link": "",
+        "title_font_size_desktop": 32,
+        "title_font_size_mobile": 24,
+        "title_font_weight": "600",
+        "title_color": "#06262D",
+        "content_font_size_desktop": 16,
+        "content_font_size_mobile": 14,
+        "content_font_weight": "400",
+        "content_color": "#3A575E",
+        "button_font_size_desktop": 18,
+        "button_font_size_mobile": 14,
+        "button_font_weight": "500",
+        "button_color": "#FFFFFF",
+        "button_background": "#06262D",
+        "button_height_desktop": 48,
+        "button_height_mobile": 40
       }
     }
   },
-  "order": ["wishlist"]
+  "order": [
+    "main",
+    "albora_wishlist_48qaTR"
+  ]
 }
