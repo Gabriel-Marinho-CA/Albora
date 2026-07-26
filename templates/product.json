@@ -120,7 +120,7 @@
         "hide_variants": true,
         "enable_video_looping": false,
         "padding_top": 36,
-        "padding_bottom": 12
+        "padding_bottom": 64
       }
     },
     "albora_content_banner_C9Janr": {
@@ -184,7 +184,6 @@
         "ingredients_title": "Ingredientes",
         "padding_top_desktop": 152,
         "padding_bottom_desktop": 152,
-        "padding_side_desktop": 275,
         "inner_gap_desktop": 40,
         "card_width_desktop": 700,
         "card_padding_desktop": 24,
@@ -193,7 +192,6 @@
         "value_column_width_desktop": 100,
         "padding_top_mobile": 120,
         "padding_bottom_mobile": 80,
-        "padding_side_mobile": 16,
         "inner_gap_mobile": 32,
         "card_padding_y_mobile": 24,
         "card_padding_x_mobile": 16,
@@ -253,16 +251,13 @@
       "name": "Albora Imagem+Texto 1",
       "settings": {
         "image_position": "left",
-        "max_width": 1920,
         "padding_top_desktop": 60,
         "padding_bottom_desktop": 60,
-        "padding_side_desktop": 275,
         "gap_desktop": 64,
         "image_size_desktop": 500,
         "text_gap_desktop": 10,
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40,
-        "padding_side_mobile": 16,
         "gap_mobile": 32,
         "image_height_mobile": 380,
         "text_gap_mobile": 10,
@@ -271,15 +266,15 @@
         "title_font_size_mobile": 24,
         "title_font_weight": "700",
         "title_line_height": "0.92",
-        "title_color": "#E74F3D",
+        "title_color": "#e74f3d",
         "title_uppercase": true,
         "content_font_size_desktop": 18,
         "content_font_size_mobile": 16,
         "content_font_weight": "400",
         "content_line_height": "1.35",
-        "content_color": "#06262D",
-        "content_accent_color": "#06262D",
-        "background_color": "#FFFFFF"
+        "content_color": "#06262d",
+        "content_accent_color": "#06262d",
+        "background_color": "#ffffff"
       }
     },
     "albora_image_text_performance_2_BpzkBE": {
@@ -287,16 +282,13 @@
       "name": "Albora Imagem+Texto 2",
       "settings": {
         "image_position": "right",
-        "max_width": 1920,
         "padding_top_desktop": 60,
         "padding_bottom_desktop": 60,
-        "padding_side_desktop": 275,
         "gap_desktop": 64,
         "image_size_desktop": 500,
         "text_gap_desktop": 10,
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40,
-        "padding_side_mobile": 16,
         "gap_mobile": 32,
         "image_height_mobile": 380,
         "text_gap_mobile": 10,
@@ -305,15 +297,15 @@
         "title_font_size_mobile": 24,
         "title_font_weight": "700",
         "title_line_height": "0.92",
-        "title_color": "#E74F3D",
+        "title_color": "#e74f3d",
         "title_uppercase": true,
         "content_font_size_desktop": 18,
         "content_font_size_mobile": 16,
         "content_font_weight": "400",
         "content_line_height": "1.35",
-        "content_color": "#06262D",
-        "content_accent_color": "#06262D",
-        "background_color": "#FFFFFF"
+        "content_color": "#06262d",
+        "content_accent_color": "#06262d",
+        "background_color": "#ffffff"
       }
     },
     "albora_image_text_performance_3_GpXj96": {
@@ -321,16 +313,13 @@
       "name": "Albora Imagem+Texto 3",
       "settings": {
         "image_position": "left",
-        "max_width": 1920,
         "padding_top_desktop": 60,
         "padding_bottom_desktop": 60,
-        "padding_side_desktop": 275,
         "gap_desktop": 64,
         "image_size_desktop": 500,
         "text_gap_desktop": 10,
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40,
-        "padding_side_mobile": 16,
         "gap_mobile": 32,
         "image_height_mobile": 380,
         "text_gap_mobile": 10,
@@ -339,15 +328,15 @@
         "title_font_size_mobile": 24,
         "title_font_weight": "700",
         "title_line_height": "0.92",
-        "title_color": "#E74F3D",
+        "title_color": "#e74f3d",
         "title_uppercase": true,
         "content_font_size_desktop": 18,
         "content_font_size_mobile": 16,
         "content_font_weight": "400",
         "content_line_height": "1.35",
-        "content_color": "#06262D",
-        "content_accent_color": "#06262D",
-        "background_color": "#FFFFFF"
+        "content_color": "#06262d",
+        "content_accent_color": "#06262d",
+        "background_color": "#ffffff"
       }
     },
     "related-products": {
