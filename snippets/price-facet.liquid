@@ -3,10 +3,22 @@
     assign range_max = filter.range_max
     assign min_value = filter.min_value.value | default: 0
     assign max_value = filter.max_value.value | default: range_max
+
+    # Posição inicial da faixa laranja, para ela já aparecer antes do JS rodar.
+    assign min_percent = 0
+    assign max_percent = 100
+    if range_max > 0
+      assign min_percent = min_value | times: 100.0 | divided_by: range_max
+      assign max_percent = max_value | times: 100.0 | divided_by: range_max
+    endif
+    assign right_percent = 100 | minus: max_percent
   -%}
   <div class="albora-price-slider" data-currency-symbol="{{ cart.currency.symbol }}">
     <div class="albora-price-slider__track">
-      <div class="albora-price-slider__range"></div>
+      <div
+        class="albora-price-slider__range"
+        style="left: {{ min_percent }}%; right: {{ right_percent }}%;"
+      ></div>
     </div>
     <input
       type="range"

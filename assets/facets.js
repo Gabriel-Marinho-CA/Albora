@@ -384,6 +384,9 @@ class PriceRange extends HTMLElement {
       element.addEventListener('keydown', this.onKeyDown.bind(this));
     });
     this.setMinAndMaxValues();
+  }
+
+  connectedCallback() {
     this.initSlider();
   }
 
@@ -422,7 +425,8 @@ class PriceRange extends HTMLElement {
   // Drives the (visually hidden) text fields above so Dawn's existing filtering keeps working unchanged.
   initSlider() {
     const slider = this.querySelector('.albora-price-slider');
-    if (!slider) return;
+    if (!slider || slider.dataset.inited === 'true') return;
+    slider.dataset.inited = 'true';
 
     const minInput = slider.querySelector('.albora-price-slider__input--min');
     const maxInput = slider.querySelector('.albora-price-slider__input--max');

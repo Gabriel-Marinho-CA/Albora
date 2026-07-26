@@ -27,8 +27,8 @@
   border-top: none;
   border-bottom: 1px solid rgba(6, 38, 45, 0.1);
   margin-right: 0;
-  padding-bottom: 31px;
-  margin-bottom: 30px;
+  padding-block: 1rem;
+  margin-bottom: 0;
 }
 
 .facets-vertical .facets__disclosure-vertical:last-of-type {
@@ -43,7 +43,7 @@
   cursor: pointer;
 }
 
-.facets-vertical .facets__summary > div {
+.facets-vertical .facets__summary>div {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -97,7 +97,7 @@
   font-size: 15px;
 }
 
-.facets-vertical .facet-checkbox > svg {
+.facets-vertical .facet-checkbox>svg {
   width: 15px;
   height: 15px;
   margin-right: 8px;
@@ -105,7 +105,7 @@
   flex-shrink: 0;
 }
 
-.facets-vertical .facet-checkbox > input[type='checkbox']:checked ~ svg {
+.facets-vertical .facet-checkbox>input[type='checkbox']:checked~svg {
   background: #06262d;
   color: #06262d;
   border-radius: 2px;
@@ -171,9 +171,13 @@
   border-radius: 2px;
 }
 
+/* left/right são reescritos pelo Liquid (estado inicial) e pelo JS (ao arrastar).
+   Os defaults aqui garantem a faixa laranja mesmo se o JS não rodar. */
 .albora-price-slider__range {
   position: absolute;
   top: 0;
+  left: 0;
+  right: 0;
   height: 100%;
   background: #e74f3d;
   border-radius: 2px;

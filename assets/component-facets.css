@@ -1158,6 +1158,7 @@ input.mobile-facets__checkbox {
   .facets__header-vertical {
     padding: 1.5rem 2rem 1.5rem 0;
     font-size: 1.4rem;
+    display: none;
   }
 
   .facets__display-vertical {
