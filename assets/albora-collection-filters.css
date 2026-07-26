@@ -188,6 +188,9 @@
   display: block !important;
 }
 
+.product-count.light.medium-hide.large-up-hide {
+  display: none;
+}
 .facets-vertical .active-facets {
   display: none;
 }
@@ -286,6 +289,17 @@
   justify-content: space-between;
   gap: 16px;
   padding: 16px;
+
+
+  @media (max-width:547px) {
+    padding: 0;
+  }
+}
+
+.facets-container.scroll-trigger.animate--fade-in {
+   @media (max-width:547px) {
+    display: flex !important;
+  }
 }
 
 .albora-mobile-facets-bar .mobile-facets__wrapper,
@@ -296,7 +310,8 @@
 
 .albora-mobile-facets-bar .albora-mobile-sort .facets__form {
   display: block;
-  margin: 0;
+  margin: 0 0 0 auto;
+  max-width: 207px;
 }
 
 @media screen and (max-width: 749px) {
