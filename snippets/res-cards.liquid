@@ -10,6 +10,9 @@
     - product          (object)  Produto. Se ausente, renderiza um placeholder.
     - show_description (bool)    Mostra a descrição curta. Padrão: true.
     - show_wishlist    (bool)    Mostra o botão de favoritar. Padrão: true.
+    - show_button      (bool)    Mostra o CTA sobre a imagem. Padrão: true.
+                                 No desktop ele só aparece no hover do card; no mobile fica sempre visível.
+    - button_label     (string)  Texto do CTA. Padrão: 'Comprar'.
     - description_words(number)  Nº de palavras da descrição. Padrão: 10.
     - image_loading    (string)  'lazy' (padrão) ou 'eager'.
     - placeholder      (string)  Nome do placeholder_svg_tag. Padrão: 'product-apparel-2'.
@@ -22,6 +25,8 @@
 {%- liquid
   assign show_description = show_description | default: true, allow_false: true
   assign show_wishlist = show_wishlist | default: true, allow_false: true
+  assign show_button = show_button | default: true, allow_false: true
+  assign button_label = button_label | default: 'Comprar'
   assign description_words = description_words | default: 10
   assign image_loading = image_loading | default: 'lazy'
   assign placeholder = placeholder | default: 'product-apparel-2'
@@ -80,6 +85,14 @@
           </svg>
         </span>
       </button>
+    {%- endif -%}
+
+    {%- if show_button and button_label != blank -%}
+      {%- if product != blank and product != empty -%}
+        <a href="{{ product.url }}" class="res-card__button">{{ button_label }}</a>
+      {%- else -%}
+        <span class="res-card__button" aria-hidden="true">{{ button_label }}</span>
+      {%- endif -%}
     {%- endif -%}
   </div>
 

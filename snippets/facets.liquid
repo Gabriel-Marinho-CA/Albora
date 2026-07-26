@@ -134,9 +134,7 @@
                     id="Details-{{ filter.param_name | escape }}-{{ section.id }}"
                     class="{% if filter_type == 'horizontal' %}disclosure-has-popup facets__disclosure{% else %} facets__disclosure-vertical{% endif %} js-filter"
                     data-index="{{ forloop.index }}"
-                    {% if filter_type == 'vertical' and forloop.index == 1 %}
-                      open
-                    {% endif %}
+                    open
                   >
                     <summary
                       class="facets__summary caption-large focus-offset"
@@ -310,9 +308,7 @@
                     id="Details-{{ filter.param_name | escape }}-{{ section.id }}"
                     class="{% if filter_type == 'horizontal' %}disclosure-has-popup facets__disclosure{% else %} facets__disclosure-vertical{% endif %} js-filter"
                     data-index="{{ forloop.index }}"
-                    {% if filter_type == 'vertical' and forloop.index == 1 %}
-                      open
-                    {% endif %}
+                    open
                   >
                     <summary class="facets__summary caption-large focus-offset">
                       <div>
@@ -534,6 +530,7 @@
                         id="Details-Mobile-{{ filter.param_name | escape }}-{{ section.id }}"
                         class="mobile-facets__details js-filter"
                         data-index="mobile-{{ forloop.index }}"
+                        open
                       >
                         <summary class="mobile-facets__summary focus-inset">
                           <div>
@@ -674,8 +671,9 @@
                     {% when 'price_range' %}
                       <details
                         id="Details-Mobile-{{ filter.param_name | escape }}-{{ section.id }}"
-                        class="mobile-facets__details js-filter"
+                        class="mobile-facets__details js-filter filter-tange-slider"
                         data-index="mobile-{{ forloop.index }}"
+                        open
                       >
                         <summary class="mobile-facets__summary focus-inset">
                           <div>

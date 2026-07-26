@@ -3639,6 +3639,12 @@ details-disclosure > details {
   --res-card-wishlist-bg: rgba(6, 38, 45, 0.05);
   --res-card-wishlist-color: #06262d;
 
+  --res-card-button-size: 18px;
+  --res-card-button-weight: 500;
+  --res-card-button-color: #ffffff;
+  --res-card-button-bg: #06262d;
+  --res-card-button-height: 54px;
+
   display: flex;
   flex-direction: column;
   gap: var(--res-card-gap);
@@ -3714,6 +3720,57 @@ details-disclosure > details {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* CTA sobre a imagem: no mobile fica sempre visível; no desktop (>= 750px)
+   só aparece no hover/foco do card — ver media query abaixo. */
+.res-card__button {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: var(--res-card-button-height);
+  padding: 0 20px;
+  border: none;
+  border-radius: 100px;
+  background: var(--res-card-button-bg);
+  color: var(--res-card-button-color);
+  font-family: 'Montserrat', var(--font-body-family, sans-serif);
+  font-size: var(--res-card-button-size);
+  font-style: normal;
+  font-weight: var(--res-card-button-weight);
+  line-height: 150%;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@media screen and (min-width: 750px) {
+  .res-card__button {
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .res-card:hover .res-card__button,
+  .res-card:focus-within .res-card__button {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  .res-card__button {
+    transition: none;
+    transform: none;
+  }
 }
 
 .res-card__text {

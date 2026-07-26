@@ -21,6 +21,10 @@
   color: #06262d;
 }
 
+.facets-vertical .facets-wrapper {
+  min-width: 350px;
+}
+
 /* Grupos de filtro (preço, sabor, necessidades, tamanho) */
 
 .facets-vertical .facets__disclosure-vertical {
@@ -181,6 +185,31 @@
   height: 100%;
   background: #e74f3d;
   border-radius: 2px;
+  display: block;
+}
+
+.facets-vertical .active-facets {
+  display: none;
+}
+
+#product-grid {
+  grid-row-gap: 7rem;
+
+  @media (max-width:750px) {
+    grid-row-gap: 4rem;
+  }
+}
+
+.filter-tange-slider {
+  summary {
+    color: var(--Primary, #06262D);
+    font-family: "Montserrat", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: capitalize;
+  }
 }
 
 .albora-price-slider__input {
