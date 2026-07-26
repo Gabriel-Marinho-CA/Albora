@@ -282,7 +282,9 @@
 }
 
 /* Linha do mobile: "Mostrar filtro" à esquerda, "Ordenar por" à direita (Figma: List) */
-
+.facet-filters.sorting.caption.albora-sort {
+  padding: 0;
+}
 .albora-mobile-facets-bar {
   display: flex;
   align-items: center;
@@ -312,10 +314,10 @@
 .albora-mobile-facets-bar .albora-mobile-sort .facets__form {
   display: block;
   margin: 0 0 0 auto;
-  max-width: 171px;
+  max-width: 160px;
 
   .facet-filters__field {
-      max-width: 171px;
+      max-width: 160px;
   }
 }
 
