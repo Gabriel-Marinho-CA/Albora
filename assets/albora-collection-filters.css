@@ -278,6 +278,66 @@
   }
 }
 
+/* Linha do mobile: "Mostrar filtro" à esquerda, "Ordenar por" à direita (Figma: List) */
+
+.albora-mobile-facets-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+}
+
+.albora-mobile-facets-bar .mobile-facets__wrapper,
+.albora-mobile-facets-bar .albora-mobile-sort {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.albora-mobile-facets-bar .albora-mobile-sort .facets__form {
+  display: block;
+  margin: 0;
+}
+
+@media screen and (max-width: 749px) {
+  /* o padding da linha substitui o do aside no mobile */
+  .facets-vertical .facets-wrapper {
+    padding: 0;
+    min-width: 0;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .albora-mobile-facets-bar {
+    padding: 0;
+    gap: 0;
+  }
+}
+
+/* Botão "Mostrar filtro" do mobile (Figma: List) */
+
+.mobile-facets__open > * + * {
+  margin-left: 5px;
+}
+
+.mobile-facets__open .svg-wrapper {
+  width: 24px;
+  height: 24px;
+  color: #06262d;
+}
+
+.mobile-facets__open .svg-wrapper .icon-menu-burger {
+  width: 24px;
+  height: 24px;
+}
+
+.mobile-facets__open .mobile-facets__open-label {
+  font-family: 'Montserrat', var(--font-body-family, sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  color: #06262d;
+}
+
 /* Ordenar por — pill (Figma: Options - Shop order) */
 
 .albora-sort.facet-filters,

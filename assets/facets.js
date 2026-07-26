@@ -344,14 +344,26 @@ class FacetFiltersForm extends HTMLElement {
       this.onSubmitForm(searchParams, event);
     } else {
       const forms = [];
-      const isMobile = event.target.closest('form').id === 'FacetFiltersFormMobile';
+      const sourceFormId = event.target.closest('form').id;
+      const isMobile = sourceFormId === 'FacetFiltersFormMobile';
+      // Albora: sort mobile vive fora do drawer, num form próprio ao lado do
+      // botão "Mostrar filtro" — combina só com os filtros ativos.
+      const isMobileSort = sourceFormId === 'FacetSortFormMobile';
 
       sortFilterForms.forEach((form) => {
-        if (!isMobile) {
-          if (form.id === 'FacetSortForm' || form.id === 'FacetFiltersForm' || form.id === 'FacetSortDrawerForm') {
+        if (isMobile) {
+          if (form.id === 'FacetFiltersFormMobile') {
             forms.push(this.createSearchParams(form));
           }
-        } else if (form.id === 'FacetFiltersFormMobile') {
+        } else if (isMobileSort) {
+          if (form.id === 'FacetFiltersForm' || form.id === 'FacetSortFormMobile') {
+            forms.push(this.createSearchParams(form));
+          }
+        } else if (
+          form.id === 'FacetSortForm' ||
+          form.id === 'FacetFiltersForm' ||
+          form.id === 'FacetSortDrawerForm'
+        ) {
           forms.push(this.createSearchParams(form));
         }
       });
