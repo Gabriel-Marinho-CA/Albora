@@ -16,6 +16,10 @@
           "type": "title",
           "settings": {}
         },
+        "description_aBYLL8": {
+          "type": "description",
+          "settings": {}
+        },
         "price": {
           "type": "price",
           "settings": {
@@ -101,6 +105,7 @@
       },
       "block_order": [
         "title",
+        "description_aBYLL8",
         "price",
         "variant_picker_8cEMmy",
         "albora_buy_row_e9AtLg",
