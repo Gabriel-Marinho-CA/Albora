@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "wishlist": {
+      "type": "albora-wishlist",
+      "settings": {
+        "title": "Meus favoritos",
+        "show_count": true,
+        "count_label": "produto(s) salvo(s)",
+        "empty_text": "Você ainda não salvou nenhum produto.",
+        "button_label": "Ver produtos"
+      }
+    }
+  },
+  "order": ["wishlist"]
+}

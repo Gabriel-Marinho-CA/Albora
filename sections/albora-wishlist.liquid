@@ -1,0 +1,338 @@
+{%- comment -%}
+  Albora — Lista de desejos.
+
+  Os favoritos ficam no localStorage (`assets/wishlist.js`), então a grade é
+  montada no cliente pelo web component <wishlist-grid> (`assets/albora-wishlist.js`),
+  que busca cada card via Section Rendering API na seção `albora-wishlist-card`.
+  Ver CLAUDE.md → "Regra de personalização de textos e botões".
+{%- endcomment -%}
+
+<link rel="stylesheet" href="{{ 'albora-wishlist.css' | asset_url }}" media="all">
+<script src="{{ 'albora-wishlist.js' | asset_url }}" defer="defer"></script>
+{%- comment -%} O CTA do card usa <product-form> para adicionar ao carrinho via AJAX. {%- endcomment -%}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+-%}
+
+<style>
+  #Albora-Wishlist-{{ uid }} {
+    padding-top: {{ s.padding_top_desktop }}px;
+    padding-bottom: {{ s.padding_bottom_desktop }}px;
+    background: {{ s.section_background }};
+  }
+  #Albora-Wishlist-{{ uid }} .albora-wishlist__inner {
+    max-width: {{ s.container_width }}px;
+  }
+  #Albora-Wishlist-{{ uid }} .albora-wishlist__title {
+    font-size: {{ s.title_font_size_desktop }}px;
+    font-weight: {{ s.title_font_weight }};
+    color: {{ s.title_color }};
+  }
+  #Albora-Wishlist-{{ uid }} .albora-wishlist__count,
+  #Albora-Wishlist-{{ uid }} .albora-wishlist__empty-text {
+    font-size: {{ s.content_font_size_desktop }}px;
+    font-weight: {{ s.content_font_weight }};
+    color: {{ s.content_color }};
+  }
+  #Albora-Wishlist-{{ uid }} .albora-wishlist__list {
+    grid-template-columns: repeat({{ s.columns_desktop }}, minmax(0, 1fr));
+  }
+  #Albora-Wishlist-{{ uid }} .albora-wishlist__button {
+    height: {{ s.button_height_desktop }}px;
+    font-size: {{ s.button_font_size_desktop }}px;
+    font-weight: {{ s.button_font_weight }};
+    color: {{ s.button_color }};
+    background: {{ s.button_background }};
+  }
+  #Albora-Wishlist-{{ uid }} .albora-wishlist__button:hover {
+    opacity: 0.9;
+  }
+
+  @media screen and (max-width: 749px) {
+    #Albora-Wishlist-{{ uid }} {
+      padding-top: {{ s.padding_top_mobile }}px;
+      padding-bottom: {{ s.padding_bottom_mobile }}px;
+    }
+    #Albora-Wishlist-{{ uid }} .albora-wishlist__title {
+      font-size: {{ s.title_font_size_mobile }}px;
+    }
+    #Albora-Wishlist-{{ uid }} .albora-wishlist__count,
+    #Albora-Wishlist-{{ uid }} .albora-wishlist__empty-text {
+      font-size: {{ s.content_font_size_mobile }}px;
+    }
+    #Albora-Wishlist-{{ uid }} .albora-wishlist__list {
+      grid-template-columns: repeat({{ s.columns_mobile }}, minmax(0, 1fr));
+    }
+    #Albora-Wishlist-{{ uid }} .albora-wishlist__button {
+      height: {{ s.button_height_mobile }}px;
+      font-size: {{ s.button_font_size_mobile }}px;
+    }
+    #Albora-Wishlist-{{ uid }} .res-card {
+      --res-card-gap: 16px;
+    }
+  }
+</style>
+
+<div id="Albora-Wishlist-{{ uid }}" class="albora-wishlist">
+  <div class="albora-wishlist__inner">
+    {%- if s.title != blank -%}
+      <div class="albora-wishlist__header">
+        <h2 class="albora-wishlist__title">{{ s.title }}</h2>
+        {%- if s.show_count -%}
+          {%- comment -%} A <wishlist-grid> esconde a linha inteira quando não há favoritos. {%- endcomment -%}
+          <p class="albora-wishlist__count" id="WishlistCount-{{ uid }}" hidden>
+            <wishlist-count></wishlist-count>
+            {{ s.count_label }}
+          </p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <wishlist-grid
+      data-card-section="albora-wishlist-card"
+      {% if s.show_count %}
+        data-count-element="WishlistCount-{{ uid }}"
+      {% endif %}
+    >
+      <div class="albora-wishlist__loading" data-wishlist-loading hidden>
+        {%- render 'loading-spinner', class: 'albora-wishlist__spinner' -%}
+      </div>
+
+      <ul class="albora-wishlist__list" data-wishlist-list></ul>
+
+      <div class="albora-wishlist__empty" data-wishlist-empty>
+        {%- if s.empty_text != blank -%}
+          <p class="albora-wishlist__empty-text">{{ s.empty_text }}</p>
+        {%- endif -%}
+        {%- if s.button_label != blank -%}
+          <a href="{{ s.button_link | default: routes.all_products_collection_url }}" class="albora-wishlist__button">
+            {{ s.button_label }}
+          </a>
+        {%- endif -%}
+      </div>
+    </wishlist-grid>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Albora Favoritos",
+  "tag": "section",
+  "class": "albora-wishlist-section",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 1000,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "label": "Largura máxima do container",
+      "default": 1440
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "label": "Colunas no desktop",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "min": 1,
+      "max": 2,
+      "step": 1,
+      "label": "Colunas no mobile",
+      "default": 2
+    },
+    { "type": "color", "id": "section_background", "label": "Fundo da seção", "default": "#FFFFFF" },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Espaço acima (desktop)",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Espaço abaixo (desktop)",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Espaço acima (mobile)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Espaço abaixo (mobile)",
+      "default": 40
+    },
+
+    { "type": "header", "content": "Conteúdo" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Meus favoritos" },
+    { "type": "checkbox", "id": "show_count", "label": "Mostrar contador", "default": true },
+    { "type": "text", "id": "count_label", "label": "Texto ao lado do contador", "default": "produto(s) salvo(s)" },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Texto quando a lista está vazia",
+      "default": "Você ainda não salvou nenhum produto."
+    },
+    { "type": "text", "id": "button_label", "label": "Texto do botão", "default": "Ver produtos" },
+    { "type": "url", "id": "button_link", "label": "Link do botão" },
+
+    { "type": "header", "content": "Título — tipografia" },
+    {
+      "type": "range",
+      "id": "title_font_size_desktop",
+      "min": 16,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho no desktop",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_mobile",
+      "min": 14,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho no mobile",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Peso",
+      "options": [
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ],
+      "default": "600"
+    },
+    { "type": "color", "id": "title_color", "label": "Cor", "default": "#06262D" },
+
+    { "type": "header", "content": "Textos — tipografia" },
+    {
+      "type": "range",
+      "id": "content_font_size_desktop",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho no desktop",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "content_font_size_mobile",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho no mobile",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "content_font_weight",
+      "label": "Peso",
+      "options": [
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "content_color", "label": "Cor", "default": "#3A575E" },
+
+    { "type": "header", "content": "Botão" },
+    {
+      "type": "range",
+      "id": "button_font_size_desktop",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho no desktop",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "button_font_size_mobile",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamanho no mobile",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Peso",
+      "options": [
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ],
+      "default": "500"
+    },
+    { "type": "color", "id": "button_color", "label": "Cor do texto", "default": "#FFFFFF" },
+    { "type": "color", "id": "button_background", "label": "Cor de fundo", "default": "#06262D" },
+    {
+      "type": "range",
+      "id": "button_height_desktop",
+      "min": 32,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Altura no desktop",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "button_height_mobile",
+      "min": 28,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "label": "Altura no mobile",
+      "default": 40
+    }
+  ],
+  "presets": [{ "name": "Albora Favoritos" }]
+}
+{% endschema %}

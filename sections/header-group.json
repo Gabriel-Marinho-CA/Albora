@@ -42,7 +42,7 @@
         "logo_position": "middle-left",
         "mobile_logo_position": "center",
         "menu": "main-menu",
-        "wishlist_link": "",
+        "wishlist_link": "\/pages\/lista-de-desejos",
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "on-scroll-up",
         "show_line_separator": true,

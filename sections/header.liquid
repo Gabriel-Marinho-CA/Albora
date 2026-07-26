@@ -232,7 +232,7 @@
             </a>
           {%- endif -%}
 
-          {%- assign wishlist_url = section.settings.wishlist_link | default: routes.account_url -%}
+          {%- assign wishlist_url = section.settings.wishlist_link | default: '/pages/lista-de-desejos' -%}
           <a
             href="{{ wishlist_url }}"
             class="albora-header__icon albora-header__icon--heart"
@@ -492,7 +492,8 @@
     {
       "type": "url",
       "id": "wishlist_link",
-      "label": "Wishlist / favoritos link"
+      "label": "Wishlist / favoritos link",
+      "info": "Se vazio, aponta para \/pages\/lista-de-desejos."
     },
     {
       "type": "select",

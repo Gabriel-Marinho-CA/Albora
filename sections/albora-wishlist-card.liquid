@@ -1,0 +1,17 @@
+{%- comment -%}
+  Albora — Card avulso para o Section Rendering API.
+
+  Não aparece no editor (sem presets). Existe só para a <wishlist-grid>
+  (`assets/albora-wishlist.js`) buscar o card já renderizado em Liquid:
+
+    fetch('/products/<handle>?section_id=albora-wishlist-card')
+
+  O `product` vem do contexto da URL do produto requisitado.
+{%- endcomment -%}
+
+{% render 'res-cards',
+  product: product,
+  show_description: true,
+  show_wishlist: true,
+  image_loading: 'lazy'
+%}

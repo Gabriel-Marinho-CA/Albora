@@ -10,6 +10,8 @@
     - product          (object)  Produto. Se ausente, renderiza um placeholder.
     - show_description (bool)    Mostra a descrição curta. Padrão: true.
     - show_wishlist    (bool)    Mostra o botão de favoritar. Padrão: true.
+                                 Usa o <wishlist-button> de `assets/wishlist.js` (carregado no
+                                 theme.liquid); o estado fica no localStorage.
     - show_button      (bool)    Mostra o CTA no rodapé do card. Padrão: true.
                                  No desktop ele só aparece no hover do card (o espaço fica reservado,
                                  sem deslocar o layout); no mobile fica sempre visível.
@@ -64,31 +66,50 @@
       {{ placeholder | placeholder_svg_tag: 'res-card__img res-card__img--placeholder' }}
     {%- endif -%}
 
-    {%- if show_wishlist -%}
-      <button
-        type="button"
-        class="res-card__wishlist"
-        aria-label="{{ 'products.product.add_to_wishlist' | t | default: 'Adicionar aos favoritos' }}"
-        aria-pressed="false"
-        data-res-wishlist
-        {% if product != blank and product != empty %}
-          data-product-id="{{ product.id }}"
-          data-product-handle="{{ product.handle }}"
-        {% endif %}
+    {%- if show_wishlist and product != blank and product != empty -%}
+      <wishlist-button
+        class="res-card__wishlist-wrapper"
+        product-id="{{ product.id }}"
+        handle="{{ product.handle }}"
       >
-        <span class="res-card__wishlist-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M15.696 4C18.871 4 21 6.98 21 9.755C21 15.388 12.161 20 12 20C11.839 20 3 15.388 3 9.755C3 6.98 5.129 4 8.304 4C10.119 4 11.311 4.905 12 5.711C12.689 4.905 13.881 4 15.696 4Z"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
+        <button
+          type="button"
+          class="res-card__wishlist"
+          aria-label="{{ 'products.product.add_to_wishlist' | t | default: 'Adicionar aos favoritos' }}"
+          aria-pressed="false"
+        >
+          <span class="res-card__wishlist-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M15.696 4C18.871 4 21 6.98 21 9.755C21 15.388 12.161 20 12 20C11.839 20 3 15.388 3 9.755C3 6.98 5.129 4 8.304 4C10.119 4 11.311 4.905 12 5.711C12.689 4.905 13.881 4 15.696 4Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </span>
+        </button>
+      </wishlist-button>
+    {%- elsif show_wishlist -%}
+      {%- comment -%} Placeholder de onboarding: ícone decorativo, sem estado. {%- endcomment -%}
+      <span class="res-card__wishlist-wrapper" aria-hidden="true">
+        <span class="res-card__wishlist">
+          <span class="res-card__wishlist-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M15.696 4C18.871 4 21 6.98 21 9.755C21 15.388 12.161 20 12 20C11.839 20 3 15.388 3 9.755C3 6.98 5.129 4 8.304 4C10.119 4 11.311 4.905 12 5.711C12.689 4.905 13.881 4 15.696 4Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </span>
         </span>
-      </button>
+      </span>
     {%- endif -%}
   </div>
 

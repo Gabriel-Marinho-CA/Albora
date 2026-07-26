@@ -3638,6 +3638,7 @@ details-disclosure > details {
 
   --res-card-wishlist-bg: rgba(6, 38, 45, 0.05);
   --res-card-wishlist-color: #06262d;
+  --res-card-wishlist-active-color: #e74f3d;
 
   --res-card-button-size: 18px;
   --res-card-button-weight: 500;
@@ -3686,10 +3687,16 @@ details-disclosure > details {
   transform: scale(1.03);
 }
 
-.res-card__wishlist {
+/* O wrapper é o <wishlist-button> (ou um <span> no placeholder de onboarding). */
+.res-card__wishlist-wrapper {
   position: absolute;
   top: 9px;
   right: 9px;
+  z-index: 2;
+  display: block;
+}
+
+.res-card__wishlist {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3706,8 +3713,41 @@ details-disclosure > details {
   background: rgba(6, 38, 45, 0.12);
 }
 
+/* Estado favoritado: o web component marca [active] no wrapper. */
+.res-card__wishlist-wrapper[active] .res-card__wishlist,
+.res-card__wishlist[aria-pressed='true'] {
+  color: var(--res-card-wishlist-active-color);
+}
+
+.res-card__wishlist-wrapper[active] .res-card__wishlist-icon svg path,
 .res-card__wishlist[aria-pressed='true'] .res-card__wishlist-icon svg path {
   fill: currentColor;
+  stroke: currentColor;
+}
+
+/* .is-animating é adicionado pelo componente no clique. */
+.res-card__wishlist-wrapper.is-animating .res-card__wishlist-icon {
+  animation: res-card-wishlist-pop 0.3s ease;
+}
+
+@keyframes res-card-wishlist-pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  /* Duração mínima em vez de `none`: o componente só remove `.is-animating`
+     no evento `animationend`. */
+  .res-card__wishlist-wrapper.is-animating .res-card__wishlist-icon {
+    animation-duration: 0.01ms;
+  }
 }
 
 .res-card__wishlist-icon {
