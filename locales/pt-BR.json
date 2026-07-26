@@ -55,6 +55,9 @@
       "next_slide": "Deslizar para a direita",
       "previous_slide": "Deslizar para a esquerda",
       "name": "Controle deslizante"
+    },
+    "wishlist": {
+      "title": "Favoritos"
     }
   },
   "newsletter": {

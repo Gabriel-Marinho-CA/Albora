@@ -221,6 +221,33 @@ details[open].menu-opening > .menu-drawer__submenu {
   transform: scale(1.07);
 }
 
+/* Link de favoritos: mesmo alinhamento do link de conta. */
+.menu-drawer__account > .svg-wrapper {
+  height: 2rem;
+  width: 2rem;
+  margin-right: 1rem;
+}
+
+/* <wishlist-count> se esconde sozinho quando a lista está vazia. */
+.menu-drawer__wishlist-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  margin-left: 0.8rem;
+  padding: 0 0.6rem;
+  border-radius: 100px;
+  background: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.menu-drawer__wishlist-count[hidden] {
+  display: none;
+}
+
 .menu-drawer .list-social {
   justify-content: flex-start;
   margin-left: -1.25rem;

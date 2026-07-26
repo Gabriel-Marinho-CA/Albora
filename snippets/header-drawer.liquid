@@ -166,6 +166,14 @@
                 -%}
               </a>
             {%- endif -%}
+            {%- assign wishlist_url = section.settings.wishlist_link | default: '/pages/lista-de-desejos' -%}
+            <a href="{{ wishlist_url }}" class="menu-drawer__account link focus-inset h5">
+              <span class="svg-wrapper">
+                {{- 'icon-heart.svg' | inline_asset_content -}}
+              </span>
+              {{ 'general.wishlist.title' | t }}
+              <wishlist-count class="menu-drawer__wishlist-count"></wishlist-count>
+            </a>
             {%- if localization.available_countries or localization.available_languages -%}
               <div class="menu-drawer__localization header-localization">
                 {%- if localization.available_countries and localization.available_countries.size > 1 -%}
@@ -195,7 +203,9 @@
                 {%- endif -%}
               </div>
             {%- endif -%}
-            <ul class="list list-social list-unstyled" role="list">
+            {%- comment -%}
+              Redes sociais desativadas no drawer.
+              <ul class="list list-social list-unstyled" role="list">
               {%- if settings.social_twitter_link != blank -%}
                 <li class="list-social__item">
                   <a href="{{ settings.social_twitter_link }}" class="list-social__link link">
@@ -286,7 +296,8 @@
                   </a>
                 </li>
               {%- endif -%}
-            </ul>
+              </ul>
+            {%- endcomment -%}
           </div>
         </div>
       </div>

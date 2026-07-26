@@ -88,11 +88,11 @@
   {%- if block.settings.show_terms and variant != null -%}
     <p class="albora-price__terms">
       {%- if block.settings.show_installments -%}
-        Até <strong>{{ installments }}x de {{ installment_value | money }} sem juros no cartão</strong>
+        Até <strong>{{ installments }}x sem juros no cartão</strong>
       {%- endif -%}
       {%- if block.settings.show_installments and pix_discount > 0 %} ou {% endif -%}
       {%- if pix_discount > 0 -%}
-        <strong>{{ pix_price | money }} no pix ({{ pix_discount }}% off)</strong>
+        <strong>{{ pix_discount }}% off no pix</strong>
       {%- endif -%}
     </p>
   {%- endif -%}
