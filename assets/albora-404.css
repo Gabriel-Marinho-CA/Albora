@@ -1,0 +1,132 @@
+/* Albora — Página 404.
+   Estrutura fixa. Estilos vindos de settings ficam inline no .liquid,
+   com escopo por #Albora-404-<section.id>. */
+
+.albora-404 {
+  display: block;
+  width: 100%;
+  background: #ffffff;
+  font-family: 'Montserrat', var(--font-body-family, sans-serif);
+}
+
+.albora-404__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.albora-404__title {
+  margin: 0;
+  text-align: center;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+/* Desktop: texto à esquerda, ilustração à direita.
+   Mobile: ilustração acima do texto (ver `order` no media query). */
+.albora-404__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  width: 100%;
+}
+
+.albora-404__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  min-width: 0;
+}
+
+.albora-404__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.albora-404__subtitle {
+  margin: 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.albora-404__content {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.albora-404__content p {
+  margin: 0;
+}
+
+.albora-404__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 0 20px;
+  border: none;
+  border-radius: 54px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.albora-404__button:hover {
+  opacity: 0.9;
+}
+
+.albora-404__media {
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.albora-404__img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.albora-404__img--mobile {
+  display: none;
+}
+
+@media screen and (max-width: 749px) {
+  .albora-404__row {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .albora-404__media {
+    order: -1;
+  }
+
+  .albora-404__col {
+    width: 100%;
+  }
+
+  .albora-404__text {
+    gap: 4px;
+  }
+
+  .albora-404__subtitle {
+    text-transform: none;
+  }
+
+  .albora-404__img--desktop {
+    display: none;
+  }
+
+  .albora-404__img--mobile {
+    display: block;
+  }
+}

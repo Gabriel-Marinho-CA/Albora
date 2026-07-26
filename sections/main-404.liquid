@@ -1,23 +1,246 @@
-<style type="text/css">
-  .template-404 .title + * {
-    margin-top: 1rem;
+{%- comment -%}
+  Albora — Página 404.
+  Desktop: título centralizado, texto + botão à esquerda e ilustração à direita.
+  Mobile: título, ilustração, texto e botão empilhados.
+  Imagens desktop/mobile separadas (fallback nos assets `albora-404-sun*.png`).
+  Ver CLAUDE.md → "Regra de personalização de textos e botões".
+{%- endcomment -%}
+
+<link rel="stylesheet" href="{{ 'albora-404.css' | asset_url }}" media="all">
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+-%}
+
+<style>
+  #Albora-404-{{ uid }} {
+    padding-top: {{ s.padding_top }}px;
+    padding-bottom: {{ s.padding_bottom }}px;
+  }
+  #Albora-404-{{ uid }} .albora-404__inner {
+    max-width: {{ s.container_width }}px;
+    gap: {{ s.title_gap }}px;
+  }
+  #Albora-404-{{ uid }} .albora-404__title {
+    font-size: {{ s.title_font_size_desktop }}px;
+    font-weight: {{ s.title_font_weight }};
+    color: {{ s.title_color }};
+  }
+  #Albora-404-{{ uid }} .albora-404__subtitle {
+    font-size: {{ s.subtitle_font_size_desktop }}px;
+    font-weight: {{ s.subtitle_font_weight }};
+    color: {{ s.subtitle_color }};
+  }
+  #Albora-404-{{ uid }} .albora-404__content {
+    font-size: {{ s.content_font_size_desktop }}px;
+    font-weight: {{ s.content_font_weight }};
+    color: {{ s.content_color }};
+  }
+  #Albora-404-{{ uid }} .albora-404__button {
+    width: {{ s.button_width_desktop }}px;
+    height: {{ s.button_height_desktop }}px;
+    font-size: {{ s.button_font_size_desktop }}px;
+    font-weight: {{ s.button_font_weight }};
+    color: {{ s.button_color }};
+    background: {{ s.button_background }};
+  }
+  #Albora-404-{{ uid }} .albora-404__media {
+    width: {{ s.image_width_desktop }}px;
+    max-width: 100%;
   }
 
-  @media screen and (min-width: 750px) {
-    .template-404 .title + * {
-      margin-top: 2rem;
+  @media screen and (max-width: 749px) {
+    #Albora-404-{{ uid }} {
+      padding-top: {{ s.padding_top_mobile }}px;
+      padding-bottom: {{ s.padding_bottom_mobile }}px;
+    }
+    #Albora-404-{{ uid }} .albora-404__inner {
+      gap: {{ s.title_gap_mobile }}px;
+    }
+    #Albora-404-{{ uid }} .albora-404__title {
+      font-size: {{ s.title_font_size_mobile }}px;
+    }
+    #Albora-404-{{ uid }} .albora-404__subtitle {
+      font-size: {{ s.subtitle_font_size_mobile }}px;
+    }
+    #Albora-404-{{ uid }} .albora-404__content {
+      font-size: {{ s.content_font_size_mobile }}px;
+    }
+    #Albora-404-{{ uid }} .albora-404__button {
+      width: {{ s.button_width_mobile }}px;
+      height: {{ s.button_height_mobile }}px;
+      font-size: {{ s.button_font_size_mobile }}px;
+    }
+    #Albora-404-{{ uid }} .albora-404__media {
+      width: {{ s.image_width_mobile }}px;
     }
   }
 </style>
 
-<div class="template-404 page-width page-margin center">
-  <p>
-    {{ 'templates.404.subtext' | t }}
-  </p>
-  <h1 class="title">
-    {{ 'templates.404.title' | t }}
-  </h1>
-  <a href="{{ routes.all_products_collection_url }}" class="button">
-    {{ 'general.continue_shopping' | t }}
-  </a>
-</div>
+<section id="Albora-404-{{ uid }}" class="albora-404">
+  <div class="albora-404__inner page-width">
+    {%- if s.title != blank -%}
+      <h1 class="albora-404__title">{{ s.title }}</h1>
+    {%- endif -%}
+
+    <div class="albora-404__row">
+      <div class="albora-404__col">
+        <div class="albora-404__text">
+          {%- if s.subtitle != blank -%}
+            <p class="albora-404__subtitle">{{ s.subtitle }}</p>
+          {%- endif -%}
+          {%- if s.content != blank -%}
+            <div class="albora-404__content">{{ s.content }}</div>
+          {%- endif -%}
+        </div>
+
+        {%- if s.button_label != blank -%}
+          <a href="{{ s.button_link | default: routes.root_url }}" class="albora-404__button">
+            {{ s.button_label }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      <div class="albora-404__media">
+        {%- if s.image_desktop != blank -%}
+          {{
+            s.image_desktop
+            | image_url: width: 900
+            | image_tag: loading: 'lazy', class: 'albora-404__img albora-404__img--desktop', widths: '300, 450, 600, 900'
+          }}
+        {%- else -%}
+          <img
+            src="{{ 'albora-404-sun.png' | asset_url }}"
+            alt=""
+            class="albora-404__img albora-404__img--desktop"
+            width="424"
+            height="375"
+            loading="lazy"
+          >
+        {%- endif -%}
+
+        {%- if s.image_mobile != blank -%}
+          {{
+            s.image_mobile
+            | image_url: width: 600
+            | image_tag: loading: 'lazy', class: 'albora-404__img albora-404__img--mobile', widths: '272, 400, 600'
+          }}
+        {%- else -%}
+          <img
+            src="{{ 'albora-404-sun-mobile.png' | asset_url }}"
+            alt=""
+            class="albora-404__img albora-404__img--mobile"
+            width="272"
+            height="241"
+            loading="lazy"
+          >
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "404",
+  "tag": "section",
+  "class": "albora-404-section",
+  "settings": [
+    { "type": "header", "content": "Ilustração" },
+    { "type": "image_picker", "id": "image_desktop", "label": "Imagem desktop", "info": "Vazio usa a ilustração padrão do tema." },
+    { "type": "image_picker", "id": "image_mobile", "label": "Imagem mobile" },
+    { "type": "range", "id": "image_width_desktop", "min": 200, "max": 700, "step": 10, "unit": "px", "label": "Largura (desktop)", "default": 420 },
+    { "type": "range", "id": "image_width_mobile", "min": 140, "max": 480, "step": 10, "unit": "px", "label": "Largura (mobile)", "default": 270 },
+
+    { "type": "header", "content": "Conteúdo" },
+    { "type": "text", "id": "title", "label": "Título", "default": "ERRO 404" },
+    { "type": "text", "id": "subtitle", "label": "Subtítulo", "default": "Desculpe," },
+    { "type": "richtext", "id": "content", "label": "Texto", "default": "<p>A página que você procura pode ter mudado de horizonte ou ainda não existe.</p>" },
+    { "type": "text", "id": "button_label", "label": "Texto do botão", "default": "Voltar a página inicial" },
+    { "type": "url", "id": "button_link", "label": "Link do botão", "info": "Vazio aponta para a página inicial." },
+
+    { "type": "header", "content": "Espaçamento" },
+    { "type": "range", "id": "container_width", "min": 600, "max": 1600, "step": 20, "unit": "px", "label": "Largura máxima do conteúdo", "default": 1400 },
+    { "type": "range", "id": "title_gap", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Espaço abaixo do título (desktop)", "default": 64 },
+    { "type": "range", "id": "title_gap_mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Espaço abaixo do título (mobile)", "default": 40 },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 200, "step": 4, "unit": "px", "label": "Padding superior (desktop)", "default": 100 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "label": "Padding inferior (desktop)", "default": 100 },
+    { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Padding superior (mobile)", "default": 40 },
+    { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Padding inferior (mobile)", "default": 40 },
+
+    { "type": "header", "content": "Título — tipografia" },
+    { "type": "range", "id": "title_font_size_desktop", "min": 32, "max": 140, "step": 2, "unit": "px", "label": "Tamanho (desktop)", "default": 96 },
+    { "type": "range", "id": "title_font_size_mobile", "min": 20, "max": 96, "step": 2, "unit": "px", "label": "Tamanho (mobile)", "default": 48 },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "600"
+    },
+    { "type": "color", "id": "title_color", "label": "Cor", "default": "#06262D" },
+
+    { "type": "header", "content": "Subtítulo — tipografia" },
+    { "type": "range", "id": "subtitle_font_size_desktop", "min": 16, "max": 72, "step": 2, "unit": "px", "label": "Tamanho (desktop)", "default": 40 },
+    { "type": "range", "id": "subtitle_font_size_mobile", "min": 14, "max": 56, "step": 2, "unit": "px", "label": "Tamanho (mobile)", "default": 32 },
+    {
+      "type": "select",
+      "id": "subtitle_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "500"
+    },
+    { "type": "color", "id": "subtitle_color", "label": "Cor", "default": "#E74F3D" },
+
+    { "type": "header", "content": "Texto — tipografia" },
+    { "type": "range", "id": "content_font_size_desktop", "min": 12, "max": 32, "step": 1, "unit": "px", "label": "Tamanho (desktop)", "default": 18 },
+    { "type": "range", "id": "content_font_size_mobile", "min": 10, "max": 28, "step": 1, "unit": "px", "label": "Tamanho (mobile)", "default": 16 },
+    {
+      "type": "select",
+      "id": "content_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "400"
+    },
+    { "type": "color", "id": "content_color", "label": "Cor", "default": "#06262D" },
+
+    { "type": "header", "content": "Botão (CTA)" },
+    { "type": "range", "id": "button_font_size_desktop", "min": 12, "max": 32, "step": 1, "unit": "px", "label": "Tamanho da fonte (desktop)", "default": 18 },
+    { "type": "range", "id": "button_font_size_mobile", "min": 10, "max": 28, "step": 1, "unit": "px", "label": "Tamanho da fonte (mobile)", "default": 18 },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Peso da fonte",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "500"
+    },
+    { "type": "color", "id": "button_color", "label": "Cor do texto", "default": "#FFFFFF" },
+    { "type": "color", "id": "button_background", "label": "Cor de fundo", "default": "#06262D" },
+    { "type": "range", "id": "button_width_desktop", "min": 160, "max": 560, "step": 10, "unit": "px", "label": "Largura (desktop)", "default": 360 },
+    { "type": "range", "id": "button_width_mobile", "min": 140, "max": 480, "step": 10, "unit": "px", "label": "Largura (mobile)", "default": 360 },
+    { "type": "range", "id": "button_height_desktop", "min": 36, "max": 96, "step": 2, "unit": "px", "label": "Altura (desktop)", "default": 56 },
+    { "type": "range", "id": "button_height_mobile", "min": 32, "max": 88, "step": 2, "unit": "px", "label": "Altura (mobile)", "default": 56 }
+  ]
+}
+{% endschema %}

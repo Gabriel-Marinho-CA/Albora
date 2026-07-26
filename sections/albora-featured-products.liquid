@@ -25,8 +25,8 @@
     width: 100%;
     box-sizing: border-box;
     font-family: 'Montserrat', var(--font-body-family, sans-serif);
-    padding-top: {{ s.padding_top }}px;
-    padding-bottom: {{ s.padding_bottom }}px;
+    padding-top: {{ s.padding_top_desktop }}px;
+    padding-bottom: {{ s.padding_bottom_desktop }}px;
     background: {{ s.section_background }};
   }
   #Albora-FeaturedProducts-{{ uid }} .albora-fp__inner {
@@ -126,6 +126,10 @@
     }
   }
   @media screen and (max-width: 749px) {
+    #Albora-FeaturedProducts-{{ uid }} {
+      padding-top: {{ s.padding_top_mobile }}px;
+      padding-bottom: {{ s.padding_bottom_mobile }}px;
+    }
     #Albora-FeaturedProducts-{{ uid }} .albora-fp__inner {
       padding-inline: 16px;
       gap: 24px;
@@ -364,23 +368,43 @@
     { "type": "color", "id": "section_background", "label": "Fundo da seção", "default": "#FFFFFF" },
     {
       "type": "range",
-      "id": "padding_top",
+      "id": "padding_top_desktop",
       "min": 0,
       "max": 160,
       "step": 4,
       "unit": "px",
-      "label": "Espaço acima",
+      "label": "Espaço acima (desktop)",
       "default": 120
     },
     {
       "type": "range",
-      "id": "padding_bottom",
+      "id": "padding_bottom_desktop",
       "min": 0,
       "max": 160,
       "step": 4,
       "unit": "px",
-      "label": "Espaço abaixo",
+      "label": "Espaço abaixo (desktop)",
       "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Espaço acima (mobile)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Espaço abaixo (mobile)",
+      "default": 40
     },
 
     { "type": "header", "content": "Conteúdo" },
