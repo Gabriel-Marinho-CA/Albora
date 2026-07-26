@@ -247,7 +247,7 @@ a.product__text {
 
 .product__title {
   word-break: break-word;
-  margin-bottom: 1.5rem;
+  margin-bottom: .55rem;
 
   @media (max-width:750px) {
     margin-top: 3rem;
@@ -262,6 +262,10 @@ a.product__text {
     line-height: normal;
     text-transform: uppercase;
   }
+}
+
+.product__description.rte.quick-add-hidden {
+      margin-block: 0 !important;
 }
 
 .product__title>* {
