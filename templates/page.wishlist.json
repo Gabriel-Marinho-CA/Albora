@@ -23,7 +23,7 @@
       "settings": {
         "container_width": 1440,
         "columns_desktop": 4,
-        "columns_mobile": 2,
+        "columns_mobile": 1,
         "section_background": "#FFFFFF",
         "padding_top_desktop": 80,
         "padding_bottom_desktop": 80,
