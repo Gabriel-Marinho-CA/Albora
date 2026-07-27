@@ -158,6 +158,13 @@
   display: block;
 }
 
+/* No drawer mobile o `.facets__price` do Dawn é flex com 2rem de padding —
+   vira bloco para o slider ocupar a largura, alinhado ao `.mobile-facets__info`. */
+.mobile-facets__details .facets__price {
+  display: block;
+  padding: 1.6rem 2.6rem 0;
+}
+
 .albora-price-slider {
   position: relative;
   height: 20px;

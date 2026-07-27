@@ -525,9 +525,12 @@
                       {% when 'boolean', 'list' %}
                         <details
                           id="Details-Mobile-{{ filter.param_name | escape }}-{{ section.id }}"
+                          {%- comment -%}
+                            No mobile o conteúdo é um submenu que desliza, aberto pelo JS
+                            (`.menu-opening` em global.js). Não pode vir com `open`.
+                          {%- endcomment -%}
                           class="mobile-facets__details js-filter"
                           data-index="mobile-{{ forloop.index }}"
-                          open
                         >
                           <summary class="mobile-facets__summary focus-inset">
                             <div>
@@ -670,7 +673,6 @@
                           id="Details-Mobile-{{ filter.param_name | escape }}-{{ section.id }}"
                           class="mobile-facets__details js-filter filter-tange-slider"
                           data-index="mobile-{{ forloop.index }}"
-                          open
                         >
                           <summary class="mobile-facets__summary focus-inset">
                             <div>
@@ -699,7 +701,15 @@
                             </p>
 
                             <price-range class="facets__price">
-                              {% render 'price-facet', filter: filter, id_prefix: 'Mobile-Filter-' %}
+                              {%- comment -%}
+                                `filter_type: 'vertical'` é o que faz o `price-facet` renderizar o
+                                slider de duas alças (sem isso saem só os campos de/até).
+                              {%- endcomment -%}
+                              {% render 'price-facet',
+                                filter: filter,
+                                id_prefix: 'Mobile-Filter-',
+                                filter_type: 'vertical'
+                              %}
                             </price-range>
                             <div class="mobile-facets__footer">
                               <facet-remove class="mobile-facets__clear-wrapper">
