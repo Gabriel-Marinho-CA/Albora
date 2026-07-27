@@ -9,7 +9,13 @@
   overflow: hidden;
   font-family: 'Montserrat', var(--font-body-family, sans-serif);
 }
+.albora-nutrition-table-section {
+      margin-top: -3rem;
 
+      @media (max-width:750px) {
+        margin-top: -2rem;
+      }
+}
 /* Imagem decorativa de fundo — fica atrás do conteúdo. */
 .albora-nutri__bg {
   position: absolute;
