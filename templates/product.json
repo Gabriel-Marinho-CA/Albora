@@ -203,7 +203,7 @@
         "card_gap_mobile": 24,
         "row_padding_x_mobile": 8,
         "value_column_width_mobile": 70,
-        "image_left_desktop": -8,
+        "image_left_desktop": -6,
         "image_top_desktop": 152,
         "image_width_desktop": 96,
         "image_left_mobile": -18,
