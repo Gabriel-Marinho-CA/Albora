@@ -197,6 +197,12 @@ cart-items {
   margin-top:2rem;
 }
 
+#CartDrawer-Checkout {
+  background:#34c759;
+  border-radius:100px;
+
+}
+
 @media screen and (min-width: 750px) {
   .cart-note {
     max-width: 35rem;
