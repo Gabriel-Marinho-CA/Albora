@@ -201,6 +201,11 @@ cart-items {
   background:#34c759;
   border-radius:100px;
 
+  &::before,
+  &::after {
+    display:none;
+  }
+
 }
 
 @media screen and (min-width: 750px) {
