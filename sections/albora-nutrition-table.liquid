@@ -71,6 +71,10 @@
     line-height: {{ s.title_line_height }};
     color: {{ s.title_color }};
     margin-inline:auto;
+
+    @media (min-widht:1000px) {
+    margin-left:0;
+  }
   }
   #Albora-NutritionTable-{{ uid }} .albora-nutri__card {
     max-width: {{ s.card_width_desktop }}px;
