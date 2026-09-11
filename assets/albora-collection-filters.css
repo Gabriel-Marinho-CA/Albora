@@ -473,19 +473,28 @@ select[name="sort_by"].facet-filters__sort {
     appearance: base-select;
   }
 
+  /* No base-select a largura segue só a opção selecionada (não a maior),
+     então reserva espaço à direita pro caret absoluto não cobrir o texto */
+  select[name="sort_by"].facet-filters__sort {
+    padding: 9px 34px 9px 16px;
+    overflow: visible;
+  }
+
   /* O caret já vem do .svg-wrapper, esconde o ícone padrão */
   select[name="sort_by"].facet-filters__sort::picker-icon {
     display: none;
   }
 
   select[name="sort_by"].facet-filters__sort::picker(select) {
-    margin-top: 8px;
-    min-width: max(100%, 220px);
-    padding: 8px;
+    margin-top: 6px;
+    width: max-content;
+    min-width: anchor-size(width);
+    max-height: 320px;
+    padding: 6px;
     background: #ffffff;
     border: 1px solid rgba(6, 38, 45, 0.1);
-    border-radius: 16px;
-    box-shadow: 0 12px 32px rgba(6, 38, 45, 0.12);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(6, 38, 45, 0.1);
     opacity: 1;
     transform: translateY(0);
     transition:
@@ -511,12 +520,14 @@ select[name="sort_by"].facet-filters__sort {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 14px;
-    border-radius: 10px;
+    min-height: 0;
+    padding: 7px 12px;
+    border-radius: 8px;
     font-family: 'Montserrat', var(--font-body-family, sans-serif);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 400;
-    line-height: 20px;
+    line-height: 18px;
+    white-space: nowrap;
     color: #06262d;
     background: transparent;
     cursor: pointer;
@@ -527,6 +538,7 @@ select[name="sort_by"].facet-filters__sort {
   select[name="sort_by"].facet-filters__sort option:focus-visible {
     background: rgba(6, 38, 45, 0.06);
     outline: none;
+    box-shadow: none;
   }
 
   select[name="sort_by"].facet-filters__sort option:checked {
