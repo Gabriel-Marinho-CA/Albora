@@ -457,14 +457,12 @@
 select[name="sort_by"].facet-filters__sort {
   padding: 9px 10px;
 
-  + {
-    .svg-wrapper {
+    +.svg-wrapper {
           position: absolute;
     top: 50%;
     transform: translateY(-50%);
     right: 8px;
     }
-  }
 }
 
 
