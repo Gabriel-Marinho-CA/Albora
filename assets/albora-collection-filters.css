@@ -450,6 +450,10 @@
   white-space: nowrap;
 }
 
+.facet-filters__field:has(select[name="sort_by"]) {
+  padding:0;
+}
+
 select[name="sort_by"].facet-filters__sort {
   padding: 9px 10px;
 
