@@ -561,6 +561,11 @@ select[name="sort_by"].facet-filters__sort {
 }
 
 
+.product-count-vertical.light {
+      display: flex;
+    align-items: center;
+}
+
 .albora-sort .facet-filters__sort:focus-visible,
 .facets-vertical-sort .facet-filters__sort:focus-visible,
 .albora-sort .facet-filters__sort.focused,
